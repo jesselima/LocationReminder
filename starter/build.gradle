@@ -6,6 +6,7 @@ buildscript {
 
     repositories {
         google()
+        mavenLocal()
         jcenter()
 
     }
@@ -23,6 +24,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenLocal()
         jcenter()
     }
 }
@@ -33,7 +35,7 @@ task clean(type: Delete) {
 ext {
     // Sdk and tools
     // Support library and architecture components support minSdk 14 and above.
-    minSdkVersion = 16
+    minSdkVersion = 26
     targetSdkVersion = 30
     compileSdkVersion = 30
 

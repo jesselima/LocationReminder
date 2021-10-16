@@ -30,7 +30,10 @@ android {
         includeAndroidResources = true
         returnDefaultValues = true
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     //dataBinding {
     //    enabled = true
     //    enabledForTests = true
@@ -70,6 +73,9 @@ dependencies {
     //Room dependencies
     implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
+    // Workaround to fix error SQLiteJDBCLoader on MacBook M1
+    // https://stackoverflow.com/questions/68884589/caused-by-java-lang-exception-no-native-library-is-found-for-os-name-mac-and-o
+    kapt "org.xerial:sqlite-jdbc:3.34.0"
     kapt "androidx.room:room-compiler:$roomVersion"
 
     //Coroutines Dependencies
