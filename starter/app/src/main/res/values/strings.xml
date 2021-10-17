@@ -9,7 +9,8 @@
     <string name="save">Save</string>
     <string name="reminder_saved">Reminder Saved !</string>
     <string name="logout">Logout</string>
-    <string name="welcome_to_the_location_reminder_app">Welcome to the location reminder app</string>
+    <string name="welcome_to_the_location_reminder_app">Welcome to the Location Reminder App</string>
+    <string name="welcome_message_caption">Set your mind free to what matters most and do the things at the right time and place.</string>
     <string name="login">Login</string>
     <string name="title_activity_maps">Map</string>
     <string name="normal_map">Normal Map</string>
@@ -40,4 +41,18 @@
     <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
     <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
+    <string name="text_login">Login</string>
+    <string name="url_terms_of_service">https://jesselima.dev/apps/location-reminder/terms-of-service</string>
+    <string name="url_privacy_policy">https://jesselima.dev/apps/location-reminder/privacy-policy</string>
+    <string name="auth_error_not_network">Please, check your net work connection.</string>
+    <string name="auth_error_something_went_wrong">Oooops! Something went wrong!</string>
+    <string name="auth_error_must_update_google_services">Please, update your google services to be able to proceed.</string>
+    <string name="auth_error_account_disable">The user account has been disabled by an administrator.</string>
+    <string name="auth_error_email_does_not_match_provided">You are attempting to sign in a different email than previously provided</string>
+    <string name="auth_error_email_mismatch">You are attempting to sign in a different email than previously provided</string>
+    <string name="auth_error_invalid_email_link">You are attempting to sign in with an invalid email link</string>
+    <string name="auth_error_please_enter_email">Please enter your email to continue signing in</string>
+    <string name="auth_error_wrong_device">You must open the email link on the same device.</string>
+    <string name="auth_error_define_linking_or_sign_in">You must determine if you want to continue linking or complete the sign in</string>
+    <string name="auth_error_session_expired_or_cleared">The session associated with this sign-in request has either expired or was cleared</string>
 </resources>

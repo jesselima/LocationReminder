@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.udacity.locationreminder.R
+import com.udacity.locationreminder.utils.validateAuthentication
 import kotlinx.android.synthetic.main.activity_reminders.*
 
 /**
@@ -15,7 +16,11 @@ class RemindersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reminders)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        validateAuthentication()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
