@@ -1,7 +1,6 @@
 package com.udacity.locationreminder.authentication
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.locationreminders.RemindersActivity
+import com.udacity.locationreminder.onboarding.OnBoardingActivity
+import com.udacity.locationreminder.utils.launchActivity
 import kotlinx.android.synthetic.main.activity_authentication.*
 
 /**
@@ -31,25 +32,16 @@ class AuthenticationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
+
         buttonLogin.setOnClickListener {
             startSignIn()
         }
 
         FirebaseAuth.getInstance().run {
             if (this.currentUser != null) {
-                Toast.makeText(applicationContext, "Already logged in!", Toast.LENGTH_SHORT).show()
-                navigateToRemindersScreen()
-            } else {
-                Toast.makeText(applicationContext, "No logged!", Toast.LENGTH_SHORT).show()
+                launchActivity<RemindersActivity>(shouldFinish = true)
             }
         }
-    }
-
-    private fun navigateToRemindersScreen() {
-        startActivity(Intent(applicationContext, RemindersActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
-        finish()
     }
 
     private fun startSignIn() {
@@ -79,11 +71,9 @@ class AuthenticationActivity : AppCompatActivity() {
 
         if (isSuccess) {
             if(isNewUser) {
-                Toast.makeText(this, "It\'s your first time here. Welcome!", Toast.LENGTH_SHORT).show()
-                // Todo navigate to intro screen and from there to reminder screen
+                launchActivity<OnBoardingActivity>(shouldFinish = true)
             } else {
-                Toast.makeText(this, "Going to your reminders", Toast.LENGTH_SHORT).show()
-                navigateToRemindersScreen()
+                launchActivity<RemindersActivity>(shouldFinish = true)
             }
         } else {
             handleAuthenticationError(errorCode = result?.idpResponse?.error?.errorCode)
