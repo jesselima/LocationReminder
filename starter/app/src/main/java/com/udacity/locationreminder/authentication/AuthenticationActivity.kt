@@ -25,7 +25,7 @@ class AuthenticationActivity : AppCompatActivity() {
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
     ) { result: FirebaseAuthUIAuthenticationResult? ->
-        resolveAuthenticationResult(result)
+        onSignInResult(result)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,14 +72,12 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun resolveAuthenticationResult(result: FirebaseAuthUIAuthenticationResult?) {
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult?) {
         layoutContentAuthenticationIntro.isVisible = true
-
         val isSuccess = result?.idpResponse?.isSuccessful ?: false
         val isNewUser = result?.idpResponse?.isNewUser ?: false
 
         if (isSuccess) {
-            Toast.makeText(this, "Login success!", Toast.LENGTH_SHORT).show()
             if(isNewUser) {
                 Toast.makeText(this, "It\'s your first time here. Welcome!", Toast.LENGTH_SHORT).show()
                 // Todo navigate to intro screen and from there to reminder screen
