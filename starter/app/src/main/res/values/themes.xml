@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="LocationReminderAppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="LocationReminderAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="LocationReminderAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

@@ -9,20 +9,23 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--         The BACKGROUND_LOCATION permission is required for geofencing functionality to work on Q+ -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.udacity.locationreminder.MyApp"
+        android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LocationReminderAppTheme">
-        <activity android:name="com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity" />
+        <activity
+            android:name=".onboarding.OnBoardingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_on_boarding"
+            android:theme="@style/LocationReminderAppTheme.NoActionBar" />
+        <activity android:name=".locationreminders.ReminderDescriptionActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -31,31 +34,30 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+        <activity
+            android:name=".locationreminders.RemindersActivity"
+            android:exported="true" />
 
         <activity
-            android:name="com.udacity.locationreminder.locationreminders.RemindersActivity"
-            android:exported="true"/>
-
-        <activity
-            android:name="com.udacity.locationreminder.authentication.AuthenticationActivity"
+            android:name=".authentication.AuthenticationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <receiver
-            android:name="com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver"
+            android:name=".locationreminders.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
+
         <service
-            android:name="com.udacity.locationreminder.locationreminders.geofence.GeofenceTransitionsJobIntentService"
+            android:name=".locationreminders.geofence.GeofenceTransitionsJobIntentService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
