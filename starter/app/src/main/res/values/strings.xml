@@ -55,4 +55,5 @@
     <string name="auth_error_wrong_device">You must open the email link on the same device.</string>
     <string name="auth_error_define_linking_or_sign_in">You must determine if you want to continue linking or complete the sign in</string>
     <string name="auth_error_session_expired_or_cleared">The session associated with this sign-in request has either expired or was cleared</string>
+    <string name="content_description_add_new_reminder">Add new reminder</string>
 </resources>
