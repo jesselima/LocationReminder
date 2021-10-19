@@ -4,5 +4,9 @@
     <item
         android:id="@+id/logout"
         android:title="@string/logout"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/copyrights"
+        android:title="@string/label_copyright"
+        app:showAsAction="never" />
 </menu>

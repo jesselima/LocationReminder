@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="@dimen/spacing_tiny"
+    android:layout_margin="@dimen/spacing_sm"
+    app:cardCornerRadius="@dimen/card_corner_radius_tiny"
+    app:cardElevation="@dimen/spacing_sm"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/defaultBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_tiny"
+        android:background="?android:attr/selectableItemBackground">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/copyrightImage"
+            android:layout_width="@dimen/spacing_very_large_03"
+            android:layout_height="@dimen/spacing_very_large_03"
+            android:layout_marginStart="@dimen/spacing_tiny"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:contentDescription="@string/image_or_animation_resource"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            tools:src="@drawable/ic_location" />
+
+        <TextView
+            android:id="@+id/labelSource"
+            style="@style/LabelTextDiscreteDescription"
+            android:layout_width="@dimen/spacing_very_large_02"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:gravity="start"
+            android:text="@string/label_source"
+            app:layout_constraintStart_toEndOf="@+id/copyrightImage"
+            app:layout_constraintTop_toTopOf="@+id/copyrightImage" />
+
+        <TextView
+            android:id="@+id/copyrightSource"
+            style="@style/LabelTextValue"
+            android:layout_marginStart="@dimen/spacing_sm"
+            app:layout_constraintBottom_toBottomOf="@+id/labelSource"
+            app:layout_constraintStart_toEndOf="@+id/labelSource"
+            app:layout_constraintTop_toTopOf="@+id/labelSource"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="Freepik" />
+
+        <TextView
+            android:id="@+id/labelAuthor"
+            style="@style/LabelTextDiscreteDescription"
+            android:layout_width="@dimen/spacing_very_large_02"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:gravity="start"
+            android:text="@string/label_author"
+            app:layout_constraintBottom_toBottomOf="@+id/copyrightImage"
+            app:layout_constraintStart_toEndOf="@+id/copyrightImage"
+            app:layout_constraintTop_toBottomOf="@+id/labelSource" />
+
+        <TextView
+            android:id="@+id/copyrightAuthorName"
+            style="@style/LabelTextValue"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            app:layout_constraintBottom_toBottomOf="@+id/labelAuthor"
+            app:layout_constraintStart_toEndOf="@+id/labelAuthor"
+            app:layout_constraintTop_toTopOf="@+id/labelAuthor"
+            tools:text="Jesse James" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+

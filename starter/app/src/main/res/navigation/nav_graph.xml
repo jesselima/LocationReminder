@@ -14,12 +14,33 @@
         android:name="com.udacity.locationreminder.locationreminders.reminderslist.ReminderListFragment"
         android:label="ReminderListFragment">
         <action
-            android:id="@+id/to_save_reminder"
+            android:id="@+id/navigateToSaveReminder"
             app:destination="@id/saveReminderFragment"
             app:enterAnim="@anim/fade_in_with_interpolator"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/fade_out_with_interpolator"/>
+        <action
+            android:id="@+id/navigateToCopyrights"
+            app:destination="@id/copyrightsListFragment"
+            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/fade_out_with_interpolator"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/copyrightsListFragment"
+        android:name="com.udacity.locationreminder.copyright.CopyrightFragment"
+        android:label="Copyrights">
+        <action
+            android:id="@+id/navigateToReminderList"
+            app:destination="@id/reminderListFragment"
+            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/fade_out_with_interpolator"/>
+
     </fragment>
 
     <fragment
