@@ -20,17 +20,6 @@ fun AppCompatActivity.validateAuthentication() {
     }
 }
 
-fun AppCompatActivity.signOut() {
-    AuthUI.getInstance()
-        .signOut(this)
-        .addOnCompleteListener {
-            startActivity(Intent(applicationContext, AuthenticationActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            })
-            finish()
-        }
-}
-
 fun Fragment.signOut() {
     activity?.let { fragmentActivity ->
         AuthUI.getInstance()

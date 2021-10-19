@@ -1,12 +1,16 @@
 package com.udacity.locationreminder.utils
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.udacity.locationreminder.R
 import com.udacity.locationreminder.base.BaseRecyclerViewAdapter
 
 
@@ -22,12 +26,6 @@ fun <T> RecyclerView.setup(
     }
 }
 
-fun Fragment.setTitle(title: String) {
-    if (activity is AppCompatActivity) {
-        (activity as AppCompatActivity).supportActionBar?.title = title
-    }
-}
-
 fun Fragment.setDisplayHomeAsUpEnabled(shouldDisplayActionBar: Boolean) {
     if (activity is AppCompatActivity) {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
@@ -36,23 +34,20 @@ fun Fragment.setDisplayHomeAsUpEnabled(shouldDisplayActionBar: Boolean) {
     }
 }
 
-//animate changing the view visibility
-fun View.fadeIn() {
+fun View.showWithFadeIn() {
     this.visibility = View.VISIBLE
-    this.alpha = 0f
-    this.animate().alpha(1f).setListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            this@fadeIn.alpha = 1f
-        }
-    })
+    this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_with_interpolator))
 }
 
-//animate changing the view visibility
-fun View.fadeOut() {
-    this.animate().alpha(0f).setListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            this@fadeOut.alpha = 1f
-            this@fadeOut.visibility = View.GONE
-        }
-    })
+fun View.hideWithFadeOut() {
+    this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out_with_interpolator))
+    this.visibility = View.GONE
+}
+
+fun View.toggleVisibility() {
+    isVisible = isVisible.not()
+}
+
+fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false) : View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }

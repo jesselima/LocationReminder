@@ -37,10 +37,10 @@ object BindingAdapters {
             view.animate().cancel()
             if (visible == true) {
                 if (view.visibility == View.GONE)
-                    view.fadeIn()
+                    view.showWithFadeIn()
             } else {
                 if (view.visibility == View.VISIBLE)
-                    view.fadeOut()
+                    view.hideWithFadeOut()
             }
         }
     }
