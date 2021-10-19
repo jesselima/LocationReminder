@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.base.BaseFragment
-import com.udacity.locationreminder.base.NavigationCommand
 import com.udacity.locationreminder.databinding.FragmentRemindersBinding
 import com.udacity.locationreminder.utils.setup
 import com.udacity.locationreminder.utils.signOut
@@ -47,6 +47,10 @@ class ReminderListFragment : BaseFragment() {
                     signOut()
                     true
                 }
+                R.id.copyrights -> {
+                    findNavController().navigate(R.id.navigateToCopyrights)
+                    true
+                }
                 else -> false
             }
         }
@@ -58,11 +62,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun navigateToAddReminder() {
-        _viewModel.navigationCommand.postValue(
-            NavigationCommand.To(
-                ReminderListFragmentDirections.toSaveReminder()
-            )
-        )
+        findNavController().navigate(R.id.navigateToSaveReminder)
     }
 
     private fun setupRecyclerView() {

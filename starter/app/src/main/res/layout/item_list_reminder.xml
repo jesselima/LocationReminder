@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_small"
                 android:text="@{item.title}"
-                android:textColor="@color/black"
+                android:textColor="@color/solidBlack"
                 android:textSize="@dimen/text_size_normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

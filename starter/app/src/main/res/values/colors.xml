@@ -17,6 +17,10 @@
     <color name="textInputOutlineColor">#B3B3B3</color>
     <color name="defaultBackground">#E6E6E6</color>
 
-    <color name="black">#000000</color>
-    <color name="white">#ffffff</color>
+    <color name="colorStateOn">#FF8282</color>
+    <color name="colorStateOff">#C2C2C2</color>
+    <color name="transparent">#00FFFFFF</color>
+
+    <color name="solidBlack">#000000</color>
+    <color name="solidWhite">#ffffff</color>
 </resources>

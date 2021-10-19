@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/solidWhite">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBarLayout"
@@ -53,15 +53,31 @@
                 android:id="@+id/noDataTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:drawableTopCompat="@drawable/ic_no_data"
                 android:fadeVisible="@{viewModel.showNoData.booleanValue()}"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_md"
                 android:text="@string/no_data"
                 android:textSize="@dimen/text_size_large"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/animationNoLocationData" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationNoLocationData"
+                android:layout_width="@dimen/lottie_default_width"
+                android:layout_height="@dimen/lottie_default_height"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.3"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/location_pin"
+                tools:background="@color/colorStateOn"
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -85,7 +101,7 @@
                 app:layout_anchorGravity="bottom|right|end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:contentDescription="@string/content_description_add_new_reminder" />
+                android:contentDescription="@string/add_new_reminder" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
