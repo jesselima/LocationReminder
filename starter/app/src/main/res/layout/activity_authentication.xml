@@ -6,12 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".authentication.AuthenticationActivity">
 
+    <ImageView
+        android:id="@+id/imageViewLoginBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_image_phone_pin_locations"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/viewSemiTransparentMask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_background_alpha"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textWelcome"
-        style="@style/TextAppearance.LocationReminderAppTheme.Title"
+        style="@style/TextAppearance.LocationReminderAppTheme.Title.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/spacing_very_large_03"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:text="@string/welcome_to_the_location_reminder_app"
