@@ -1,5 +1,6 @@
 package com.udacity.locationreminder.utils
 
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,8 +36,36 @@ fun Fragment.setDisplayHomeAsUpEnabled(shouldDisplayActionBar: Boolean) {
 }
 
 fun View.showWithFadeIn() {
-    this.visibility = View.VISIBLE
+    this.isVisible = true
     this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_with_interpolator))
+}
+
+fun View.showWithFadeIn(animDuration: AnimDuration = AnimDuration.TIME_500_MS) {
+    this.visibility = View.VISIBLE
+    this.startAnimation(
+        AnimationUtils.loadAnimation(
+            context,
+            setAnimationDuration(animDuration)
+        )
+    )
+}
+
+fun setAnimationDuration(animDuration: AnimDuration): Int {
+    return when(animDuration) {
+        AnimDuration.TIME_1000_MS -> {
+            R.anim.fade_in_animation_1000ms
+        }
+        AnimDuration.TIME_2000_MS -> {
+            R.anim.fade_in_animation_2000ms
+        }
+        AnimDuration.TIME_3000_MS -> {
+            R.anim.fade_in_animation_3000ms
+        }
+        AnimDuration.TIME_4000_MS -> {
+            R.anim.fade_in_animation_4000ms
+        }
+        else -> R.anim.fade_in_animation_500ms
+    }
 }
 
 fun View.hideWithFadeOut() {
@@ -50,4 +79,36 @@ fun View.toggleVisibility() {
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false) : View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
+}
+
+fun View.showAnimated(
+    animationResId: Int = R.anim.fade_in,
+    translationType: TranslationType = TranslationType.TRANSLATION_Y,
+    animDuration: AnimDuration = AnimDuration.TIME_1000_MS,
+    vararg values: Float = floatArrayOf(-50f),
+) {
+    this.visibility = View.VISIBLE
+
+    ObjectAnimator.ofFloat(
+        this,
+        translationType.value,
+        *values
+    ).apply {
+        duration = animDuration.value
+        start()
+    }
+    this.startAnimation(AnimationUtils.loadAnimation(context,animationResId))
+}
+
+enum class TranslationType(val value: String) {
+    TRANSLATION_Y("translationY"),
+    TRANSLATION_X("translationX")
+}
+
+enum class AnimDuration(val value: Long) {
+    TIME_500_MS(500L),
+    TIME_1000_MS(1000L),
+    TIME_2000_MS(2000L),
+    TIME_3000_MS(3000L),
+    TIME_4000_MS(3000L),
 }
