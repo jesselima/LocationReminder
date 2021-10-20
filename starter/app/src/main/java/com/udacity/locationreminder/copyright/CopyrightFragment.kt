@@ -68,6 +68,13 @@ class CopyrightFragment : Fragment() {
 				authorName = "SAGATOV ART",
 				link = "https://lottiefiles.com/39612-location-animation"
 			),
+			Copyright(
+				imageResId = R.drawable.background_image_phone_pin_locations_thumbnail,
+				isAnimation = false,
+				sourceName = "Freepik",
+				authorName = "rawpixel-com",
+				link = "https://www.freepik.com/free-vector/covid-19-virus-tracking-app-new-normal-presentation_15229753.htm"
+			),
 		)
 	}
 }

@@ -72,13 +72,16 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="label_ok_got_it">OK, got it!</string>
 
-    <!-- Todo remove me -->
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
-
     <string name="image_or_animation_resource">Image or animation resource</string>
     <string name="label_go_back_to_reminders">Go back to reminders</string>
     <string name="message_copyright_notes">See below who\nprovided free content used in this App.</string>
     <string name="label_success">Success</string>
+    <string name="onboard_step_1_title">Need remember something?</string>
+    <string name="onboard_step_1_description">Have you forgot to do something while you was in some place?</string>
+    <string name="onboard_step_2_title">No worries!</string>
+    <string name="onboard_step_2_description">Here you can select a location and save your reminder.</string>
+    <string name="onboard_step_3_title">And get notified when you are in place.</string>
+    <string name="onboard_step_3_description">Now you can save you reminders location based and get notified when you get into or leave the place!</string>
+    <string name="next">Next</string>
+    <string name="start">Start</string>
 </resources>

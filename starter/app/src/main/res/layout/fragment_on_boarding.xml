@@ -5,19 +5,50 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".onboarding.ui.main.PlaceholderFragment">
+    android:layout_margin="@dimen/spacing_xl">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/onBoardingStepImage"
+        android:layout_width="@dimen/lottie_large_width"
+        android:layout_height="@dimen/lottie_large_height"
+        android:layout_marginTop="@dimen/spacing_xxxl"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/location_pin"
+        tools:background="@color/colorStateOn"
+        tools:visibility="visible"/>
 
     <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
+        android:id="@+id/onBoardingStepTitle"
+        style="@style/TextAppearance.LocationReminderAppTheme.Title.Medium"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_screen_default"
-        android:layout_marginTop="@dimen/space_screen_default"
-        android:layout_marginEnd="@dimen/space_screen_default"
-        android:layout_marginBottom="@dimen/space_screen_default"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        android:layout_marginStart="@dimen/spacing_xxxl"
+        android:layout_marginTop="@dimen/spacing_xxl"
+        android:layout_marginEnd="@dimen/spacing_xxl"
+        android:textColor="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onBoardingStepImage"
+        tools:text="Title..." />
+
+    <TextView
+        android:id="@+id/onBoardingStepDescription"
+        style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xl"
+        android:layout_marginStart="@dimen/spacing_xxxl"
+        android:layout_marginEnd="@dimen/spacing_xxxl"
+        android:gravity="center_horizontal"
+        android:textColor="@color/textColorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onBoardingStepTitle"
+        tools:text="Description..." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
