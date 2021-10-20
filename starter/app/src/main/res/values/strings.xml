@@ -9,7 +9,8 @@
     <string name="save">Save</string>
     <string name="reminder_saved">Reminder Saved !</string>
     <string name="logout">Logout</string>
-    <string name="welcome_to_the_location_reminder_app">Welcome to the Location Reminder App</string>
+    <string name="logout_confirmation_message">Do you really want to logout?</string>
+    <string name="welcome_to_the_location_reminder_app">Location Reminder</string>
     <string name="welcome_message_caption">Set your mind free to what matters most and do the things at the right time and place.</string>
     <string name="login">Login</string>
     <string name="title_activity_maps">Map</string>

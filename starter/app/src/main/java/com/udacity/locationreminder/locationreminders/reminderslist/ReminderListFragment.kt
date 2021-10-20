@@ -10,6 +10,7 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.base.BaseFragment
 import com.udacity.locationreminder.databinding.FragmentRemindersBinding
 import com.udacity.locationreminder.utils.setup
+import com.udacity.locationreminder.utils.showDialog
 import com.udacity.locationreminder.utils.signOut
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,7 +45,12 @@ class ReminderListFragment : BaseFragment() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.logout -> {
-                    signOut()
+                    showDialog(
+                        context = context,
+                        title = getString(R.string.logout),
+                        message = getString(R.string.logout_confirmation_message),
+                        positiveButtonAction = { signOut() }
+                    )
                     true
                 }
                 R.id.copyrights -> {
