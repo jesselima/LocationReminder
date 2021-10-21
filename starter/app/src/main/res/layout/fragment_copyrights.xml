@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,65 +12,63 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/favoritePicturesAppBarLayout"
         android:layout_width="match_parent"
-        app:titleTextColor="@color/textColorPrimary"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/textColorPrimary">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/copyrightTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
-            app:titleTextColor="@color/solidWhite"
-            app:title="@string/label_copyright"
-            app:navigationContentDescription="@string/label_go_back_to_reminders"
             android:importantForAccessibility="yes"
             app:layout_collapseMode="none"
-            app:navigationIcon="@drawable/ic_arrow_back"/>
+            app:navigationContentDescription="@string/label_go_back_to_reminders"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/label_copyright"
+            app:titleTextColor="@color/solidWhite" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/copyrightsTitle"
+        style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center"
+        android:layout_marginTop="@dimen/spacing_xl"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:layout_marginEnd="@dimen/spacing_md"
+        android:gravity="center"
+        android:text="@string/message_copyright_notes"
+        android:textColor="@color/textColorSecondary"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout"
+        tools:visibility="visible" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_xl"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/copyrightsTitle">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/copyrightRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/layout_item_list_copyright" />
+    </ScrollView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/copyrightRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/copyrightsTitle"
-                tools:listitem="@layout/layout_item_list_copyright" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/copyrightsTitle"
-                style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginTop="@dimen/app_bar_margin_top"
-                android:layout_marginStart="@dimen/spacing_md"
-                android:layout_marginEnd="@dimen/spacing_md"
-                android:gravity="center"
-                android:text="@string/message_copyright_notes"
-                android:textColor="@color/textColorSecondary"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

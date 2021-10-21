@@ -28,13 +28,10 @@ class CopyrightFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.copyrightTopAppBar.setOnClickListener {
-			activity?.onBackPressed()
-		}
 		binding.copyrightRecyclerView.adapter = copyrightAdapter
 		copyrightAdapter.submitList(getCopyrightList())
 		binding.copyrightTopAppBar.setNavigationOnClickListener {
-			findNavController().popBackStack(R.id.reminderListFragment, true)
+			findNavController().popBackStack(R.id.reminderListFragment, false)
 		}
 	}
 

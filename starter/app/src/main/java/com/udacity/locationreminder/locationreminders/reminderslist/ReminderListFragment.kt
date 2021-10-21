@@ -54,6 +54,7 @@ class ReminderListFragment : BaseFragment() {
                     true
                 }
                 R.id.copyrights -> {
+                    binding.animationNoLocationData.pauseAnimation()
                     findNavController().navigate(R.id.navigateToCopyrights)
                     true
                 }

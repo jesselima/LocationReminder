@@ -12,38 +12,50 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/space_screen_default"
         android:background="@color/solidWhite">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/materialTextView"
-            style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:text="@string/add_new_reminder"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/favoritePicturesAppBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:titleTextColor="@color/textColorPrimary">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/saveReminderTopAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:importantForAccessibility="yes"
+                app:layout_collapseMode="none"
+                app:navigationContentDescription="@string/label_go_back_to_reminders"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/add_new_reminder"
+                app:titleTextColor="@color/solidWhite" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldReminderTitle"
             style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_margin="@dimen/spacing_xl"
             android:hint="@string/reminder_title"
             app:counterEnabled="true"
             app:counterMaxLength="100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialTextView">
+            app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/reminderTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lines="2"
+                android:maxLength="100"
                 android:text="@={viewModel.reminderTitle}" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -53,6 +65,11 @@
             android:id="@+id/textFieldReminderDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_xl"
+            android:layout_marginEnd="@dimen/spacing_xl"
+            app:expandedHintEnabled="true"
+            app:counterEnabled="true"
+            app:counterMaxLength="300"
             android:hint="@string/reminder_desc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +77,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/reminderDescription"
-                android:lines="10"
+                android:lines="5"
+                android:maxLines="5"
+                android:maxLength="300"
                 android:text="@={viewModel.reminderDescription}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

@@ -17,16 +17,16 @@
             android:id="@+id/navigateToSaveReminder"
             app:destination="@id/saveReminderFragment"
             app:enterAnim="@anim/fade_in_with_interpolator"
-            app:exitAnim="@anim/slide_out_left"
+            app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out_with_interpolator"/>
+            app:popExitAnim="@anim/fade_out"/>
         <action
             android:id="@+id/navigateToCopyrights"
             app:destination="@id/copyrightsListFragment"
             app:enterAnim="@anim/fade_in_with_interpolator"
-            app:exitAnim="@anim/slide_out_left"
+            app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out_with_interpolator"/>
+            app:popExitAnim="@anim/fade_out"/>
     </fragment>
 
     <fragment
@@ -37,10 +37,9 @@
             android:id="@+id/navigateToReminderList"
             app:destination="@id/reminderListFragment"
             app:enterAnim="@anim/fade_in_with_interpolator"
-            app:exitAnim="@anim/slide_out_left"
+            app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out_with_interpolator"/>
-
+            app:popExitAnim="@anim/fade_out"/>
     </fragment>
 
     <fragment
@@ -55,7 +54,7 @@
             app:enterAnim="@anim/fade_in_with_interpolator"
             app:popEnterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/fade_out_with_interpolator"
-            app:popExitAnim="@anim/fade_out_with_interpolator"/>
+            app:popExitAnim="@anim/fade_out"/>
         <action
             android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
             app:destination="@id/selectLocationFragment" />
