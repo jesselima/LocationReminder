@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.udacity.locationreminder.R
@@ -29,7 +30,7 @@ fun Fragment.showDialog(
 
 fun Context.showCustomToast(
     toastType: ToastType = ToastType.SUCCESS,
-    stringResId: Int = R.string.label_success,
+    @StringRes titleResId: Int = R.string.label_success,
     durationToast: Int = Toast.LENGTH_SHORT,
     offSetY: Int = 250,
     offSetX: Int = 0,
@@ -38,7 +39,7 @@ fun Context.showCustomToast(
 
     val binding = LayoutCustomToastBinding.inflate(LayoutInflater.from(this))
 
-    binding.customText.text = getString(stringResId)
+    binding.customText.text = getString(titleResId)
 
     val imageResId = when (toastType) {
         ToastType.ERROR -> R.drawable.ic_error
