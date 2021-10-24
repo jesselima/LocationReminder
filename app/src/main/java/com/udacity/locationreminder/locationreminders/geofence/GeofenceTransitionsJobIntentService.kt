@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
-import com.udacity.locationreminder.locationreminders.data.dto.ReminderDTO
+import com.udacity.locationreminder.locationreminders.data.dto.ReminderData
 import com.udacity.locationreminder.locationreminders.data.dto.Result
-import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.locationreminder.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.locationreminder.utils.sendNotification
+import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.CoroutineContext
@@ -43,24 +41,24 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         val requestId = ""
 
         //Get the local repository instance
-        val remindersLocalRepository: RemindersLocalRepository by inject()
+        val remindersLocalRepositoryImpl: RemindersLocalRepositoryImpl by inject()
 //        Interaction to the repository has to be through a coroutine scope
         CoroutineScope(coroutineContext).launch(SupervisorJob()) {
             //get the reminder with the request id
-            val result = remindersLocalRepository.getReminder(requestId)
-            if (result is Result.Success<ReminderDTO>) {
-                val reminderDTO = result.data
+            val result = remindersLocalRepositoryImpl.getReminder(requestId)
+            if (result is Result.Success<ReminderData>) {
+                val reminderData = result.data
                 //send a notification to the user with the reminder details
-                sendNotification(
-                    this@GeofenceTransitionsJobIntentService, ReminderDataItem(
-                        reminderDTO.title,
-                        reminderDTO.description,
-                        reminderDTO.location,
-                        reminderDTO.latitude,
-                        reminderDTO.longitude,
-                        reminderDTO.id
-                    )
-                )
+//                sendNotification(
+//                    this@GeofenceTransitionsJobIntentService, ReminderItemView(
+//                        reminderData.title,
+//                        reminderData.description,
+//                        reminderData.location,
+//                        reminderData.latitude,
+//                        reminderData.longitude,
+//                        reminderData.id
+//                    )
+//                )
             }
         }
     }

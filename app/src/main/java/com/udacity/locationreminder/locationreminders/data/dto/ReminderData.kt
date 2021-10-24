@@ -3,6 +3,7 @@ package com.udacity.locationreminder.locationreminders.data.dto
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView
 import java.util.*
 
 /**
@@ -17,11 +18,25 @@ import java.util.*
  */
 
 @Entity(tableName = "reminders")
-data class ReminderDTO(
+data class ReminderData(
     @ColumnInfo(name = "title") var title: String?,
     @ColumnInfo(name = "description") var description: String?,
     @ColumnInfo(name = "location") var location: String?,
     @ColumnInfo(name = "latitude") var latitude: Double?,
     @ColumnInfo(name = "longitude") var longitude: Double?,
+    @ColumnInfo(name = "is_poi") var isPoi: Boolean?,
+    @ColumnInfo(name = "poi_id") var poiId: String?,
     @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
 )
+
+fun ReminderData.mapToPresentationModel() : ReminderItemView {
+    return ReminderItemView(
+        title = title,
+        description = description,
+        location = location,
+        latitude = latitude,
+        longitude = longitude,
+        isPoi = isPoi,
+        poiId = poiId
+    )
+}

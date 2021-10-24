@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.locationreminders.savereminder.selectreminderlocation
+package com.udacity.locationreminder.locationreminders.addreminder
 
 
 import android.Manifest
@@ -7,10 +7,14 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,23 +24,23 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.base.BaseFragment
 import com.udacity.locationreminder.databinding.FragmentSelectLocationBinding
-import com.udacity.locationreminder.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.showCustomToast
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 private const val REQUEST_LOCATION_PERMISSION = 1
 private const val MAP_START_ZOOM = 14.0F
 private val DEFAULT_LOCATION = LatLng(-23.5822877,-46.6530567)
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
+class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     private val currentClassName = SelectLocationFragment::class.java.simpleName
 
-    override val _viewModel: SaveReminderViewModel by inject()
+    private val sharedViewModel: SharedReminderViewModel by sharedViewModel()
+    private var selectedReminder: ReminderItemView? = null
 
     private lateinit var binding: FragmentSelectLocationBinding
     private var map: GoogleMap? = null
@@ -64,6 +68,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun setupAppBarAndMenuListeners() {
+        binding.buttonSetLocation.setOnClickListener {
+            sharedViewModel.setSelectedReminder(selectedReminder)
+            findNavController().popBackStack(R.id.saveReminderFragment,false)
+        }
         binding.selectLocationToolbar.setNavigationOnClickListener {
             findNavController().popBackStack(R.id.saveReminderFragment,false)
         }
@@ -199,6 +207,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun setMarker(latLng: LatLng) {
+        binding.buttonSetLocation.isEnabled = true
+        binding.buttonSetLocation.text = getString(R.string.action_set_location)
         currentLocationMarker?.remove()
         val snippet = String.format(
             Locale.getDefault(),
@@ -216,10 +226,21 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 .draggable(true)
         )
         currentLocationMarker?.showInfoWindow()
+        selectedReminder = ReminderItemView(
+            title = null,
+            description = null,
+            isPoi = false,
+            poiId = null,
+            latitude = latLng.latitude,
+            longitude = latLng.longitude,
+            location = null
+        )
     }
 
     private fun setPoiClick(mapWithPoi: GoogleMap?) {
         mapWithPoi?.setOnPoiClickListener { poi ->
+            binding.buttonSetLocation.isEnabled = true
+            binding.buttonSetLocation.text = getString(R.string.action_set_location)
             currentLocationMarker?.remove()
             val snippet = String.format(
                 Locale.getDefault(),
@@ -237,6 +258,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .snippet(snippet)
             )
             currentLocationMarker?.showInfoWindow()
+            selectedReminder = ReminderItemView(
+                title = null,
+                description = null,
+                isPoi = true,
+                poiId = poi.placeId,
+                latitude = poi.latLng.latitude,
+                longitude = poi.latLng.longitude,
+                location =  poi.name.replace("\n", " ")
+            )
         }
     }
 

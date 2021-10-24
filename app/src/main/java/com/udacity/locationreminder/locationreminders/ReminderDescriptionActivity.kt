@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.ActivityReminderDescriptionBinding
-import com.udacity.locationreminder.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification
@@ -18,9 +18,9 @@ class ReminderDescriptionActivity : AppCompatActivity() {
         private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"
 
         //        receive the reminder object after the user clicks on the notification
-        fun newIntent(context: Context, reminderDataItem: ReminderDataItem): Intent {
+        fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
             val intent = Intent(context, ReminderDescriptionActivity::class.java)
-            intent.putExtra(EXTRA_ReminderDataItem, reminderDataItem)
+            intent.putExtra(EXTRA_ReminderDataItem, reminderItemView)
             return intent
         }
     }

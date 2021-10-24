@@ -3,7 +3,8 @@
     <string name="error_happened">Error happened</string>
     <string name="retry">Retry</string>
     <string name="no_data">No reminders data\n\nTry to add some reminder.</string>
-    <string name="reminder_title">Reminder Title</string>
+    <string name="reminder_title">Reminder title</string>
+    <string name="reminder_location_name">Location name</string>
     <string name="reminder_desc">Description</string>
     <string name="reminder_location">Reminder Location</string>
     <string name="save">Save</string>
@@ -18,7 +19,7 @@
     <string name="hybrid_map">Hybrid Map</string>
     <string name="satellite_map">Satellite Map</string>
     <string name="terrain_map">Terrain Map</string>
-    <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
+    <string name="lat_long_snippet">Lat: %1$.5f\nLong: %2$.5f</string>
     <string name="poi_lat_long_snippet">%1s - %2s</string>
     <string name="poi_dropped_pin">Set a reminder for</string>
     <string name="dropped_pin">Set a reminder for this place</string>
@@ -35,7 +36,10 @@
     <string name="select_title">Please select title</string>
     <string name="select_location">Please select location</string>
     <string name="action_select_location">Select location</string>
-    <string name="action_set_location">Set location</string>
+    <string name="action_click_on_the_map">Click on the map</string>
+    <string name="action_change_location">Change location</string>
+    <string name="action_set_location">Get this location</string>
+    <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location</string>
     <string name="action_selected_location">Selected location</string>
     <string name="geofences_not_added">Problem in adding geofences.</string>
     <string name="welcome">Welcome</string>

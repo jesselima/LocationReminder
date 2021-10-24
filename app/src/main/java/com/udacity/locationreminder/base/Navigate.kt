@@ -5,19 +5,19 @@ import androidx.navigation.NavDirections
 /**
  * Sealed class used with the live data to navigate between the fragments
  */
-sealed class NavigationCommand {
+sealed class Navigate {
     /**
      * navigate to a direction
      */
-    data class To(val directions: NavDirections) : NavigationCommand()
+    data class To(val directions: NavDirections) : Navigate()
 
     /**
      * navigate back to the previous fragment
      */
-    object Back : NavigationCommand()
+    object Back : Navigate()
 
     /**
      * navigate back to a destination in the back stack
      */
-    data class BackTo(val destinationId: Int) : NavigationCommand()
+    data class BackTo(val destinationId: Int) : Navigate()
 }

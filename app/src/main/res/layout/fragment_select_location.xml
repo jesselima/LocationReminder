@@ -43,14 +43,30 @@
             tools:context=".locationreminders.RemindersActivity" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/selectLocation"
+            android:id="@+id/buttonSetLocation"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_xl"
-            android:text="@string/action_set_location"
+            android:enabled="false"
+            android:text="@string/action_click_on_the_map"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="@drawable/background_rounded_semi_transparent_grey"
+            android:gravity="center"
+            android:padding="@dimen/spacing_md"
+            android:text="@string/message_click_on_the_map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectLocationAppBarLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

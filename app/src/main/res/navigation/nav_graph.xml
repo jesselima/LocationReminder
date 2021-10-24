@@ -44,7 +44,7 @@
 
     <fragment
         android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.locationreminder.locationreminders.savereminder.SaveReminderFragment"
+        android:name="com.udacity.locationreminder.locationreminders.addreminder.SaveReminderFragment"
         android:label="Add Reminder">
         <action
             android:id="@+id/navigateToSaveReminder"
@@ -56,16 +56,21 @@
             app:exitAnim="@anim/fade_out_with_interpolator"
             app:popExitAnim="@anim/fade_out"/>
         <action
-            android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
-            app:destination="@id/selectLocationFragment" />
+            android:id="@+id/navigateToSelectLocation"
+            app:destination="@id/selectLocationFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out_with_interpolator"
+            app:popExitAnim="@anim/fade_out"/>
     </fragment>
 
     <fragment
         android:id="@+id/selectLocationFragment"
-        android:name="com.udacity.locationreminder.locationreminders.savereminder.selectreminderlocation.SelectLocationFragment"
+        android:name="com.udacity.locationreminder.locationreminders.addreminder.SelectLocationFragment"
         android:label="Select Location">
         <action
-            android:id="@+id/action_selectLocationFragment_to_saveReminderFragment"
+            android:id="@+id/navigateToSaveReminderFragment"
             app:destination="@id/saveReminderFragment" />
     </fragment>
 

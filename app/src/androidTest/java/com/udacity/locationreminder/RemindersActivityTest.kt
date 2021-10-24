@@ -4,15 +4,12 @@ import android.app.Application
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.udacity.locationreminder.locationreminders.data.ReminderDataSource
-import com.udacity.locationreminder.locationreminders.data.local.LocalDB
-import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.locationreminder.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.locationreminder.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
+import com.udacity.locationreminder.locationreminders.data.local.LocalDatabase
+import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -22,10 +19,10 @@ import org.koin.test.get
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 //END TO END test to black box test the app
-class RemindersActivityTest :
-    AutoCloseKoinTest() {// Extended Koin Test - embed autoclose @after method to close Koin after every test
+// Extended Koin Test - embed autoclose @after method to close Koin after every test
+class RemindersActivityTest : AutoCloseKoinTest() {
 
-    private lateinit var repository: ReminderDataSource
+    private lateinit var repository: RemindersLocalRepository
     private lateinit var appContext: Application
 
     /**
@@ -34,23 +31,29 @@ class RemindersActivityTest :
      */
     @Before
     fun init() {
-        stopKoin()//stop the original app koin
+        //stop the original app koin
+        stopKoin()
         appContext = getApplicationContext()
         val myModule = module {
-            viewModel {
-                RemindersListViewModel(
-                    appContext,
-                    get() as ReminderDataSource
-                )
+//            viewModel {
+//                RemindersListViewModel(
+//                    appContext,
+//                    get() as RemindersLocalRepository
+//                )
+//            }
+//            single {
+//                SaveReminderViewModel(
+//                    // TODO Fix Me
+//                    // appContext,
+//                     get() as RemindersLocalRepository
+//                )
+//            }
+            single {
+                RemindersLocalRepositoryImpl(remindersDao = get())
             }
             single {
-                SaveReminderViewModel(
-                    appContext,
-                    get() as ReminderDataSource
-                )
+                LocalDatabase.createRemindersDao(appContext)
             }
-            single { RemindersLocalRepository(get()) as ReminderDataSource }
-            single { LocalDB.createRemindersDao(appContext) }
         }
         //declare a new koin module
         startKoin {

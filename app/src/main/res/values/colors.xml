@@ -21,6 +21,7 @@
     <color name="colorStateOff">#C2C2C2</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="transparent_background_alpha">#DADFDFDF</color>
+    <color name="transparent_background_alpha_stroke">#DA959595</color>
 
     <color name="solidBlack">#000000</color>
     <color name="solidWhite">#ffffff</color>
