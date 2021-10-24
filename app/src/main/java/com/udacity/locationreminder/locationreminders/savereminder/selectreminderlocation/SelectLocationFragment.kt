@@ -8,7 +8,6 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.*
@@ -33,14 +32,14 @@ private const val REQUEST_LOCATION_PERMISSION = 1
 private const val MAP_START_ZOOM = 14.0F
 private val DEFAULT_LOCATION = LatLng(-23.5822877,-46.6530567)
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private val currentClassName = SelectLocationFragment::class.java.simpleName
 
     override val _viewModel: SaveReminderViewModel by inject()
 
     private lateinit var binding: FragmentSelectLocationBinding
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
 
     private var currentLocationMarker: Marker? = null
     private var locationPermissionGranted: Boolean = false
@@ -60,30 +59,30 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListeners()
+        setupAppBarAndMenuListeners()
         requestLocationPermissionsInitMyLocation()
     }
 
-    private fun setupListeners() {
+    private fun setupAppBarAndMenuListeners() {
         binding.selectLocationToolbar.setNavigationOnClickListener {
             findNavController().popBackStack(R.id.saveReminderFragment,false)
         }
         binding.selectLocationToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.normal_map -> {
-                    map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                    map?.mapType = GoogleMap.MAP_TYPE_NORMAL
                     true
                 }
                 R.id.hybrid_map -> {
-                    map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                    map?.mapType = GoogleMap.MAP_TYPE_HYBRID
                     true
                 }
                 R.id.satellite_map -> {
-                    map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                    map?.mapType = GoogleMap.MAP_TYPE_SATELLITE
                     true
                 }
                 R.id.terrain_map -> {
-                    map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                    map?.mapType = GoogleMap.MAP_TYPE_TERRAIN
                     true
                 }
                 R.id.map_local_style_dark -> {
@@ -107,115 +106,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getDeviceLocation() {
-        try {
-            if (locationPermissionGranted) {
-                val locationResult = fusedLocationProviderClient?.lastLocation
-                locationResult?.addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        // Set the map's camera position to the current location of the device.
-                        lastKnownLocation = task.result
-                        lastKnownLocation?.let { location ->
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                LatLng(location.latitude,location.longitude), MAP_START_ZOOM)
-                            )
-                        }
-                    } else {
-                        Log.d(currentClassName, "Current location is null. Using defaults.")
-                        Log.e(currentClassName, "Exception: %s", task.exception)
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, MAP_START_ZOOM))
-                        map.uiSettings.isMyLocationButtonEnabled = false
-                    }
-                }
-            }
-        } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message, e)
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestLocationPermissionsInitMyLocation()
-            return
-        } else {
-            locationPermissionGranted = true
-            getDeviceLocation()
-            map.isMyLocationEnabled = true
-        }
-        onClickSetMarker(map)
-        setPoiClick(map)
-        map.isMyLocationEnabled = true
-        map.uiSettings.isCompassEnabled = true
-        map.uiSettings.isIndoorLevelPickerEnabled = true
-        map.uiSettings.isMapToolbarEnabled = true
-        map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isMyLocationButtonEnabled = true
-        map.uiSettings.setAllGesturesEnabled(true)
-    }
-
-    private fun onClickSetMarker(map: GoogleMap) {
-        map.setOnMapLongClickListener { latLng ->
-            setMarker(latLng)
-        }
-        map.setOnMapClickListener { latLng ->
-            setMarker(latLng)
-        }
-    }
-
-    private fun setMarker(latLng: LatLng) {
-        currentLocationMarker?.remove()
-        val snippet = String.format(
-            Locale.getDefault(),
-            getString(R.string.lat_long_snippet),
-            latLng.latitude,
-            latLng.longitude
-        )
-
-        currentLocationMarker = map.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .title(getString(R.string.dropped_pin))
-                .snippet(snippet)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                .draggable(true)
-        )
-        currentLocationMarker?.showInfoWindow()
-    }
-
-    private fun setPoiClick(map: GoogleMap) {
-        currentLocationMarker?.remove()
-        map.setOnPoiClickListener { poi ->
-            currentLocationMarker = map.addMarker(
-                MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
-            )
-            currentLocationMarker?.showInfoWindow()
-            val data = "Name: ${poi.name} - Lat/Lng: ${poi.latLng.latitude} - ${poi.latLng.longitude} - Id: ${poi.placeId}"
-        }
-    }
-
-    private fun setLocalMapStyle(map: GoogleMap, resourceStyle: Int) {
-        runCatching {
-            val isMapStyleValid = map.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(requireContext(), resourceStyle)
-                )
-            Log.d(currentClassName, "Map Style is valid: $isMapStyleValid")
-        }.onFailure {
-            Log.d(currentClassName, "Map Style could not be loaded")
-        }
-    }
-
     private fun requestLocationPermissionsInitMyLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -233,7 +123,131 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
             }
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
             locationPermissionGranted = true
-            getDeviceLocation()
+            setupMapUI()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getDeviceLocation() {
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient?.lastLocation
+                locationResult?.addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        lastKnownLocation?.let { location ->
+                            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                LatLng(location.latitude,location.longitude), MAP_START_ZOOM)
+                            )
+                        }
+                    } else {
+                        Log.d(currentClassName, "Current location is null. Using defaults.")
+                        Log.e(currentClassName, "Exception: %s", task.exception)
+                        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, MAP_START_ZOOM))
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestLocationPermissionsInitMyLocation()
+            return
+        } else {
+            locationPermissionGranted = true
+            setupMapUI()
+        }
+    }
+
+    /** At this the permission is already allowed by the user. Otherwise this method
+     * would not be called .
+     * */
+    @SuppressLint("MissingPermission")
+    private fun setupMapUI() {
+        map?.isMyLocationEnabled = true
+        map?.isMyLocationEnabled = true
+        map?.uiSettings?.isCompassEnabled = true
+        map?.uiSettings?.isIndoorLevelPickerEnabled = true
+        map?.uiSettings?.isMapToolbarEnabled = true
+        map?.uiSettings?.isZoomControlsEnabled = true
+        map?.uiSettings?.isMyLocationButtonEnabled = true
+        map?.uiSettings?.setAllGesturesEnabled(true)
+        map?.let { onClickSetMarker(it) }
+        map?.let { setPoiClick(it) }
+        getDeviceLocation()
+    }
+
+    private fun onClickSetMarker(mapWithMarker: GoogleMap) {
+        mapWithMarker.setOnMapLongClickListener { latLng ->
+            setMarker(latLng)
+        }
+        mapWithMarker.setOnMapClickListener { latLng ->
+            setMarker(latLng)
+        }
+    }
+
+    private fun setMarker(latLng: LatLng) {
+        currentLocationMarker?.remove()
+        val snippet = String.format(
+            Locale.getDefault(),
+            getString(R.string.lat_long_snippet),
+            latLng.latitude,
+            latLng.longitude
+        )
+
+        currentLocationMarker = map?.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(getString(R.string.dropped_pin))
+                .snippet(snippet)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .draggable(true)
+        )
+        currentLocationMarker?.showInfoWindow()
+    }
+
+    private fun setPoiClick(mapWithPoi: GoogleMap?) {
+        mapWithPoi?.setOnPoiClickListener { poi ->
+            currentLocationMarker?.remove()
+            val snippet = String.format(
+                Locale.getDefault(),
+                getString(R.string.lat_long_snippet),
+                poi.latLng.latitude,
+                poi.latLng.longitude
+            )
+            currentLocationMarker = mapWithPoi.addMarker(
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(String.format(
+                        getString(R.string.poi_lat_long_snippet),
+                        getString(R.string.poi_dropped_pin),
+                        poi.name))
+                    .snippet(snippet)
+            )
+            currentLocationMarker?.showInfoWindow()
+        }
+    }
+
+    private fun setLocalMapStyle(map: GoogleMap?, resourceStyle: Int) {
+        runCatching {
+            val isMapStyleValid = map?.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(requireContext(), resourceStyle)
+                )
+            Log.d(currentClassName, "Map Style is valid: $isMapStyleValid")
+        }.onFailure {
+            Log.d(currentClassName, "Map Style could not be loaded")
         }
     }
 
@@ -246,18 +260,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
                 )
             } else {
                 locationPermissionGranted = true
-                getDeviceLocation()
-                context?.showCustomToast(titleResId = R.string.location_permission_allowed)
+                setupMapUI()
             }
         }
-    }
-
-    override fun onMarkerClick(marker: Marker): Boolean {
-        Toast.makeText(
-            context,
-            "Title: ${marker.title} - Lat/Lng: ${marker.position.latitude} - ${marker.position.longitude} - tag: ${marker.tag}",
-            Toast.LENGTH_LONG
-        ).show()
-        return false
     }
 }
