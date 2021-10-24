@@ -33,7 +33,7 @@ class SaveReminderFragment : BaseFragment() {
                 NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
         }
 
-        binding.saveReminderTopAppBar.setNavigationOnClickListener {
+        binding.saveReminderToolbar.setNavigationOnClickListener {
             findNavController().popBackStack(R.id.reminderListFragment, false)
         }
 

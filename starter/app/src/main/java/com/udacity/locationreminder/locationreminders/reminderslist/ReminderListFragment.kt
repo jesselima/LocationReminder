@@ -40,6 +40,7 @@ class ReminderListFragment : BaseFragment() {
 
     private fun setupActionListeners() {
         binding.actionButtonAddReminder.setOnClickListener {
+            binding.animationNoLocationData.pauseAnimation()
             navigateToAddReminder()
         }
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->

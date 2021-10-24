@@ -15,7 +15,7 @@
         android:background="@color/solidWhite">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/favoritePicturesAppBarLayout"
+            android:id="@+id/saveReminderAppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
             app:titleTextColor="@color/textColorPrimary">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/saveReminderTopAppBar"
+                android:id="@+id/saveReminderToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
@@ -48,7 +48,7 @@
             app:counterMaxLength="100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout">
+            app:layout_constraintTop_toBottomOf="@+id/saveReminderAppBarLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/reminderTitle"
