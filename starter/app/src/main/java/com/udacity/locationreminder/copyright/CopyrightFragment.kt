@@ -38,28 +38,28 @@ class CopyrightFragment : Fragment() {
 	private fun getCopyrightList() : List<Copyright> {
 		return listOf(
 			Copyright(
-				imageResId = R.raw.location_rounded,
+				imageResId = R.raw.animation_location_rounded,
 				isAnimation = true,
 				sourceName = "Lottie Files",
 				authorName = "Edwin Nollen",
 				link = "https://lottiefiles.com/1342-location"
 			),
 			Copyright(
-				imageResId = R.raw.location_pin,
+				imageResId = R.raw.animation_location_pin,
 				isAnimation = true,
 				sourceName = "Lottie Files",
 				authorName = "Vladislav Sholohov",
 				link = "https://lottiefiles.com/58217-location-pin"
 			),
 			Copyright(
-				imageResId = R.raw.location_pin_alert,
+				imageResId = R.raw.animation_location_pin_alert,
 				isAnimation = true,
 				sourceName = "Lottie Files",
 				authorName = "Pavlo Monakhov",
 				link = "https://lottiefiles.com/18199-location-pin-on-a-map"
 			),
 			Copyright(
-				imageResId = R.raw.location_select,
+				imageResId = R.raw.animation_location_select,
 				isAnimation = true,
 				sourceName = "Lottie Files",
 				authorName = "SAGATOV ART",
