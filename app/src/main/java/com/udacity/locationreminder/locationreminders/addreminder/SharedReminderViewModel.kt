@@ -17,12 +17,16 @@ class SharedReminderViewModel(
     val selectedReminder: LiveData<ReminderItemView?> = _selectedReminder
 
     fun setSelectedReminder(reminder: ReminderItemView?) {
-        clear()
+        clearCurrentReminder()
         _selectedReminder.value = reminder
     }
 
-    fun saveReminder() {
-        // TODO
+    fun saveReminder(title: String?, name: String?, description: String?) {
+        _selectedReminder.value = selectedReminder.value?.copy(
+            title = title, location = name, description = description
+        )
+        // Todo
+        //  Validate input data
         //  Save reminder.
         //  Add location to GeoFences.
         viewModelScope.launch {
@@ -32,7 +36,7 @@ class SharedReminderViewModel(
         }
     }
 
-    fun clear() {
+    fun clearCurrentReminder() {
         _selectedReminder.value = null
     }
 }

@@ -28,8 +28,8 @@ class SaveReminderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.buttonSelectLocation.setOnClickListener {
-            sharedViewModel.clear()
             findNavController().navigate(R.id.navigateToSelectLocation)
+            sharedViewModel.clearCurrentReminder()
         }
 
         binding.saveReminderToolbar.setNavigationOnClickListener {
@@ -37,7 +37,11 @@ class SaveReminderFragment : Fragment() {
         }
 
         binding.saveReminder.setOnClickListener {
-            sharedViewModel.saveReminder()
+            sharedViewModel.saveReminder(
+                title = binding.textFieldReminderTitle.editText?.text.toString(),
+                name = binding.textFieldReminderLocationName.editText?.text.toString(),
+                description = binding.textFieldReminderDescription.editText?.text.toString(),
+            )
         }
     }
 
