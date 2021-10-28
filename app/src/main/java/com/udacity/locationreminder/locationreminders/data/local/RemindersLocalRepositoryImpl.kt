@@ -34,10 +34,12 @@ class RemindersLocalRepositoryImpl(
      * Insert a reminder in the db.
      * @param reminder the reminder to be inserted
      */
-    override suspend fun saveReminder(reminder: ReminderData) =
-        withContext(ioDispatcher) {
+    override suspend fun saveReminder(reminder: ReminderData): Long {
+        val result = withContext(ioDispatcher) {
             remindersDao.saveReminder(reminder)
         }
+        return result
+    }
 
     /**
      * Get a reminder by its id

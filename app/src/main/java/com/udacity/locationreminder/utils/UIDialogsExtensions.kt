@@ -32,7 +32,7 @@ fun Context.showCustomToast(
     toastType: ToastType = ToastType.SUCCESS,
     @StringRes titleResId: Int = R.string.label_success,
     durationToast: Int = Toast.LENGTH_SHORT,
-    offSetY: Int = 250,
+    offSetY: Int = 200,
     offSetX: Int = 0,
     gravity: Int = Gravity.BOTTOM
 ) {

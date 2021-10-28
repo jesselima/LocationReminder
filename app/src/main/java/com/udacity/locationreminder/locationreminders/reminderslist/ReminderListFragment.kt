@@ -35,8 +35,7 @@ class ReminderListFragment : Fragment() {
 
     private fun setupActionListeners() {
         binding.actionButtonAddReminder.setOnClickListener {
-            binding.animationNoLocationData.pauseAnimation()
-            navigateToAddReminder()
+            findNavController().navigate(ReminderListFragmentDirections.navigateToSaveReminder())
         }
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -51,7 +50,9 @@ class ReminderListFragment : Fragment() {
                 }
                 R.id.copyrights -> {
                     binding.animationNoLocationData.pauseAnimation()
-                    findNavController().navigate(R.id.navigateToCopyrights)
+                    findNavController().navigate(
+                        ReminderListFragmentDirections.navigateToCopyrights()
+                    )
                     true
                 }
                 else -> false
@@ -62,9 +63,11 @@ class ReminderListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.loadReminders()
+        binding.animationNoLocationData.playAnimation()
     }
 
     private fun navigateToAddReminder() {
+        binding.animationNoLocationData.pauseAnimation()
         findNavController().navigate(R.id.navigateToSaveReminder)
     }
 

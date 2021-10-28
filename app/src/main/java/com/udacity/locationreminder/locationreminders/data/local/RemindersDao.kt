@@ -30,7 +30,7 @@ interface RemindersDao {
      * @param reminder the reminder to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveReminder(reminder: ReminderData)
+    fun saveReminder(reminder: ReminderData): Long
 
     /**
      * Delete all reminders.

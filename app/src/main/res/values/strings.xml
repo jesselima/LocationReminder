@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location Reminders</string>
+    <string name="app_name">Reminders in Location</string>
     <string name="error_happened">Error happened</string>
     <string name="retry">Retry</string>
     <string name="no_data">No reminders data\n\nTry to add some reminder.</string>
@@ -35,9 +35,9 @@
     <string name="content_text">Location Reminder</string>
     <string name="select_title">Please select title</string>
     <string name="select_location">Please select location</string>
-    <string name="action_select_location">Select location</string>
+    <string name="text_button_select_location">Select location</string>
     <string name="action_click_on_the_map">Click on the map</string>
-    <string name="action_change_location">Change location</string>
+    <string name="text_button_change_location">Change location</string>
     <string name="action_set_location">Get this location</string>
     <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location</string>
     <string name="action_selected_location">Selected location</string>
@@ -67,7 +67,7 @@
     <string name="auth_error_define_linking_or_sign_in">You must determine if you want to continue linking or complete the sign in</string>
     <string name="auth_error_session_expired_or_cleared">The session associated with this sign-in request has either expired or was cleared</string>
     <string name="add_new_reminder">New reminder</string>
-    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="title_activity_on_boarding">OnBoarding</string>
 
     <string name="content_description_save_reminder">Save reminder</string>
     <string name="label_copyright">Copyrights</string>
@@ -97,4 +97,11 @@
     <string name="map_local_style_night">Style Night</string>
     <string name="map_local_style_night_highway_highlighted">Night yellow highway</string>
     <string name="map_local_style_standard_highway_highlighted">Day blue highway</string>
+
+    <string name="message_saving_reminder_error">Ooops! Error saving reminder.</string>
+    <string name="message_saving_reminder_success">Reminder saved!</string>
+    <string name="message_input_error_title">Please, check the title.</string>
+    <string name="message_input_error_location">Please, check the location.</string>
+    <string name="message_input_error_description">Please, check the description.</string>
+    <string name="message_input_error_lat_long_missing">Did you selected the location on the map?</string>
 </resources>

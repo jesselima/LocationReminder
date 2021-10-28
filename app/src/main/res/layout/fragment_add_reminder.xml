@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_md"
             android:hint="@string/reminder_title"
+            app:errorEnabled="true"
             app:counterEnabled="true"
             app:counterMaxLength="100"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_md"
             android:hint="@string/reminder_location_name"
+            app:errorEnabled="true"
             app:counterEnabled="true"
             app:counterMaxLength="100"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +103,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/action_select_location"
+            android:text="@string/text_button_select_location"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/animationSelectLocation" />
@@ -119,24 +121,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonSelectLocation" />
 
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animationSelectLocation"
             android:layout_width="@dimen/lottie_default_width"
-            android:layout_height="@dimen/lottie_default_height"
+            android:layout_height="@dimen/lottie_default_width"
             android:layout_marginTop="@dimen/spacing_md"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textFieldReminderDescription"
-            app:lottie_autoPlay="true"
+            app:lottie_autoPlay="false"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/animation_location_select"
             tools:background="@color/colorStateOn"
             tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/saveReminder"
+            android:id="@+id/actionButtonSaveReminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/space_screen_default"
@@ -151,12 +152,10 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:indeterminate="true"
             android:layout_margin="@dimen/spacing_md"
             android:padding="@dimen/spacing_tiny"
-            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

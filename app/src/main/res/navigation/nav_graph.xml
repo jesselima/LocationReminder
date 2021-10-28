@@ -23,7 +23,7 @@
         <action
             android:id="@+id/navigateToCopyrights"
             app:destination="@id/copyrightsListFragment"
-            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/fade_out"/>
@@ -36,7 +36,7 @@
         <action
             android:id="@+id/navigateToReminderList"
             app:destination="@id/reminderListFragment"
-            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/fade_out"/>
@@ -44,24 +44,24 @@
 
     <fragment
         android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.locationreminder.locationreminders.addreminder.SaveReminderFragment"
+        android:name="com.udacity.locationreminder.locationreminders.addreminder.AddReminderFragment"
         android:label="Add Reminder">
         <action
-            android:id="@+id/navigateToSaveReminder"
+            android:id="@+id/navigateToReminderList"
             app:destination="@id/reminderListFragment"
             app:popUpTo="@id/reminderListFragment"
             app:popUpToInclusive="true"
-            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/fade_out_with_interpolator"
+            app:exitAnim="@anim/fade_out"
             app:popExitAnim="@anim/fade_out"/>
         <action
             android:id="@+id/navigateToSelectLocation"
             app:destination="@id/selectLocationFragment"
             app:popUpToInclusive="true"
-            app:enterAnim="@anim/fade_in_with_interpolator"
+            app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/fade_out_with_interpolator"
+            app:exitAnim="@anim/fade_out"
             app:popExitAnim="@anim/fade_out"/>
     </fragment>
 
@@ -72,6 +72,11 @@
         <action
             android:id="@+id/navigateToSaveReminderFragment"
             app:destination="@id/saveReminderFragment" />
+        <argument
+            android:name="lastSelectedLocation"
+            app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
 
 </navigation>

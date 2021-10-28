@@ -26,10 +26,21 @@
                 app:navigationContentDescription="@string/label_go_back_to_reminders"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:menu="@menu/map_options"
-                app:title="@string/action_select_location"
+                app:title="@string/text_button_select_location"
                 app:titleTextColor="@color/solidWhite" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Linear progress indicator -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/loadingMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectLocationAppBarLayout" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/reminderMapFragment"

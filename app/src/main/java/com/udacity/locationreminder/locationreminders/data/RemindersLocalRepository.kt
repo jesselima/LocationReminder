@@ -8,7 +8,7 @@ import com.udacity.locationreminder.locationreminders.data.dto.Result
  */
 interface RemindersLocalRepository {
     suspend fun getReminders(): Result<List<ReminderData>>
-    suspend fun saveReminder(reminder: ReminderData)
+    suspend fun saveReminder(reminder: ReminderData): Long
     suspend fun getReminder(id: String): Result<ReminderData>
     suspend fun deleteAllReminders()
 }

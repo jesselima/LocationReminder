@@ -10,7 +10,7 @@ import androidx.core.app.TaskStackBuilder
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity
-import com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView
+import com.udacity.locationreminder.locationreminders.ReminderItemView
 
 private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
 
@@ -44,7 +44,7 @@ fun sendNotification(context: Context, reminderItemView: ReminderItemView) {
     val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentTitle(reminderItemView.title)
-        .setContentText(reminderItemView.location)
+        .setContentText(reminderItemView.locationName)
         .setContentIntent(notificationPendingIntent)
         .setAutoCancel(true)
         .build()

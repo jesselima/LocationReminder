@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
-import com.udacity.locationreminder.locationreminders.data.dto.ReminderData
 import com.udacity.locationreminder.locationreminders.data.dto.Result
 import kotlinx.coroutines.launch
 

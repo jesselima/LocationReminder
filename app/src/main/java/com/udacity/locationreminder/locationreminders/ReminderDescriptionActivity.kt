@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.ActivityReminderDescriptionBinding
-import com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification

@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="item"
-            type="com.udacity.locationreminder.locationreminders.reminderslist.ReminderItemView" />
+            type="com.udacity.locationreminder.locationreminders.ReminderItemView" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -27,7 +26,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_small"
-                android:text="@{item.title}"
                 android:textColor="@color/solidBlack"
                 android:textSize="@dimen/text_size_normal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{item.location}"
+                android:text="@{item.locationName}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_small"
                 app:layout_constraintBottom_toBottomOf="@+id/description"

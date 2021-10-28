@@ -35,7 +35,6 @@
                 android:id="@+id/reminderssRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +54,8 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationNoLocationData"
-                android:layout_width="@dimen/lottie_default_width"
-                android:layout_height="@dimen/lottie_default_height"
+                android:layout_width="@dimen/lottie_tiny_width"
+                android:layout_height="@dimen/lottie_tiny_height"
                 android:layout_marginTop="@dimen/spacing_xl"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -80,7 +79,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.8"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/actionButtonAddReminder"
