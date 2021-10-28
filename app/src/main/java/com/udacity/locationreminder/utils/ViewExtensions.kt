@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.locationreminder.R
@@ -27,17 +25,14 @@ fun <T> RecyclerView.setup(
     }
 }
 
-fun Fragment.setDisplayHomeAsUpEnabled(shouldDisplayActionBar: Boolean) {
-    if (activity is AppCompatActivity) {
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
-            shouldDisplayActionBar
-        )
-    }
-}
-
 fun View.showWithFadeIn() {
     this.isVisible = true
     this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_with_interpolator))
+}
+
+fun View.hideWithFadeOut() {
+    this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out_with_interpolator))
+    this.visibility = View.GONE
 }
 
 fun View.showWithFadeIn(animDuration: AnimDuration = AnimDuration.TIME_500_MS) {
@@ -52,25 +47,12 @@ fun View.showWithFadeIn(animDuration: AnimDuration = AnimDuration.TIME_500_MS) {
 
 fun setAnimationDuration(animDuration: AnimDuration): Int {
     return when(animDuration) {
-        AnimDuration.TIME_1000_MS -> {
-            R.anim.fade_in_animation_1000ms
-        }
-        AnimDuration.TIME_2000_MS -> {
-            R.anim.fade_in_animation_2000ms
-        }
-        AnimDuration.TIME_3000_MS -> {
-            R.anim.fade_in_animation_3000ms
-        }
-        AnimDuration.TIME_4000_MS -> {
-            R.anim.fade_in_animation_4000ms
-        }
+        AnimDuration.TIME_1000_MS -> R.anim.fade_in_animation_1000ms
+        AnimDuration.TIME_2000_MS -> R.anim.fade_in_animation_2000ms
+        AnimDuration.TIME_3000_MS -> R.anim.fade_in_animation_3000ms
+        AnimDuration.TIME_4000_MS -> R.anim.fade_in_animation_4000ms
         else -> R.anim.fade_in_animation_500ms
     }
-}
-
-fun View.hideWithFadeOut() {
-    this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out_with_interpolator))
-    this.visibility = View.GONE
 }
 
 fun View.toggleVisibility() {

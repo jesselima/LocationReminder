@@ -28,6 +28,7 @@
                 android:layout_marginStart="@dimen/padding_small"
                 android:textColor="@color/solidBlack"
                 android:textSize="@dimen/text_size_normal"
+                android:text="@{item.title}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title" />

@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
+import com.udacity.locationreminder.utils.ToastType
+import com.udacity.locationreminder.utils.setup
+import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.showDialog
 import com.udacity.locationreminder.utils.signOut
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,11 +32,30 @@ class ReminderListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.viewModel = viewModel
         binding.lifecycleOwner = this
         setupRecyclerView()
         setupActionListeners()
+        setupObservers()
     }
 
+    private fun setupObservers() {
+        viewModel.remindersList.observe(viewLifecycleOwner) {
+            binding.noDataAnimation.isVisible = it.isEmpty()
+            binding.noDataTextView.isVisible = it.isEmpty()
+            binding.refreshLayout.isRefreshing = false
+        }
+        viewModel.action.observe(viewLifecycleOwner) { action ->
+            when (action) {
+                RemindersAction.LoadRemindersError -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_loading_reminder_error,
+                        toastType = ToastType.ERROR
+                    )
+                }
+            }
+        }
+    }
     private fun setupActionListeners() {
         binding.actionButtonAddReminder.setOnClickListener {
             findNavController().navigate(ReminderListFragmentDirections.navigateToSaveReminder())
@@ -49,7 +72,7 @@ class ReminderListFragment : Fragment() {
                     true
                 }
                 R.id.copyrights -> {
-                    binding.animationNoLocationData.pauseAnimation()
+                    binding.noDataAnimation.pauseAnimation()
                     findNavController().navigate(
                         ReminderListFragmentDirections.navigateToCopyrights()
                     )
@@ -63,19 +86,13 @@ class ReminderListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.loadReminders()
-        binding.animationNoLocationData.playAnimation()
-    }
-
-    private fun navigateToAddReminder() {
-        binding.animationNoLocationData.pauseAnimation()
-        findNavController().navigate(R.id.navigateToSaveReminder)
+        binding.noDataAnimation.playAnimation()
     }
 
     private fun setupRecyclerView() {
+        // Todo improve this recycler view Setup
         val adapter = RemindersListAdapter {
         }
-        // binding.reminderssRecyclerView.setup(adapter)
+         binding.reminderssRecyclerView.setup(adapter)
     }
-
-
 }

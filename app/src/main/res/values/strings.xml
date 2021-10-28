@@ -104,4 +104,6 @@
     <string name="message_input_error_location">Please, check the location.</string>
     <string name="message_input_error_description">Please, check the description.</string>
     <string name="message_input_error_lat_long_missing">Did you selected the location on the map?</string>
+
+    <string name="message_loading_reminder_error">Ooops! Error loading reminders!</string>
 </resources>

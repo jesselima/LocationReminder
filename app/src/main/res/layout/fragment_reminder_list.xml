@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.udacity.locationreminder.locationreminders.reminderslist.RemindersListViewModel" />
+    </data>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
@@ -35,6 +41,7 @@
                 android:id="@+id/reminderssRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:liveData="@{viewModel.remindersList}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,19 +52,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"
                 android:layout_marginTop="@dimen/spacing_md"
                 android:text="@string/no_data"
                 android:textSize="@dimen/text_size_large"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/animationNoLocationData" />
+                app:layout_constraintTop_toBottomOf="@+id/noDataAnimation" />
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/animationNoLocationData"
+                android:id="@+id/noDataAnimation"
                 android:layout_width="@dimen/lottie_tiny_width"
                 android:layout_height="@dimen/lottie_tiny_height"
                 android:layout_marginTop="@dimen/spacing_xl"
-                android:visibility="visible"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,8 +76,7 @@
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/animation_location_pin"
-                tools:background="@color/colorStateOn"
-                tools:visibility="visible" />
+                tools:background="@color/colorStateOn" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
