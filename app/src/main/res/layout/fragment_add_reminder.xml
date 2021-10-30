@@ -31,72 +31,19 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderTitle"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_md"
-            android:hint="@string/reminder_title"
-            app:errorEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="100"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationSelectLocation"
+            android:layout_width="@dimen/lottie_small_height"
+            android:layout_height="@dimen/lottie_small_height"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveReminderAppBarLayout">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:maxLength="100"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderLocationName"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_md"
-            android:hint="@string/reminder_location_name"
-            app:errorEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="100"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderTitle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderLocationName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="2"
-                android:maxLength="100"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderDescription"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:hint="@string/reminder_desc"
-            app:counterEnabled="true"
-            app:counterMaxLength="300"
-            app:expandedHintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderLocationName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="3"
-                android:maxLength="200"
-                android:maxLines="5" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/saveReminderAppBarLayout"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/animation_location_select"
+            tools:background="@color/colorStateOn"
+            tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSelectLocation"
@@ -113,28 +60,89 @@
             style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_md"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
             android:gravity="center"
+            tools:text="Lat: 37.41947 - Long: -122.08748"
             android:textColor="@color/textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonSelectLocation" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationSelectLocation"
-            android:layout_width="@dimen/lottie_default_width"
-            android:layout_height="@dimen/lottie_default_width"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldReminderLocationName"
+            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_md"
-            android:visibility="visible"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:hint="@string/reminder_location_name"
+            app:counterEnabled="true"
+            app:counterMaxLength="100"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderDescription"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/animation_location_select"
-            tools:background="@color/colorStateOn"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/textSelectedLocation">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reminderLocationName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="2"
+                android:maxLength="100" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldReminderTitle"
+            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:hint="@string/reminder_title"
+            app:counterEnabled="true"
+            app:counterMaxLength="100"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderLocationName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reminderTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:maxLength="100" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldReminderDescription"
+            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:hint="@string/reminder_desc"
+            app:counterEnabled="true"
+            app:counterMaxLength="300"
+            app:expandedHintEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reminderDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="3"
+                android:maxLength="200"
+                android:maxLines="5" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/actionButtonSaveReminder"

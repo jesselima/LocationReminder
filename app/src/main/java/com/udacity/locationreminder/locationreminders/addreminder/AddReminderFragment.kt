@@ -39,22 +39,28 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.buttonSelectLocation.setOnClickListener {
-            val action = AddReminderFragmentDirections.navigateToSelectLocation(_currentReminderData)
-            findNavController().navigate(action)
+        with(binding) {
+            buttonSelectLocation.setOnClickListener {
+                _currentReminderData?.locationName =
+                    binding.textFieldReminderLocationName.editText?.text.toString()
+                findNavController().navigate(
+                    AddReminderFragmentDirections.navigateToSelectLocation(_currentReminderData)
+                )
+            }
+
+            saveReminderToolbar.setNavigationOnClickListener {
+                findNavController().navigate(AddReminderFragmentDirections.navigateToReminderList())
+            }
+
+            actionButtonSaveReminder.setOnClickListener {
+                sharedViewModel.saveReminder(
+                    title = binding.textFieldReminderTitle.editText?.text.toString(),
+                    name = binding.textFieldReminderLocationName.editText?.text.toString(),
+                    description = binding.textFieldReminderDescription.editText?.text.toString(),
+                )
+            }
         }
 
-        binding.saveReminderToolbar.setNavigationOnClickListener {
-            findNavController().navigate(AddReminderFragmentDirections.navigateToReminderList())
-        }
-
-        binding.actionButtonSaveReminder.setOnClickListener {
-            sharedViewModel.saveReminder(
-                title = binding.textFieldReminderTitle.editText?.text.toString(),
-                name = binding.textFieldReminderLocationName.editText?.text.toString(),
-                description = binding.textFieldReminderDescription.editText?.text.toString(),
-            )
-        }
 
         // TODO - Move the input validation logic to a UseCase
         //  The fragment should only call ViewModel methods, which will use cases to validate values
@@ -76,9 +82,11 @@ class AddReminderFragment : Fragment() {
 
     private fun setupObservers() {
         sharedViewModel.selectedReminder.observe(viewLifecycleOwner) { reminder ->
+            // Todo improve this state handling
             if (reminder != null) {
                 _currentReminderData = ReminderItemView(
                     latLng =  reminder.latLng,
+                    locationName = reminder.locationName
                 )
                 binding.textSelectedLocation.text = String.format(
                     Locale.getDefault(),
@@ -87,7 +95,9 @@ class AddReminderFragment : Fragment() {
                     reminder.latLng?.longitude
                 )
                 binding.buttonSelectLocation.text = getString(R.string.text_button_change_location)
-                reminder.locationName?.let { binding.reminderLocationName.setText(reminder.locationName) }
+                reminder.locationName?.let {
+                    binding.reminderLocationName.setText(reminder.locationName)
+                } ?: binding.reminderLocationName.setText("")
             } else {
                 binding.buttonSelectLocation.text = getString(R.string.text_button_select_location)
                 binding.textSelectedLocation.text = ""
@@ -137,17 +147,4 @@ class AddReminderFragment : Fragment() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        // TODO - Improve lottie performance
-        //  binding.animationSelectLocation.playAnimation()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // TODO - improve lottie performance
-        //  binding.animationSelectLocation.pauseAnimation()
-    }
-
 }

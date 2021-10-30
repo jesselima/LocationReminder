@@ -28,7 +28,7 @@ class SharedReminderViewModel(
     }
 
     fun setSelectedReminder(reminder: ReminderItemView?) {
-        clearCurrentReminder()
+        _selectedReminder.value = null
         _selectedReminder.value = reminder
     }
 
@@ -80,10 +80,6 @@ class SharedReminderViewModel(
             isFormValid = false
         }
         return isFormValid
-    }
-
-    private fun clearCurrentReminder() {
-        _selectedReminder.value = null
     }
 }
 
