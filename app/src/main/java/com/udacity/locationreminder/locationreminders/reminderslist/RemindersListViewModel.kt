@@ -55,7 +55,7 @@ class RemindersListViewModel(
                         )
                     })
                     if (dataList.isEmpty()) {
-                        _action.value = RemindersAction.LoadRemindersError
+                        _action.value = RemindersAction.NoRemindersFound
                         _state.value = state.value?.copy(isLoading = false)
                     } else {
                         // TODO improve me

@@ -52,6 +52,14 @@ class ReminderListFragment : Fragment() {
                         titleResId = R.string.message_loading_reminder_error,
                         toastType = ToastType.ERROR
                     )
+                    binding.noDataTextView.text = getText(R.string.message_no_reminders_found)
+                    binding.noDataTextView.isVisible = true
+                }
+                RemindersAction.NoRemindersFound -> {
+                    binding.noDataTextView.isVisible = true
+                }
+                else -> {
+                    binding.noDataTextView.isVisible = false
                 }
             }
         }

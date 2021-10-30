@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Reminders in Location</string>
     <string name="error_happened">Error happened</string>
     <string name="retry">Retry</string>
@@ -19,7 +19,7 @@
     <string name="hybrid_map">Hybrid Map</string>
     <string name="satellite_map">Satellite Map</string>
     <string name="terrain_map">Terrain Map</string>
-    <string name="lat_long_snippet">Lat: %1$.5f\nLong: %2$.5f</string>
+    <string name="lat_long_snippet">Lat: %1$.5f - Long: %2$.5f</string>
     <string name="poi_lat_long_snippet">%1s - %2s</string>
     <string name="poi_dropped_pin">Set a reminder for</string>
     <string name="dropped_pin">Set a reminder for this place</string>
@@ -32,7 +32,6 @@
     <string name="geofence_entered">Geofence Entered</string>
     <string name="channel_name">GeofenceStatus</string>
     <string name="notification_channel_description">Geofence status notification</string>
-    <string name="content_text">Location Reminder</string>
     <string name="select_title">Please select title</string>
     <string name="select_location">Please select location</string>
     <string name="text_button_select_location">Select location</string>
@@ -106,4 +105,41 @@
     <string name="message_input_error_lat_long_missing">Did you selected the location on the map?</string>
 
     <string name="message_loading_reminder_error">Ooops! Error loading reminders!</string>
+    <string name="message_no_reminders_found">Ooops! No reminders have been found.</string>
+
+    <!-- TODO review all these strings  -->
+    <string name="permission_rationale">Location permission needed for core functionality of the game.</string>
+
+    <string name="location_setting_off">Please turn on device location in Settings and try again.</string>
+
+    <!--    Geofence Status Strings-->
+    <string name="geofences_added">Clue Geofence added.</string>
+    <string name="geofences_removed">Geofences removed.</string>
+    <string name="geofence_over">You have found the treasure! Congratulations!</string>
+
+    <!-- Geofence Hints -->
+    <string name="not_started_hint"/>
+    <string name="golden_gate_bridge_hint">Go to a bridge with a name that does not match the color that it is!</string>
+    <string name="ferry_building_hint">Go to a market with an amazing assortment of delicious foods. It is a San Francisco classic!</string>
+    <string name="pier_39_hint">Go to a pier popular for tourist attractions, carnival games, fresh fish, and delicious sourdough bread!</string>
+    <string name="union_square_hint">Go to a square named after Civil War rallies held there, but now known for its amazing shopping!</string>
+    <string name="lombard_street_hint">Go to the most crooked street in the City</string>
+
+    <!-- Geofence Locations -->
+    <string name="golden_gate_bridge_location">at the Golden Gate bridge</string>
+    <string name="ferry_building_location">in the Ferry Building</string>
+    <string name="pier_39_location">at Pier 39</string>
+    <string name="union_square_location">in Union Square</string>
+    <string name="lombard_street_location">at Lombard Street</string>
+
+    <string name="unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
+
+    <string name="geofences_not_removed">Geofences not removed.</string>
+    <string name="insufficient_permissions">Insufficient permissions.</string>
+    <string name="geofence_error">There was an error in finding your treasure</string>
+
+    <!-- Content Description Strings -->
+    <string name="android_map_description">An Android robot with a map</string>
+    <string name="content_text">You found a clue <xliff:g id="geofence_location">%1$s</xliff:g>.</string>
+
 </resources>
