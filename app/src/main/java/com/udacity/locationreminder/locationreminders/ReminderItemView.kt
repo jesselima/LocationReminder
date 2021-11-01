@@ -20,7 +20,7 @@ data class ReminderItemView(
     var circularRadius: Float = 50f,
     var expiration: Long = TimeUnit.DAYS.toMillis(1),
     var transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
-    var id: String = UUID.randomUUID().toString()
+    var id: Long = System.currentTimeMillis()
 ) : Serializable
 
 fun ReminderItemView.mapToDataModel() : ReminderData {

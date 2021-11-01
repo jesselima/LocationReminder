@@ -4,9 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.maps.model.LatLng
 import com.udacity.locationreminder.locationreminders.ReminderItemView
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -22,6 +20,7 @@ import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "reminders")
 data class ReminderData(
+    @PrimaryKey @ColumnInfo(name = "id") val id: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "location") val locationName: String?,
@@ -32,11 +31,11 @@ data class ReminderData(
     @ColumnInfo(name = "circularRadius") val circularRadius: Float?,
     @ColumnInfo(name = "expiration") val expiration: Long?,
     @ColumnInfo(name = "transitionType") val transitionType: Int?,
-    @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
 )
 
 fun ReminderData.mapToPresentationModel() : ReminderItemView {
     return ReminderItemView(
+        id = id,
         title = title,
         description = description,
         locationName = locationName,

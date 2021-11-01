@@ -145,13 +145,13 @@ class AddReminderFragment : Fragment() {
                     binding.textFieldReminderLocationName.error = getString(R.string.message_input_error_location)
                 is AddReminderAction.InputErrorFieldDescription ->
                     binding.textFieldReminderDescription.error = getString(R.string.message_input_error_description)
-                AddReminderAction.InputErrorMissingLatLong ->
+                is AddReminderAction.InputErrorMissingLatLong ->
                     context?.showCustomToast(
                         titleResId = R.string.message_input_error_lat_long_missing,
                         toastType = ToastType.INFO,
                         durationToast = Toast.LENGTH_LONG
                     )
-                AddReminderAction.ClearErrors -> {
+                is AddReminderAction.ClearErrors -> {
                     binding.textFieldReminderTitle.error = null
                     binding.textFieldReminderLocationName.error = null
                     binding.textFieldReminderDescription.error = null
