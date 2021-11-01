@@ -5,7 +5,8 @@ import com.udacity.locationreminder.locationreminders.data.RemindersLocalReposit
 import com.udacity.locationreminder.locationreminders.data.local.LocalDatabase
 import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
 import com.udacity.locationreminder.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.locationreminder.locationreminders.addreminder.SharedReminderViewModel
+import com.udacity.locationreminder.locationreminders.addreminder.AddReminderViewModel
+import com.udacity.locationreminder.utils.setupNotificationChannel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -18,7 +19,7 @@ class LocationReminderApp : Application() {
 
         val presentationModule = module {
             viewModel {
-                SharedReminderViewModel(
+                AddReminderViewModel(
                     remindersLocalRepository = get(),
                 )
             }
@@ -40,5 +41,7 @@ class LocationReminderApp : Application() {
             androidContext(this@LocationReminderApp)
             modules(listOf(presentationModule, dataModule))
         }
+
+        setupNotificationChannel()
     }
 }

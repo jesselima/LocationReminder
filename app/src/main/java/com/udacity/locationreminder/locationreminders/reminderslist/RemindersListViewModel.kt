@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
 import com.udacity.locationreminder.locationreminders.data.dto.ReminderData
@@ -46,10 +45,8 @@ class RemindersListViewModel(
                             description = reminder.description,
                             isPoi = reminder.title == null,
                             locationName = reminder.locationName,
-                            latLng = LatLng(
-                                reminder.latitude ?: 0.0,
-                                reminder.longitude ?: 0.0
-                            ),
+                            latitude = reminder.latitude ?: 0.0,
+                            longitude = reminder.longitude ?: 0.0,
                             id = reminder.id,
                             poiId = reminder.poiId
                         )

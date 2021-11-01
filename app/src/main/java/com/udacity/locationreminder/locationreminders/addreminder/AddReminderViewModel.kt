@@ -10,7 +10,7 @@ import com.udacity.locationreminder.locationreminders.mapToDataModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SharedReminderViewModel(
+class AddReminderViewModel(
     private val remindersLocalRepository: RemindersLocalRepository
 ): ViewModel() {
 
@@ -28,22 +28,15 @@ class SharedReminderViewModel(
     }
 
     fun setSelectedReminder(reminder: ReminderItemView?) {
-        _selectedReminder.value = null
         _selectedReminder.value = reminder
     }
 
-    fun saveReminder(title: String?, name: String?, description: String?) {
-        _selectedReminder.value = selectedReminder.value?.copy(
-            title = title, locationName = name, description = description
-        )
-
-        if (isInputsValid(title, name, description).not()) return
-
-        //  TODO Add location to GeoFences.
-
+    fun saveReminder() {
+        if (isInputsValid().not()) return
         _state.value = state.value?.copy(isLoading = true)
 
         viewModelScope.launch {
+            // Todo Remove this delay
             delay(1500)
             selectedReminder.value?.let {
                 runCatching {
@@ -51,6 +44,8 @@ class SharedReminderViewModel(
                 }.onSuccess {
                     _state.value = state.value?.copy(isLoading = false)
                     _action.value = AddReminderAction.AddReminderSuccess
+                    _selectedReminder.value = null
+                    _action.value = null
                 }.onFailure {
                     _state.value = state.value?.copy(isLoading = false)
                     _action.value = AddReminderAction.AddReminderError
@@ -59,22 +54,22 @@ class SharedReminderViewModel(
         }
     }
 
-    private fun isInputsValid(title: String?, name: String?, description: String?): Boolean {
+    private fun isInputsValid(): Boolean {
         var isFormValid = true
-        if(title.isNullOrEmpty()) {
+        if(_selectedReminder.value?.title.isNullOrEmpty()) {
             _action.value = AddReminderAction.InputErrorFieldTitle
             isFormValid = false
         }
-        if(name.isNullOrEmpty()) {
+        if(_selectedReminder.value?.locationName.isNullOrEmpty()) {
             _action.value = AddReminderAction.InputErrorFieldLocation
             isFormValid = false
         }
-        if(description.isNullOrEmpty()) {
+        if(_selectedReminder.value?.description.isNullOrEmpty()) {
             _action.value = AddReminderAction.InputErrorFieldDescription
             isFormValid = false
         }
 
-        if(selectedReminder.value?.latLng?.latitude == null || selectedReminder.value?.latLng?.longitude == null) {
+        if(selectedReminder.value?.latitude == null || selectedReminder.value?.longitude == null) {
             _action.value = AddReminderAction.InputErrorMissingLatLong
             _action.value = null
             isFormValid = false

@@ -3,9 +3,11 @@ package com.udacity.locationreminder.locationreminders.data.dto
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Immutable model class for a Reminder. In order to compile with Room
@@ -20,13 +22,16 @@ import java.util.*
 
 @Entity(tableName = "reminders")
 data class ReminderData(
-    @ColumnInfo(name = "title") var title: String?,
-    @ColumnInfo(name = "description") var description: String?,
-    @ColumnInfo(name = "location") var locationName: String?,
-    @ColumnInfo(name = "latitude") var latitude: Double?,
-    @ColumnInfo(name = "longitude") var longitude: Double?,
-    @ColumnInfo(name = "is_poi") var isPoi: Boolean?,
-    @ColumnInfo(name = "poi_id") var poiId: String?,
+    @ColumnInfo(name = "title") val title: String?,
+    @ColumnInfo(name = "description") val description: String?,
+    @ColumnInfo(name = "location") val locationName: String?,
+    @ColumnInfo(name = "latitude") val latitude: Double?,
+    @ColumnInfo(name = "longitude") val longitude: Double?,
+    @ColumnInfo(name = "is_poi") val isPoi: Boolean?,
+    @ColumnInfo(name = "poi_id") val poiId: String?,
+    @ColumnInfo(name = "circularRadius") val circularRadius: Float?,
+    @ColumnInfo(name = "expiration") val expiration: Long?,
+    @ColumnInfo(name = "transitionType") val transitionType: Int?,
     @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
 )
 
@@ -35,8 +40,12 @@ fun ReminderData.mapToPresentationModel() : ReminderItemView {
         title = title,
         description = description,
         locationName = locationName,
-        latLng = LatLng(latitude ?: 0.0, longitude ?: 0.0),
+        latitude = latitude ?: 0.0,
+        longitude = longitude ?: 0.0,
         isPoi = isPoi,
-        poiId = poiId
+        poiId = poiId,
+        circularRadius = circularRadius ?: 50f,
+        expiration = TimeUnit.DAYS.toMillis(1),
+        transitionType = Geofence.GEOFENCE_TRANSITION_ENTER
     )
 }

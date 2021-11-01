@@ -63,6 +63,11 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/fade_out"
             app:popExitAnim="@anim/fade_out"/>
+        <argument
+            android:name="lastSelectedLocation"
+            app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
 
     <fragment

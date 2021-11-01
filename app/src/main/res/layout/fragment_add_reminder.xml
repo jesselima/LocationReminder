@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addReminderLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/solidWhite">
@@ -91,6 +92,7 @@
                 android:id="@+id/reminderLocationName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
                 android:lines="2"
                 android:maxLength="100" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -115,6 +117,7 @@
                 android:id="@+id/reminderTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
                 android:lines="1"
                 android:maxLength="100" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -137,6 +140,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/reminderDescription"
+                android:inputType="textCapSentences"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="3"
