@@ -31,11 +31,13 @@ class OnBoardingStepFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentOnBoardingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         onBoardingViewModel.onBoardingStepLiveData.observe(viewLifecycleOwner, Observer {
-
             binding.onBoardingStepImage.apply {
                 showAnimated(
                     translationType = TranslationType.TRANSLATION_X,
@@ -61,7 +63,6 @@ class OnBoardingStepFragment : Fragment() {
                 text = getString(it.description)
             }
         })
-        return binding.root
     }
 
     companion object {
