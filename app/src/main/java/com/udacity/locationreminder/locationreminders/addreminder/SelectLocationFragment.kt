@@ -3,14 +3,13 @@ package com.udacity.locationreminder.locationreminders.addreminder
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -32,11 +31,10 @@ import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentSelectLocationBinding
 import com.udacity.locationreminder.locationreminders.ReminderItemView
-import com.udacity.locationreminder.utils.ToastType
-import com.udacity.locationreminder.utils.showCustomToast
+import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
+import com.udacity.locationreminder.utils.showDialog
 import java.util.Locale
 
-private const val REQUEST_LOCATION_PERMISSION = 1
 private const val MAP_START_ZOOM = 15.0F
 private val DEFAULT_LOCATION = LatLng(-23.5822877,-46.6530567)
 
@@ -57,6 +55,38 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     private val args: SelectLocationFragmentArgs by navArgs()
 
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                // Precise location access granted.
+                locationPermissionGranted = true
+                onPermissionAccepted()
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                // Precise location access granted.
+                locationPermissionGranted = true
+                onPermissionAccepted()
+            }
+            else -> {
+                // No location access granted.
+                showDialog(
+                    context = requireContext(),
+                    title = getString(R.string.message_request_background_location_title),
+                    message = getString(R.string.message_request_background_location_description),
+                    positiveButtonText = getString(R.string.agreed_button_label),
+                    positiveButtonAction = {
+                        requestLocationPermissions()
+                    },
+                    negativeButtonAction = {
+                        findNavController().navigate(SelectLocationFragmentDirections.navigateToSaveReminderFragment())
+                    }
+                )
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -75,6 +105,19 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             longitude = args.lastSelectedLocation?.longitude,
             locationName = args.lastSelectedLocation?.locationName
         )
+    }
+
+    private fun requestLocationPermissions() {
+        locationPermissionRequest.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun onPermissionAccepted() {
+        locationPermissionGranted = true
+        getDeviceLocation()
+        setupMapUI()
     }
 
     private fun setupAppBarAndMenuListeners() {
@@ -122,21 +165,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 }
                 else -> false
             }
-        }
-    }
-
-    private fun requestLocationPermissionsInitMyLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-        } else {
-            locationPermissionGranted = true
-            getDeviceLocation()
         }
     }
 
@@ -198,16 +226,12 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         binding.loadingMap.isGone = true
         map = googleMap
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestLocationPermissionsInitMyLocation()
+        if (isPermissionNotGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            isPermissionNotGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            requestLocationPermissions()
         } else {
             locationPermissionGranted = true
             getDeviceLocation()
-            map?.isMyLocationEnabled = true
             setupMapUI()
         }
     }
@@ -311,22 +335,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             Log.d(currentClassName, "Map Style is valid: $isMapStyleValid")
         }.onFailure {
             Log.d(currentClassName, "Map Style could not be loaded")
-        }
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if(requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.isEmpty() && (grantResults.first() != PackageManager.PERMISSION_GRANTED)) {
-                context?.showCustomToast(
-                    titleResId = R.string.permission_denied_explanation,
-                    toastType = ToastType.WARNING
-                )
-            } else {
-                locationPermissionGranted = true
-                getDeviceLocation()
-                setupMapUI()
-            }
         }
     }
 }

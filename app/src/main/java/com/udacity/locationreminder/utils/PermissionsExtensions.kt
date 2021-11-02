@@ -15,3 +15,11 @@ fun Context.isPermissionNotGranted(permission: String): Boolean {
 fun Activity.requestPermissions(permissions: Array<String>, requestCode: Int) {
     ActivityCompat.requestPermissions(this, permissions, requestCode)
 }
+
+fun isResultDenied(grantedResult: Int) : Boolean {
+    return grantedResult == PackageManager.PERMISSION_DENIED
+}
+
+fun isResultGranted(grantedResult: Int) : Boolean {
+    return grantedResult == PackageManager.PERMISSION_GRANTED
+}
