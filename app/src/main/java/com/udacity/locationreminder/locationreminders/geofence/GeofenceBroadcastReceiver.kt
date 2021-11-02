@@ -3,21 +3,65 @@ package com.udacity.locationreminder.locationreminders.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
-/**
- * Triggered by the Geofence.  Since we can have many Geofences at once, we pull the request
- * ID from the first Geofence, and locate it within the cached data in our Room DB
- *
- * Or users can add the reminders and then close the app, So our app has to run in the background
- * and handle the geofencing in the background.
- * To do that you can use https://developer.android.com/reference/android/support/v4/app/JobIntentService to do that.
- *
- */
+import androidx.core.os.bundleOf
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingEvent
+import com.udacity.locationreminder.R
+import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity
+import com.udacity.locationreminder.utils.ReminderConstants
+import com.udacity.locationreminder.utils.ToastType
+import com.udacity.locationreminder.utils.showCustomToast
+import com.udacity.locationreminder.utils.showOrUpdateNotification
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == ReminderDescriptionActivity.ACTION_GEOFENCE_EVENT) {
 
-//TODO: implement the onReceive method to receive the geofencing events at the background
+            val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
+            if (geofencingEvent.hasError()) {
+                val errorMessage = handleGeofenceError(context, geofencingEvent.errorCode)
+                context.showCustomToast(
+                    titleText = String.format(
+                        context.resources.getString(R.string.geofence_error, errorMessage)
+                    ),
+                    toastType = ToastType.WARNING
+                )
+                return
+            }
+
+            val transition = when(geofencingEvent.geofenceTransition) {
+                Geofence.GEOFENCE_TRANSITION_ENTER ->
+                    context.resources.getString(R.string.notification_text_transition_type_enter)
+                Geofence.GEOFENCE_TRANSITION_EXIT ->
+                    context.resources.getString(R.string.notification_text_transition_type_exit)
+                else -> String()
+            }
+
+            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
+                geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                with(geofencingEvent.triggeringGeofences) {
+                    if (isNotEmpty()) {
+                        forEach {
+                            context.showOrUpdateNotification(
+                                notificationId = it.requestId.toInt(),
+                                title =  context.resources.getString(R.string.notification_title),
+                                text = String.format(
+                                    context.resources.getString(R.string.notification_description),
+                                    transition
+                                ),
+                                channelId = ReminderConstants.channelId,
+                                data = bundleOf(
+                                    ReminderConstants.argsKeyReminderId to it.requestId.toInt()
+                                )
+                            )
+                        }
+                    } else {
+                        return
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,6 +16,9 @@ class ReminderDescriptionActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"
 
+        internal const val ACTION_GEOFENCE_EVENT =
+            "ReminderDescriptionActivity.geofences.action.ACTION_GEOFENCE_EVENT"
+
         //        receive the reminder object after the user clicks on the notification
         fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
             val intent = Intent(context, ReminderDescriptionActivity::class.java)
