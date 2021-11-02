@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="item"
+            type="com.udacity.locationreminder.locationreminders.ReminderItemView" />
+    </data>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/reminderCardView"
         android:layout_width="match_parent"
@@ -37,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{item.description}"
                 android:layout_marginEnd="@dimen/spacing_sm"
+                android:maxLines="1"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintEnd_toStartOf="@+id/imageDeleteReminder"
                 app:layout_constraintStart_toStartOf="@id/title"

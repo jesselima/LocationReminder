@@ -79,6 +79,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                     positiveButtonAction = {
                         requestLocationPermissions()
                     },
+                    negativeButtonText = resources.getString(R.string.label_cancel),
                     negativeButtonAction = {
                         findNavController().navigate(SelectLocationFragmentDirections.navigateToSaveReminderFragment())
                     }
