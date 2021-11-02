@@ -16,21 +16,37 @@ fun Fragment.showDialog(
     message: String = resources.getString(R.string.something_went_wrong),
     positiveButtonText: String = resources.getString(R.string.label_ok_got_it),
     positiveButtonAction: (() -> Unit?)? = null,
+    negativeButtonText: String? = null,
+    negativeButtonAction: (() -> Unit?)? = null,
+    neutralButtonText: String? = null,
+    neutralButtonAction: (() -> Unit?)? = null,
 ) {
     context?.let {
-        MaterialAlertDialogBuilder(it)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(positiveButtonText) { _, _ ->
+        val dialog = with(MaterialAlertDialogBuilder(it)) {
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton(positiveButtonText) { _, _ ->
                 positiveButtonAction?.invoke()
             }
-            .show()
+            negativeButtonText?.let { negativeText ->
+                setNegativeButton(negativeText) { _, _ ->
+                    negativeButtonAction?.invoke()
+                }
+            }
+            neutralButtonText?.let { neutralText ->
+                setNeutralButton(neutralText) { _, _ ->
+                    neutralButtonAction?.invoke()
+                }
+            }
+        }
+        dialog?.show()
     }
 }
 
 fun Context.showCustomToast(
     toastType: ToastType = ToastType.SUCCESS,
     @StringRes titleResId: Int = R.string.label_success,
+    titleText: String? = null,
     durationToast: Int = Toast.LENGTH_SHORT,
     offSetY: Int = 200,
     offSetX: Int = 0,
@@ -39,7 +55,7 @@ fun Context.showCustomToast(
 
     val binding = LayoutCustomToastBinding.inflate(LayoutInflater.from(this))
 
-    binding.customText.text = getString(titleResId)
+    binding.customText.text = titleText ?: getString(titleResId)
 
     val imageResId = when (toastType) {
         ToastType.ERROR -> R.drawable.ic_error
