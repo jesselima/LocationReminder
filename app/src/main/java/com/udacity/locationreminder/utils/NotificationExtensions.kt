@@ -26,16 +26,16 @@ private const val REQUEST_CODE = 0
 fun Context.setupNotificationChannel(
     channels: List<NotificationChannelConfig> = listOf(
         NotificationChannelConfig(
-            id = "MAIN",
-            name = "General",
+            id = ReminderConstants.channelIdMain,
+            name = getString(R.string.notification_channel_main_name),
+            description = getString(R.string.notification_channel_main_description),
             importance = NotificationManager.IMPORTANCE_DEFAULT,
-            description = "General notifications"
         ),
         NotificationChannelConfig(
-            id = "REMINDER_AT_LOCATION",
-            name = "Reminder alerts",
+            id = ReminderConstants.channelIdReminders,
+            name = getString(R.string.notification_channel_reminders_name),
+            description = getString(R.string.notification_channel_reminders_description),
             importance = NotificationManager.IMPORTANCE_HIGH,
-            description = "Default channel for you reminder alerts"
         )
     ),
 ) {
@@ -59,7 +59,7 @@ fun Context.showOrUpdateNotification(
     notificationId: Int,
     title: String,
     text: String,
-    channelId: String = "MAIN",
+    channelId: String = ReminderConstants.channelIdMain,
     shouldLaunchIntent: Boolean = true,
     shouldIntentNewTask: Boolean = false,
     shouldTrackProgress: Boolean = false,
