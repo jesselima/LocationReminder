@@ -1,37 +1,68 @@
 package com.udacity.locationreminder.locationreminders.addreminder
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationServices
+import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentAddReminderBinding
+import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity.Companion.ACTION_GEOFENCE_EVENT
 import com.udacity.locationreminder.locationreminders.ReminderItemView
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
+import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
+import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.showCustomToast
+import com.udacity.locationreminder.utils.showDialog
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.Locale
+import java.util.*
+import java.util.concurrent.TimeUnit
+
+private const val PENDING_INTENT_REQUEST_CODE = 0
 
 class AddReminderFragment : Fragment() {
 
-    private val sharedViewModel: SharedReminderViewModel by sharedViewModel()
     private lateinit var binding: FragmentAddReminderBinding
+    private val addViewModel: AddReminderViewModel by sharedViewModel()
+    private val geofenceManager: GeofenceManager by inject()
 
-    private var _currentReminderData: ReminderItemView? = null
+    private var _currentReminderData: ReminderItemView = ReminderItemView()
+    private val args: AddReminderFragmentArgs by navArgs()
+
+    private lateinit var geofenceClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
+            action = ACTION_GEOFENCE_EVENT
+        }
+        PendingIntent.getBroadcast(requireContext(), PENDING_INTENT_REQUEST_CODE, intent,
+            when {
+                isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                else -> PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +106,7 @@ class AddReminderFragment : Fragment() {
                 _currentReminderData.transitionType = Geofence.GEOFENCE_TRANSITION_ENTER
 
                 addViewModel.setSelectedReminder(_currentReminderData)
-                addViewModel.saveReminder()
+                saveReminderAddGeofence(_currentReminderData)
             }
         }
 
@@ -158,5 +189,58 @@ class AddReminderFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun saveReminderAddGeofence(reminder: ReminderItemView) {
+        if (isBackgroundPermissionGranted()) {
+            addViewModel.saveReminder()
+            geofenceManager.addGeofence(
+                geofenceClient = geofenceClient,
+                geofencePendingIntent = geofencePendingIntent,
+                id = reminder.id.toString(),
+                latitude = reminder.latitude,
+                longitude = reminder.longitude,
+                onAddGeofenceSuccess = { onAddGeofenceSuccess() },
+                onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
+            )
+        }
+    }
+
+    private fun isBackgroundPermissionGranted(): Boolean {
+        return if (isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+            showDialog(
+                context = requireContext(),
+                title = getString(R.string.message_request_background_location_title),
+                message = getString(R.string.message_request_background_location_description),
+                positiveButtonText = getString(R.string.settings),
+                positiveButtonAction = {
+                    startActivity(Intent().apply {
+                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        data = Uri.fromParts(
+                            "package",
+                            BuildConfig.APPLICATION_ID, null
+                        )
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    })
+                },
+            )
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun onAddGeofenceSuccess() {
+        context?.showCustomToast(titleResId = R.string.geofence_added)
+    }
+
+    private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {
+        context?.showCustomToast(
+            titleText = String.format(
+                getString(R.string.geofence_error),
+                getString(reasonStringRes)
+            ),
+            toastType = ToastType.WARNING
+        )
     }
 }

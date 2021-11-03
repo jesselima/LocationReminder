@@ -6,6 +6,8 @@ import com.udacity.locationreminder.locationreminders.data.local.LocalDatabase
 import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
 import com.udacity.locationreminder.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.locationreminder.locationreminders.addreminder.AddReminderViewModel
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceManagerImpl
 import com.udacity.locationreminder.utils.setupNotificationChannel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -37,9 +39,13 @@ class LocationReminderApp : Application() {
             }
         }
 
+        val geoFenceModule = module {
+            factory<GeofenceManager> { GeofenceManagerImpl(context = get()) }
+        }
+
         startKoin {
             androidContext(this@LocationReminderApp)
-            modules(listOf(presentationModule, dataModule))
+            modules(listOf(presentationModule, dataModule, geoFenceModule))
         }
 
         setupNotificationChannel()
