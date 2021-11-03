@@ -41,7 +41,7 @@
     <string name="action_click_on_the_map">Click on the map</string>
     <string name="text_button_change_location">Change location</string>
     <string name="action_set_location">Get this location</string>
-    <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location</string>
+    <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location.</string>
     <string name="action_selected_location">Selected location</string>
     <string name="geofences_not_added">Problem in adding geofences.</string>
     <string name="welcome">Welcome</string>
@@ -145,8 +145,8 @@
     <string name="android_map_description">An Android robot with a map</string>
     <string name="content_text">You found a clue <xliff:g id="geofence_location">%1$s</xliff:g>.</string>
     <string name="notification_default_button">See reminder</string>
-    <string name="message_request_background_location_title">Background location needed</string>
-    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.</string>
+    <string name="message_request_background_location_title">Background location permission needed</string>
+    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts. </string>
     <string name="agreed_button_label">I agreed</string>
     <string name="message_request_background_location_deny_button_label">DENY</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>

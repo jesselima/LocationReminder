@@ -12,7 +12,10 @@
 
     <dimen name="space_screen_default">16dp</dimen>
     <dimen name="margin_button_default">24dp</dimen>
+    <dimen name="margin_button_medium">32dp</dimen>
+    <dimen name="margin_button_large">48dp</dimen>
     <dimen name="button_height_default">60dp</dimen>
+
     <dimen name="space_medium">24dp</dimen>
     <dimen name="default_icon_size">40dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>

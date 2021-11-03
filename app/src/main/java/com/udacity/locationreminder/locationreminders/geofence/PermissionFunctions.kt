@@ -5,10 +5,8 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 
 fun Fragment.isPermissionNotGranted(permission: String): Boolean {
-    return  PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(
-        requireContext(),
-        permission
-    )
+    return  PackageManager.PERMISSION_GRANTED !=
+                ActivityCompat.checkSelfPermission(requireContext(), permission)
 }
 
 fun isResultDenied(grantedResult: Int) : Boolean {

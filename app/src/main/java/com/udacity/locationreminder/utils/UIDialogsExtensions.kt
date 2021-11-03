@@ -22,12 +22,9 @@ fun Fragment.showDialog(
     neutralButtonAction: (() -> Unit?)? = null,
 ) {
     context?.let {
-        val dialog = with(MaterialAlertDialogBuilder(it)) {
+        with(MaterialAlertDialogBuilder(it)) {
             setTitle(title)
             setMessage(message)
-            setPositiveButton(positiveButtonText) { _, _ ->
-                positiveButtonAction?.invoke()
-            }
             negativeButtonText?.let { negativeText ->
                 setNegativeButton(negativeText) { _, _ ->
                     negativeButtonAction?.invoke()
@@ -38,8 +35,11 @@ fun Fragment.showDialog(
                     neutralButtonAction?.invoke()
                 }
             }
+
+            setPositiveButton(positiveButtonText) { _, _ ->
+                positiveButtonAction?.invoke()
+            }.show()
         }
-        dialog?.show()
     }
 }
 

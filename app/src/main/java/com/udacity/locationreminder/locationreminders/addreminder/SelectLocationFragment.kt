@@ -71,19 +71,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             }
             else -> {
                 // No location access granted.
-                showDialog(
-                    context = requireContext(),
-                    title = getString(R.string.message_request_background_location_title),
-                    message = getString(R.string.message_request_background_location_description),
-                    positiveButtonText = getString(R.string.agreed_button_label),
-                    positiveButtonAction = {
-                        requestLocationPermissions()
-                    },
-                    negativeButtonText = resources.getString(R.string.label_cancel),
-                    negativeButtonAction = {
-                        findNavController().navigate(SelectLocationFragmentDirections.navigateToSaveReminderFragment())
-                    }
-                )
+                showBackgroundPermissionDialogError()
             }
         }
     }
@@ -119,6 +107,22 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         locationPermissionGranted = true
         getDeviceLocation()
         setupMapUI()
+    }
+
+    private fun showBackgroundPermissionDialogError() {
+        showDialog(
+            context = requireContext(),
+            title = getString(R.string.message_request_background_location_title),
+            message = getString(R.string.message_request_background_location_description),
+            positiveButtonText = getString(R.string.agreed_button_label),
+            positiveButtonAction = {
+                requestLocationPermissions()
+            },
+            negativeButtonText = resources.getString(R.string.label_cancel),
+            negativeButtonAction = {
+                findNavController().navigate(SelectLocationFragmentDirections.navigateToSaveReminderFragment())
+            }
+        )
     }
 
     private fun setupAppBarAndMenuListeners() {
