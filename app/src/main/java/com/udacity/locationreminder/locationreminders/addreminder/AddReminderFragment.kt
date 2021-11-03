@@ -134,12 +134,10 @@ class AddReminderFragment : Fragment() {
                     binding.textSelectedLocation.text = String.format(
                         Locale.getDefault(), getString(R.string.lat_long_snippet), lat, lng
                     )
+                    binding.buttonSelectLocation.text =
+                        getString(R.string.text_button_change_location)
                 }
-            }
-
-            if (reminder?.latitude != null && reminder?.longitude != null) {
-                binding.buttonSelectLocation.text = getString(R.string.text_button_change_location)
-            } else {
+            } ?: run {
                 binding.buttonSelectLocation.text = getString(R.string.text_button_select_location)
             }
 
@@ -169,7 +167,6 @@ class AddReminderFragment : Fragment() {
                         AddReminderFragmentDirections.navigateToReminderList()
                     )
                 }
-
                 is AddReminderAction.InputErrorFieldTitle ->
                     binding.textFieldReminderTitle.error = getString(R.string.message_input_error_title)
                 is AddReminderAction.InputErrorFieldLocation ->
