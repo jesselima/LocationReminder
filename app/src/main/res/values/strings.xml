@@ -136,6 +136,7 @@
 
     <string name="unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
     <string name="geofence_error">Geofence error: %s</string>
+    <string name="geofence_error_generic_info">Geofence error: %s</string>
 
     <string name="geofences_not_removed">Geofences not removed.</string>
     <string name="insufficient_permissions">Insufficient permissions.</string>
@@ -159,5 +160,9 @@
     <string name="notification_description">You have a alert for this location %s</string>
     <string name="message_authentication_required">Authentication required!</string>
     <string name="message_location_settings_ok">Location settings OK!</string>
+    <string name="notification_channel_main_name">General</string>
+    <string name="notification_channel_reminders_name">Reminder alerts</string>
+    <string name="notification_channel_main_description">General notifications</string>
+    <string name="notification_channel_reminders_description">Default channel for you reminder alerts</string>
 
 </resources>
