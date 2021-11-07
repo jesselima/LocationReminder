@@ -2,7 +2,6 @@ package com.udacity.locationreminder.locationreminders.geofence
 
 import android.Manifest
 import android.app.PendingIntent
-import android.content.Context
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.Geofence
@@ -11,7 +10,7 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.udacity.locationreminder.R
 
-class GeofenceManagerImpl(private val context: Context): GeofenceManager {
+class GeofenceManagerImpl: GeofenceManager {
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun addGeofence(

@@ -40,7 +40,7 @@ class LocationReminderApp : Application() {
         }
 
         val geoFenceModule = module {
-            factory<GeofenceManager> { GeofenceManagerImpl(context = get()) }
+            factory<GeofenceManager> { GeofenceManagerImpl() }
         }
 
         startKoin {
