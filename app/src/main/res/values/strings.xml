@@ -146,7 +146,7 @@
     <string name="content_text">You found a clue <xliff:g id="geofence_location">%1$s</xliff:g>.</string>
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
-    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts. </string>
+    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\nPlease, click on SETTINGS button below, then go to:\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
     <string name="agreed_button_label">I agreed</string>
     <string name="message_request_background_location_deny_button_label">DENY</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
@@ -164,5 +164,22 @@
     <string name="notification_channel_reminders_name">Reminder alerts</string>
     <string name="notification_channel_main_description">General notifications</string>
     <string name="notification_channel_reminders_description">Default channel for you reminder alerts</string>
+
+    <string name="circular_radius">Circular\nradius</string>
+    <string name="circular_radius_unit">%s meters</string>
+    <string name="circular_radius_unit_initial_value">100 meters</string>
+    <string name="expiration_duration">Expiration duration</string>
+    <string name="expiration_duration_input_helper_text">Reminder life span</string>
+    <string name="expiration_duration_input_helper_quantity">Number</string>
+    <string name="expiration_units">Days/Hours</string>
+    <string name="units_days">DAYS</string>
+    <string name="when_i_enter">When I enter</string>
+    <string name="when_i_exit">When I exit</string>
+
+    <string-array name="units_array">
+        <item>DAYS</item>
+        <item>HOURS</item>
+        <item>NEVER</item>
+    </string-array>
 
 </resources>

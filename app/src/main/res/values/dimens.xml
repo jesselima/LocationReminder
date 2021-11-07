@@ -15,6 +15,10 @@
     <dimen name="margin_button_medium">32dp</dimen>
     <dimen name="margin_button_large">48dp</dimen>
     <dimen name="button_height_default">60dp</dimen>
+    <dimen name="button_width_tiny">100dp</dimen>
+    <dimen name="button_width_default">150dp</dimen>
+    <dimen name="button_width_medium">200dp</dimen>
+    <dimen name="button_width_large">250dp</dimen>
 
     <dimen name="space_medium">24dp</dimen>
     <dimen name="default_icon_size">40dp</dimen>
@@ -25,6 +29,7 @@
     <dimen name="spacing_xl">24dp</dimen>
     <dimen name="spacing_xxl">32dp</dimen>
     <dimen name="spacing_xxxl">48dp</dimen>
+    <dimen name="spacing_very_large_01">60dp</dimen>
     <dimen name="spacing_very_large_02">70dp</dimen>
     <dimen name="spacing_very_large_03">100dp</dimen>
     <dimen name="spacing_very_large_04">120dp</dimen>
@@ -47,4 +52,5 @@
     <dimen name="card_corner_radius_tiny">3dp</dimen>
     <dimen name="tab_layout_height">70dp</dimen>
     <dimen name="app_bar_margin_top">70dp</dimen>
+    <dimen name="slider_background_image_margin_end">110dp</dimen>
 </resources>

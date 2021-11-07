@@ -32,142 +32,287 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationSelectLocation"
-            android:layout_width="@dimen/lottie_small_height"
-            android:layout_height="@dimen/lottie_small_height"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveReminderAppBarLayout"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/animation_location_select"
-            tools:background="@color/colorStateOn"
-            tools:visibility="visible" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSelectLocation"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_button_select_location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/animationSelectLocation" />
-
-        <TextView
-            android:id="@+id/textSelectedLocation"
-            style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:gravity="center"
-            tools:text="Lat: 37.41947 - Long: -122.08748"
-            android:textColor="@color/textColorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonSelectLocation" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderLocationName"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollContentLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:hint="@string/reminder_location_name"
-            app:counterEnabled="true"
-            app:counterMaxLength="100"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textSelectedLocation">
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/saveReminderAppBarLayout">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderLocationName"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rootContentLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"
-                android:lines="2"
-                android:maxLength="100" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderTitle"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:hint="@string/reminder_title"
-            app:counterEnabled="true"
-            app:counterMaxLength="100"
-            app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderLocationName">
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animationSelectLocation"
+                    android:layout_width="@dimen/lottie_small_height"
+                    android:layout_height="@dimen/lottie_small_height"
+                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/spacing_very_large_02"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="false"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/animation_location_select"
+                    tools:background="@color/colorStateOn"
+                    tools:visibility="visible" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"
-                android:lines="1"
-                android:maxLength="100" />
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSelectLocation"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_button_select_location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/animationSelectLocation" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldReminderDescription"
-            style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:hint="@string/reminder_desc"
-            app:counterEnabled="true"
-            app:counterMaxLength="300"
-            app:expandedHintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textFieldReminderTitle">
+                <TextView
+                    android:id="@+id/textSelectedLocation"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:gravity="center"
+                    android:textColor="@color/textColorPrimary"
+                    app:drawableStartCompat="@drawable/ic_location_on"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/buttonSelectLocation"
+                    tools:text="Lat: 37.41947 - Long: -122.08748" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/reminderDescription"
-                android:inputType="textCapSentences"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="3"
-                android:maxLength="200"
-                android:maxLines="5" />
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutLocationName"
+                    style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:hint="@string/reminder_location_name"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="100"
+                    app:errorEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSelectedLocation">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/actionButtonSaveReminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_screen_default"
-            android:src="@drawable/ic_save"
-            app:fabSize="normal"
-            app:layout_anchorGravity="bottom|right|end"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/content_description_save_reminder" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/reminderLocationName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:lines="2"
+                        android:maxLength="100" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_margin="@dimen/spacing_md"
-            android:padding="@dimen/spacing_tiny"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutTitle"
+                    style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:hint="@string/reminder_title"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="100"
+                    app:errorEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutLocationName">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/reminderTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:lines="1"
+                        android:maxLength="100" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutDescription"
+                    style="@style/Widget.LocationReminderAppTheme.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:hint="@string/reminder_desc"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="300"
+                    app:expandedHintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutTitle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/reminderDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:lines="3"
+                        android:maxLength="200"
+                        android:maxLines="5" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="@dimen/spacing_very_large_05"
+                    android:layout_height="@dimen/spacing_very_large_05"
+                    android:layout_marginEnd="@dimen/slider_background_image_margin_end"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderCircularRadius"
+                    app:layout_constraintEnd_toEndOf="@+id/sliderCircularRadius"
+                    app:layout_constraintTop_toTopOf="@+id/sliderCircularRadius"
+                    app:srcCompat="@drawable/ic_gps_fixed" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderCircularRadius"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_very_large_02"
+                    android:layout_marginTop="@dimen/spacing_xxxl"
+                    app:labelBehavior="gone"
+                    android:value="100"
+                    android:stepSize="50"
+                    android:valueFrom="50"
+                    android:valueTo="500"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutDescription" />
+
+                <TextView
+                    android:id="@+id/textCurrentCircularRadius"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:layout_marginBottom="@dimen/spacing_xl"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    android:text="@string/circular_radius_unit_initial_value"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderCircularRadius"
+                    app:layout_constraintEnd_toEndOf="@+id/sliderCircularRadius"
+                    app:layout_constraintStart_toStartOf="@+id/sliderCircularRadius"
+                    app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+                <TextView
+                    android:id="@+id/textCircularRadius"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Body.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:gravity="center"
+                    android:text="@string/circular_radius"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderCircularRadius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/sliderCircularRadius"
+                    app:layout_constraintTop_toTopOf="@+id/sliderCircularRadius" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupTransitionType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_md"
+                    app:layout_constraintHorizontal_bias="0.9"
+                    android:checkedButton="@+id/radioButtonEnter"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textCircularRadius">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonEnter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/spacing_md"
+                        android:text="@string/when_i_enter" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonExit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/when_i_exit" />
+                </RadioGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayoutExpirationDuration"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    app:helperText="@string/expiration_duration_input_helper_text"
+                    app:layout_constraintEnd_toStartOf="@+id/expirationDurationValueTextInputLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radioGroupTransitionType">
+
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/expiration_duration"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/expirationDurationValueTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/spacing_very_large_03"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_md"
+                    app:errorEnabled="true"
+                    app:helperText="@string/expiration_duration_input_helper_quantity"
+                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutExpirationDuration"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/inputLayoutExpirationDuration">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/expirationDurationEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="100" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/actionButtonSaveReminder"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="@dimen/button_width_large"
+                    android:layout_height="@dimen/button_height_default"
+                    android:layout_marginStart="@dimen/margin_button_large"
+                    android:layout_marginEnd="@dimen/margin_button_large"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_xl"
+                    android:enabled="true"
+                    android:text="@string/content_description_save_reminder"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutExpirationDuration"
+                    tools:enabled="true" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:padding="@dimen/spacing_tiny"
+                    app:layout_constraintBottom_toBottomOf="@+id/actionButtonSaveReminder"
+                    app:layout_constraintEnd_toEndOf="@+id/actionButtonSaveReminder"
+                    app:layout_constraintStart_toStartOf="@+id/actionButtonSaveReminder"
+                    app:layout_constraintTop_toTopOf="@+id/actionButtonSaveReminder" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

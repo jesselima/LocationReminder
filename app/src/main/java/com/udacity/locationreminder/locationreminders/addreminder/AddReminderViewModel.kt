@@ -31,25 +31,21 @@ class AddReminderViewModel(
         _selectedReminder.value = reminder
     }
 
-    fun saveReminder() {
+    fun saveReminder(reminder: ReminderItemView) {
         if (isInputsValid().not()) return
         _state.value = state.value?.copy(isLoading = true)
 
         viewModelScope.launch {
-            // Todo Remove this delay
-            delay(1500)
-            selectedReminder.value?.let {
-                runCatching {
-                    remindersLocalRepository.saveReminder(it.mapToDataModel())
-                }.onSuccess {
-                    _state.value = state.value?.copy(isLoading = false)
-                    _action.value = AddReminderAction.AddReminderSuccess
-                    _selectedReminder.value = null
-                    _action.value = null
-                }.onFailure {
-                    _state.value = state.value?.copy(isLoading = false)
-                    _action.value = AddReminderAction.AddReminderError
-                }
+            runCatching {
+                remindersLocalRepository.saveReminder(reminder.mapToDataModel())
+            }.onSuccess {
+                _state.value = state.value?.copy(isLoading = false)
+                _action.value = AddReminderAction.AddReminderSuccess
+                _selectedReminder.value = null
+                _action.value = null
+            }.onFailure {
+                _state.value = state.value?.copy(isLoading = false)
+                _action.value = AddReminderAction.AddReminderError
             }
         }
     }
