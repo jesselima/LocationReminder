@@ -32,43 +32,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/copyrightsTitle"
-        style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|center"
-        android:layout_marginTop="@dimen/spacing_xl"
-        android:layout_marginStart="@dimen/spacing_md"
-        android:layout_marginEnd="@dimen/spacing_md"
-        android:gravity="center"
-        android:text="@string/message_copyright_notes"
-        android:textColor="@color/textColorSecondary"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout"
-        tools:visibility="visible" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_xl"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/copyrightsTitle">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/copyrightRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/spacing_md"
+            android:layout_margin="@dimen/spacing_md"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout"
+            app:spanCount="5"
+            tools:itemCount="5"
             tools:listitem="@layout/layout_item_list_copyright" />
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
