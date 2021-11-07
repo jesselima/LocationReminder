@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
 import com.udacity.locationreminder.locationreminders.mapToDataModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddReminderViewModel(
-    private val remindersLocalRepository: RemindersLocalRepository
+    private val remindersLocalRepository: RemindersLocalRepository,
+    private val inputValidatorsUseCase: InputValidatorsUseCase
 ): ViewModel() {
 
     private var _selectedReminder = MutableLiveData<ReminderItemView?>()
@@ -23,6 +23,8 @@ class AddReminderViewModel(
     private var _action = MutableLiveData<AddReminderAction?>()
     val action: LiveData<AddReminderAction?> = _action
 
+    private var isFormValid: Boolean = false
+
     init {
         _state.value = AddReminderState()
     }
@@ -31,8 +33,8 @@ class AddReminderViewModel(
         _selectedReminder.value = reminder
     }
 
-    fun saveReminder(reminder: ReminderItemView) {
-        if (isInputsValid().not()) return
+    private fun saveReminder(reminder: ReminderItemView) {
+        if (isFormValid.not()) return
         _state.value = state.value?.copy(isLoading = true)
 
         viewModelScope.launch {
@@ -50,27 +52,62 @@ class AddReminderViewModel(
         }
     }
 
-    private fun isInputsValid(): Boolean {
-        var isFormValid = true
-        if(_selectedReminder.value?.title.isNullOrEmpty()) {
-            _action.value = AddReminderAction.InputErrorFieldTitle
-            isFormValid = false
+    fun validateFieldsSaveReminder() {
+        if (isTitleValid(_selectedReminder.value?.title) &&
+            isLocationNameValid(_selectedReminder.value?.locationName) &&
+            isDescriptionValid(_selectedReminder.value?.description) &&
+            isLatLngValid()
+        ) {
+            _selectedReminder.value?.let { saveReminder(it) }
         }
-        if(_selectedReminder.value?.locationName.isNullOrEmpty()) {
-            _action.value = AddReminderAction.InputErrorFieldLocation
-            isFormValid = false
-        }
-        if(_selectedReminder.value?.description.isNullOrEmpty()) {
-            _action.value = AddReminderAction.InputErrorFieldDescription
-            isFormValid = false
-        }
+    }
 
-        if(selectedReminder.value?.latitude == null || selectedReminder.value?.longitude == null) {
-            _action.value = AddReminderAction.InputErrorMissingLatLong
-            _action.value = null
-            isFormValid = false
+    fun isTitleValid(title: String?): Boolean {
+        _selectedReminder.value?.title = title
+        inputValidatorsUseCase.validateTitle(title).run {
+            if (this.not()) {
+                _action.value = AddReminderAction.InputErrorFieldTitle
+                _action.value = null
+            }
+            isFormValid = this
+            return this
         }
-        return isFormValid
+    }
+
+    fun isLocationNameValid(locationName: String?): Boolean {
+        _selectedReminder.value?.locationName = locationName
+        inputValidatorsUseCase.validateLocationName(locationName).run {
+            if (this.not()) {
+                _action.value = AddReminderAction.InputErrorFieldLocationName
+                _action.value = null
+            }
+            isFormValid = this
+            return this
+        }
+    }
+
+    fun isDescriptionValid(description: String?): Boolean {
+        _selectedReminder.value?.description = description
+        inputValidatorsUseCase.validateDescription(description).run {
+            if (this.not()) {
+                _action.value = AddReminderAction.InputErrorFieldDescription
+                _action.value = null
+            }
+            isFormValid = this
+            return this
+        }
+    }
+
+    private fun isLatLngValid(): Boolean {
+        inputValidatorsUseCase.validateLatLng(
+            selectedReminder.value?.latitude, selectedReminder.value?.longitude
+        ).run {
+            if (this.not()) {
+                _action.value = AddReminderAction.InputErrorMissingLatLong
+                _action.value = null
+            }
+            return this
+        }
     }
 }
 

@@ -6,6 +6,7 @@ import com.udacity.locationreminder.locationreminders.data.local.LocalDatabase
 import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
 import com.udacity.locationreminder.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.locationreminder.locationreminders.addreminder.AddReminderViewModel
+import com.udacity.locationreminder.locationreminders.addreminder.InputValidatorsUseCase
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManagerImpl
 import com.udacity.locationreminder.utils.setupNotificationChannel
@@ -19,10 +20,15 @@ class LocationReminderApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        val domainModule = module {
+            factory { InputValidatorsUseCase() }
+        }
+
         val presentationModule = module {
             viewModel {
                 AddReminderViewModel(
                     remindersLocalRepository = get(),
+                    inputValidatorsUseCase = get(),
                 )
             }
             viewModel {
@@ -45,7 +51,7 @@ class LocationReminderApp : Application() {
 
         startKoin {
             androidContext(this@LocationReminderApp)
-            modules(listOf(presentationModule, dataModule, geoFenceModule))
+            modules(listOf(dataModule, domainModule, presentationModule, geoFenceModule))
         }
 
         setupNotificationChannel()

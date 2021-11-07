@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -34,19 +34,19 @@ import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
 import com.udacity.locationreminder.utils.ToastType
+import com.udacity.locationreminder.utils.hideKeyboard
 import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.showDialog
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 private const val PENDING_INTENT_REQUEST_CODE = 0
 
 class AddReminderFragment : Fragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
-    private val addViewModel: AddReminderViewModel by sharedViewModel()
+    private val viewModel: AddReminderViewModel by sharedViewModel()
     private val geofenceManager: GeofenceManager by inject()
 
     private var _currentReminderData: ReminderItemView = ReminderItemView()
@@ -80,121 +80,111 @@ class AddReminderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("==>>> ", "AddReminderFragment.onViewCreated()")
+        setupNavigationListeners()
         setupObservers()
         setupListeners()
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
+        checkNavArgsUpdateViewModelData()
+    }
 
-        // TODO remove it from here
+    private fun checkNavArgsUpdateViewModelData() {
         _currentReminderData.locationName = args.lastSelectedLocation?.locationName
         _currentReminderData.latitude = args.lastSelectedLocation?.latitude
         _currentReminderData.longitude = args.lastSelectedLocation?.longitude
-        if(args.lastSelectedLocation?.isPoi == true) {
-            _currentReminderData.isPoi = true
-            _currentReminderData.poiId = args.lastSelectedLocation?.poiId
+        _currentReminderData.isPoi = args.lastSelectedLocation?.isPoi ?: false
+        _currentReminderData.poiId = args.lastSelectedLocation?.poiId
+        viewModel.setSelectedReminder(_currentReminderData)
+    }
+
+    private fun setupNavigationListeners() {
+        binding.buttonSelectLocation.setOnClickListener {
+            findNavController().navigate(
+                AddReminderFragmentDirections.navigateToSelectLocation(_currentReminderData)
+            )
         }
 
-        addViewModel.setSelectedReminder(_currentReminderData)
+        binding.saveReminderToolbar.setNavigationOnClickListener {
+            findNavController().navigate(AddReminderFragmentDirections.navigateToReminderList())
+        }
     }
 
     private fun setupListeners() {
         with(binding) {
-            buttonSelectLocation.setOnClickListener {
-                findNavController().navigate(
-                    AddReminderFragmentDirections.navigateToSelectLocation(_currentReminderData)
-                )
+
+            binding.reminderTitle.doOnTextChanged { text, _, _, _ ->
+                if (viewModel.isTitleValid(text.toString())) binding.inputLayoutTitle.error = null
             }
 
-            saveReminderToolbar.setNavigationOnClickListener {
-                findNavController().navigate(AddReminderFragmentDirections.navigateToReminderList())
+            binding.reminderLocationName.doOnTextChanged { text, _, _, _ ->
+                if (viewModel.isLocationNameValid(text.toString())) {
+                    binding.inputLayoutLocationName.error = null
+                }
             }
 
-            binding.sliderCircularRadius.addOnChangeListener { _, value, _ ->
+            binding.reminderDescription.doOnTextChanged { text, _, _, _ ->
+                if (viewModel.isDescriptionValid(text.toString())) {
+                    binding.inputLayoutDescription.error = null
+                }
+            }
+
+            sliderCircularRadius.addOnChangeListener { _, value, _ ->
                 _currentReminderData.circularRadius = value
-                Log.d("==>>>", _currentReminderData.circularRadius.toString())
-                binding.textCurrentCircularRadius.text = String.format(
+                textCurrentCircularRadius.text = String.format(
                     getString(R.string.circular_radius_unit), value.toInt().toString()
                 )
             }
 
-            binding.inputLayoutExpirationDuration.editText?.setText(getString(R.string.units_days))
-            val adapter = ArrayAdapter(
-                requireContext(),
-                R.layout.list_item,
-                resources.getStringArray(R.array.units_array)
-            )
-            (binding.inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-
-            binding.inputLayoutExpirationDuration.editText?.addTextChangedListener {
-                Log.d("==>>>", it.toString())
-                binding.expirationDurationValueTextInputLayout.isEnabled =
+            inputLayoutExpirationDuration.editText?.setText(getString(R.string.units_days))
+            (inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item,resources.getStringArray(
+                    R.array.units_array)))
+            inputLayoutExpirationDuration.editText?.addTextChangedListener {
+                inputLayoutExpirationDurationValue.isEnabled =
                     it.toString() != ExpirationUnits.NEVER.name
             }
 
-            binding.expirationDurationValueTextInputLayout.editText?.addTextChangedListener {
-                    durationNumber ->
+            inputLayoutExpirationDurationValue.editText?.addTextChangedListener { durationInput ->
+                durationInput?.let { value ->
+                    if(value.isNotEmpty()) {
                         _currentReminderData.expiration = mapInputUnitsExpirationValue(
-                            unit = binding.inputLayoutExpirationDuration.editText?.text.toString(),
-                            value = durationNumber.toString().toLong()
+                            unit = inputLayoutExpirationDuration.editText?.text.toString(),
+                            value = value.toString().toLong()
                         )
-                        Log.d("==>>>", durationNumber.toString())
-            }
-
-            binding.radioGroupTransitionType.setOnCheckedChangeListener { group, checkedId ->
-                _currentReminderData.transitionType = when (checkedId) {
-                    R.id.radioButtonExit -> {
-                        Geofence.GEOFENCE_TRANSITION_EXIT
-                        Log.d("==>>>", "Exit")
-                    }
-                    else -> {
-                        Geofence.GEOFENCE_TRANSITION_EXIT
-                        Log.d("==>>>", "Enter")
                     }
                 }
-                Log.d("==>>>", _currentReminderData.toString())
             }
 
-            binding.actionButtonSaveReminder.setOnClickListener {
-                _currentReminderData.title = binding.inputLayoutTitle.editText?.text.toString()
-                _currentReminderData.locationName = binding.inputLayoutLocationName.editText?.text.toString()
-                _currentReminderData.description = binding.inputLayoutDescription.editText?.text.toString()
-                addViewModel.setSelectedReminder(_currentReminderData)
-                saveReminder(_currentReminderData)
+            radioGroupTransitionType.setOnCheckedChangeListener { _, checkedId ->
+                _currentReminderData.transitionType = when (checkedId) {
+                    R.id.radioButtonEnter -> {
+                        Geofence.GEOFENCE_TRANSITION_ENTER
+                    }
+                    R.id.radioButtonExit -> {
+                        Geofence.GEOFENCE_TRANSITION_EXIT
+                    }
+                    else -> -1
+                }
             }
-        }
 
-        // TODO - Move the input validation logic to a UseCase
-        //  The fragment should only call ViewModel methods, which will use cases to validate values
-        //  Then return the result to the view model, which returns it to the fragment as action/state.
-        binding.reminderTitle.doOnTextChanged { text, _, _, _ ->
-            if (text?.isNotBlank() == true) binding.inputLayoutTitle.error = null
-        }
+            inputLayoutExpirationDuration.setOnClickListener { hideKeyboard() }
+            autocompleteExpirationDuration.setOnClickListener { hideKeyboard() }
 
-        binding.reminderLocationName.doOnTextChanged { text, _, _, _ ->
-            if (text?.isNotBlank() == true) binding.inputLayoutLocationName.error = null
-        }
-
-        binding.reminderDescription.doOnTextChanged { text, _, _, _ ->
-            if (text?.isNotBlank() == true) binding.inputLayoutDescription.error = null
+            actionButtonSaveReminder.setOnClickListener {
+                extractInputValues()
+                viewModel.setSelectedReminder(_currentReminderData)
+                if(isBackgroundPermissionGranted()) viewModel.validateFieldsSaveReminder()
+            }
         }
     }
 
-    private fun mapInputUnitsExpirationValue(unit: String, value: Long): Long {
-        return when (unit) {
-            ExpirationUnits.HOURS.name -> TimeUnit.HOURS.toMillis(value)
-            ExpirationUnits.DAYS.name -> TimeUnit.DAYS.toMillis(value)
-            else -> -1L
-        }
-    }
-
-    enum class ExpirationUnits {
-        HOURS,
-        DAYS,
-        NEVER
+    private fun extractInputValues() {
+        _currentReminderData.title = binding.inputLayoutTitle.editText?.text.toString()
+        _currentReminderData.locationName = binding.inputLayoutLocationName.editText?.text.toString()
+        _currentReminderData.description = binding.inputLayoutDescription.editText?.text.toString()
     }
 
     private fun setupObservers() {
-        addViewModel.selectedReminder.observe(viewLifecycleOwner) { reminder ->
+        viewModel.selectedReminder.observe(viewLifecycleOwner) { reminder ->
             reminder?.latitude?.let { lat ->
                 reminder.longitude?.let { lng ->
                     binding.textSelectedLocation.text = String.format(
@@ -212,12 +202,12 @@ class AddReminderFragment : Fragment() {
             } ?: binding.reminderLocationName.setText("")
         }
 
-        addViewModel.state.observe(viewLifecycleOwner) { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.progressBar.isVisible = state.isLoading
             binding.actionButtonSaveReminder.isVisible = state.isLoading.not()
         }
 
-        addViewModel.action.observe(viewLifecycleOwner) { action ->
+        viewModel.action.observe(viewLifecycleOwner) { action ->
             when(action) {
                 is AddReminderAction.AddReminderError ->
                     context?.showCustomToast(
@@ -232,29 +222,31 @@ class AddReminderFragment : Fragment() {
                     addGeofence(_currentReminderData)
                 }
                 is AddReminderAction.InputErrorFieldTitle ->
-                    binding.inputLayoutExpirationDuration.error = getString(R.string.message_input_error_title)
-                is AddReminderAction.InputErrorFieldLocation ->
-                    binding.inputLayoutLocationName.error = getString(R.string.message_input_error_location)
+                    binding.inputLayoutTitle.error =
+                        getString(R.string.message_input_error_title)
+                is AddReminderAction.InputErrorFieldLocationName ->
+                    binding.inputLayoutLocationName.error =
+                        getString(R.string.message_input_error_location)
                 is AddReminderAction.InputErrorFieldDescription ->
-                    binding.inputLayoutDescription.error = getString(R.string.message_input_error_description)
-                is AddReminderAction.InputErrorMissingLatLong ->
+                    binding.inputLayoutDescription.error =
+                        getString(R.string.message_input_error_description)
+                is AddReminderAction.InputErrorMissingLatLong -> {
+                    binding.buttonSelectLocation.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                    )
+                    binding.buttonSelectLocation.setStrokeColorResource(R.color.colorAccent)
                     context?.showCustomToast(
                         titleResId = R.string.message_input_error_lat_long_missing,
                         toastType = ToastType.INFO,
                         durationToast = Toast.LENGTH_LONG
                     )
+                }
                 is AddReminderAction.ClearErrors -> {
                     binding.inputLayoutExpirationDuration.error = null
                     binding.inputLayoutLocationName.error = null
                     binding.inputLayoutDescription.error = null
                 }
             }
-        }
-    }
-
-    private fun saveReminder(reminder: ReminderItemView) {
-        if (isBackgroundPermissionGranted()) {
-            addViewModel.saveReminder(reminder)
         }
     }
 
@@ -269,7 +261,6 @@ class AddReminderFragment : Fragment() {
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )
     }
-
 
     private fun isBackgroundPermissionGranted(): Boolean {
         return if (isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {

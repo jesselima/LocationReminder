@@ -165,9 +165,9 @@
     <string name="notification_channel_main_description">General notifications</string>
     <string name="notification_channel_reminders_description">Default channel for you reminder alerts</string>
 
-    <string name="circular_radius">Circular\nradius</string>
+    <string name="circular_radius">Circular radius</string>
     <string name="circular_radius_unit">%s meters</string>
-    <string name="circular_radius_unit_initial_value">100 meters</string>
+    <string name="circular_radius_unit_initial_value">50 meters</string>
     <string name="expiration_duration">Expiration duration</string>
     <string name="expiration_duration_input_helper_text">Reminder life span</string>
     <string name="expiration_duration_input_helper_quantity">Number</string>

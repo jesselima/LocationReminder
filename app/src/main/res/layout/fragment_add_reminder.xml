@@ -177,7 +177,7 @@
                     android:layout_marginStart="@dimen/spacing_very_large_02"
                     android:layout_marginTop="@dimen/spacing_xxxl"
                     app:labelBehavior="gone"
-                    android:value="100"
+                    android:value="50"
                     android:stepSize="50"
                     android:valueFrom="50"
                     android:valueTo="500"
@@ -219,12 +219,13 @@
                     android:id="@+id/radioGroupTransitionType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_md"
-                    app:layout_constraintHorizontal_bias="0.9"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:layout_marginEnd="@dimen/spacing_xxl"
+                    app:layout_constraintHorizontal_bias="1.0"
                     android:checkedButton="@+id/radioButtonEnter"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/textCircularRadius">
 
                     <RadioButton
@@ -250,11 +251,12 @@
                     android:layout_marginEnd="@dimen/spacing_md"
                     android:layout_marginTop="@dimen/spacing_md"
                     app:helperText="@string/expiration_duration_input_helper_text"
-                    app:layout_constraintEnd_toStartOf="@+id/expirationDurationValueTextInputLayout"
+                    app:layout_constraintEnd_toStartOf="@+id/inputLayoutExpirationDurationValue"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/radioGroupTransitionType">
 
                     <AutoCompleteTextView
+                        android:id="@+id/autocompleteExpirationDuration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/expiration_duration"
@@ -263,7 +265,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/expirationDurationValueTextInputLayout"
+                    android:id="@+id/inputLayoutExpirationDurationValue"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="@dimen/spacing_very_large_03"
                     android:layout_height="wrap_content"

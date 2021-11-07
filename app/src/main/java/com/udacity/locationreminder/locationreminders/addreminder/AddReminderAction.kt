@@ -4,7 +4,7 @@ sealed class AddReminderAction {
     object AddReminderError: AddReminderAction()
     object AddReminderSuccess: AddReminderAction()
     object InputErrorFieldTitle: AddReminderAction()
-    object InputErrorFieldLocation: AddReminderAction()
+    object InputErrorFieldLocationName: AddReminderAction()
     object InputErrorFieldDescription: AddReminderAction()
     object InputErrorMissingLatLong: AddReminderAction()
     object ClearErrors: AddReminderAction()
