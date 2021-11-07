@@ -320,7 +320,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                     .snippet(snippet)
             )
             currentLocationMarker?.showInfoWindow()
-            selectedReminder = selectedReminder?.copy(
+            selectedReminder = selectedReminder.copy(
                 title = null,
                 description = null,
                 isPoi = true,

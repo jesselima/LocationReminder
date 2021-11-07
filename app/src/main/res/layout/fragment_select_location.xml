@@ -69,5 +69,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/textViewHowToSetLocation"
+            style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:background="@drawable/background_rounded_semi_transparent_grey"
+            android:gravity="center"
+            android:padding="@dimen/spacing_md"
+            android:text="@string/message_click_on_the_map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectLocationAppBarLayout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
