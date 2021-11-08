@@ -67,4 +67,17 @@ class RemindersLocalRepositoryImpl(
             remindersDao.deleteAllReminders()
         }
     }
+
+    override suspend fun deleteReminder(reminder: ReminderData) : Int {
+        return withContext(ioDispatcher) {
+            remindersDao.deleteReminder(reminder)
+        }
+    }
+
+    override suspend fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int {
+        return withContext(ioDispatcher) {
+            remindersDao.updateReminder(reminderId, isGeofenceEnable)
+        }
+    }
+
 }

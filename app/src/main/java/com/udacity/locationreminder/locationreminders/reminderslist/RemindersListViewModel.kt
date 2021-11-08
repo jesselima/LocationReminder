@@ -8,6 +8,8 @@ import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
 import com.udacity.locationreminder.locationreminders.data.dto.ReminderData
 import com.udacity.locationreminder.locationreminders.data.dto.Result
+import com.udacity.locationreminder.locationreminders.data.dto.mapToPresentationModel
+import com.udacity.locationreminder.locationreminders.mapToDataModel
 import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
@@ -28,36 +30,20 @@ class RemindersListViewModel(
         _state.value = RemindersState()
     }
 
-    /**
-     * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,
-     * or show error if any
-     */
     fun loadReminders() {
         viewModelScope.launch {
             _state.value = state.value?.copy(isLoading = true)
             when (val result = remindersLocalRepository.getReminders()) {
                 is Result.Success<*> -> {
-                    // Todo Improve this list result handling
                     val dataList = ArrayList<ReminderItemView>()
                     dataList.addAll((result.data as List<ReminderData>).map { reminder ->
-                        ReminderItemView(
-                            title = reminder.title,
-                            description = reminder.description,
-                            isPoi = reminder.title == null,
-                            locationName = reminder.locationName,
-                            latitude = reminder.latitude ?: 0.0,
-                            longitude = reminder.longitude ?: 0.0,
-                            id = reminder.id,
-                            poiId = reminder.poiId
-                        )
+                        reminder.mapToPresentationModel()
                     })
                     if (dataList.isEmpty()) {
                         _action.value = RemindersAction.NoRemindersFound
                         _state.value = state.value?.copy(isLoading = false)
+                        _remindersList.value = emptyList()
                     } else {
-                        // TODO improve me
-                        //  Cannot find a setter for <androidx.recyclerview.widget.RecyclerView
-                        //  android:liveData> that accepts parameter type 'java.util.List
                         _remindersList.value = dataList
                         _state.value = state.value?.copy(isLoading = false)
                     }
@@ -67,6 +53,32 @@ class RemindersListViewModel(
                     _action.value = null
                     _state.value = state.value?.copy(isLoading = false)
                 }
+            }
+        }
+    }
+
+    fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean) {
+        viewModelScope.launch {
+            val result = remindersLocalRepository.updateReminder(reminderId, isGeofenceEnable)
+            if (result == 1) {
+                _action.value = RemindersAction.UpdateRemindersSuccess
+                _action.value = null
+            } else {
+                _action.value = RemindersAction.UpdateRemindersError
+                _action.value = null
+            }
+        }
+    }
+
+    fun deleteReminder(reminderItemView: ReminderItemView) {
+        viewModelScope.launch {
+            val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
+            if (result == 1) {
+                _action.value = RemindersAction.DeleteRemindersSuccess
+                _action.value = null
+            } else {
+                _action.value = RemindersAction.DeleteRemindersError
+                _action.value = null
             }
         }
     }

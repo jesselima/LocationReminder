@@ -20,7 +20,8 @@ data class ReminderItemView(
     var circularRadius: Float = 50f,
     var expiration: Long = TimeUnit.DAYS.toMillis(1),
     var transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
-    var id: Long = System.currentTimeMillis()
+    var id: Long = System.currentTimeMillis(),
+    var isGeofenceEnable: Boolean = false
 ) : Serializable
 
 fun ReminderItemView.mapToDataModel() : ReminderData {
@@ -35,6 +36,7 @@ fun ReminderItemView.mapToDataModel() : ReminderData {
         poiId = poiId,
         circularRadius = circularRadius,
         expiration = expiration,
-        transitionType = transitionType
+        transitionType = transitionType,
+        isGeofenceEnable = isGeofenceEnable
     )
 }

@@ -43,7 +43,6 @@ class AddReminderViewModel(
             }.onSuccess {
                 _state.value = state.value?.copy(isLoading = false)
                 _action.value = AddReminderAction.AddReminderSuccess
-                _selectedReminder.value = null
                 _action.value = null
             }.onFailure {
                 _state.value = state.value?.copy(isLoading = false)
@@ -58,7 +57,9 @@ class AddReminderViewModel(
             isDescriptionValid(_selectedReminder.value?.description) &&
             isLatLngValid()
         ) {
-            _selectedReminder.value?.let { saveReminder(it) }
+            _selectedReminder.value?.let {
+                saveReminder(it.copy(isGeofenceEnable = true))
+            }
         }
     }
 

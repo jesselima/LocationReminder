@@ -1,6 +1,7 @@
 package com.udacity.locationreminder.base
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -8,15 +9,17 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Unit)? = null) :
-    RecyclerView.Adapter<DataBindingViewHolder<T>>() {
+abstract class BaseRecyclerViewAdapter<T>(
+    private val onReminderItemClick: ((item: T) -> Unit)? = null,
+    private val viewsResIdActions: List<Pair<Int, ((item: T) -> Unit)?>?> = emptyList(),
+) : RecyclerView.Adapter<DataBindingViewHolder<T>>() {
 
     private var _items: MutableList<T> = mutableListOf()
 
     /**
      * Returns the _items data
      */
-    private val items: List<T>?
+    private val items: List<T>
         get() = this._items
 
     override fun getItemCount() = _items.size
@@ -35,12 +38,22 @@ abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Un
     override fun onBindViewHolder(holder: DataBindingViewHolder<T>, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+
         holder.itemView.setOnClickListener {
-            callback?.invoke(item)
+            onReminderItemClick?.invoke(item)
+        }
+
+        viewsResIdActions.forEach { resIdsActions ->
+            resIdsActions?.first?.let { resId ->
+                holder.itemView.findViewById<View>(resId).setOnClickListener {
+                    resIdsActions.second?.invoke(item)
+                }
+            }
+
         }
     }
 
-    fun getItem(position: Int) = _items[position]
+    private fun getItem(position: Int) = _items[position]
 
     /**
      * Adds data to the actual Dataset

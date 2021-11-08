@@ -13,27 +13,27 @@ import com.udacity.locationreminder.databinding.ActivityReminderDescriptionBindi
  */
 class ReminderDescriptionActivity : AppCompatActivity() {
 
-    companion object {
-        private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"
-
-        internal const val ACTION_GEOFENCE_EVENT =
-            "ReminderDescriptionActivity.geofences.action.ACTION_GEOFENCE_EVENT"
-
-        //        receive the reminder object after the user clicks on the notification
-        fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
-            val intent = Intent(context, ReminderDescriptionActivity::class.java)
-            intent.putExtra(EXTRA_ReminderDataItem, reminderItemView)
-            return intent
-        }
-    }
-
     private lateinit var binding: ActivityReminderDescriptionBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val reminder = intent.extras?.getSerializable(EXTRA_REMINDER)
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_reminder_description
         )
-//        TODO: Add the implementation of the reminder details
+        // TODO: Add the implementation of the reminder details
+    }
+
+    companion object {
+        private const val EXTRA_REMINDER = "EXTRA_REMINDER"
+        internal const val ACTION_GEOFENCE_EVENT =
+            "ReminderDescriptionActivity.geofences.action.ACTION_GEOFENCE_EVENT"
+
+        fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
+            return Intent(context, ReminderDescriptionActivity::class.java).apply {
+                putExtra(EXTRA_REMINDER, reminderItemView)
+            }
+        }
     }
 }

@@ -31,6 +31,7 @@ data class ReminderData(
     @ColumnInfo(name = "circularRadius") val circularRadius: Float?,
     @ColumnInfo(name = "expiration") val expiration: Long?,
     @ColumnInfo(name = "transitionType") val transitionType: Int?,
+    @ColumnInfo(name = "is_geofence_enable") val isGeofenceEnable: Boolean?,
 )
 
 fun ReminderData.mapToPresentationModel() : ReminderItemView {
@@ -45,6 +46,7 @@ fun ReminderData.mapToPresentationModel() : ReminderItemView {
         poiId = poiId,
         circularRadius = circularRadius ?: 50f,
         expiration = TimeUnit.DAYS.toMillis(1),
-        transitionType = Geofence.GEOFENCE_TRANSITION_ENTER
+        transitionType = Geofence.GEOFENCE_TRANSITION_ENTER,
+        isGeofenceEnable = isGeofenceEnable ?: false
     )
 }

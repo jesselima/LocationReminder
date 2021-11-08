@@ -1,9 +1,11 @@
 package com.udacity.locationreminder.locationreminders.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.udacity.locationreminder.locationreminders.data.dto.ReminderData
 
 /**
@@ -37,5 +39,15 @@ interface RemindersDao {
      */
     @Query("DELETE FROM reminders")
     fun deleteAllReminders()
+
+    /**
+     * Delete all reminders.
+     */
+    @Delete
+    fun deleteReminder(reminder: ReminderData): Int
+
+
+    @Query("UPDATE reminders SET is_geofence_enable = :isGeofenceEnable WHERE id = :reminderId")
+    fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int
 
 }

@@ -1,9 +1,11 @@
 package com.udacity.locationreminder.utils
 
 import android.view.View
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.udacity.locationreminder.R
 import com.udacity.locationreminder.base.BaseRecyclerViewAdapter
 
 
@@ -42,6 +44,16 @@ object BindingAdapters {
                 if (view.visibility == View.VISIBLE)
                     view.hideWithFadeOut()
             }
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:setImageMapResource")
+    fun setImageMapResource(imageView: ImageView, isGeofenceEnable: Boolean) {
+        if(isGeofenceEnable) {
+            imageView.setImageResource(R.drawable.ic_map_alert_bg_transparent_enable)
+        } else {
+            imageView.setImageResource(R.drawable.ic_map_alert_bg_transparent_disable)
         }
     }
 }

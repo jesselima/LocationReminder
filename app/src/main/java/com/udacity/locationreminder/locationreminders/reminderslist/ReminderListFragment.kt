@@ -1,25 +1,59 @@
 package com.udacity.locationreminder.locationreminders.reminderslist
 
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
+import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity
+import com.udacity.locationreminder.locationreminders.ReminderItemView
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
+import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
+import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.setup
 import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.showDialog
 import com.udacity.locationreminder.utils.signOut
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+const val PENDING_INTENT_REQUEST_CODE = 0
 
 class ReminderListFragment : Fragment() {
 
     val viewModel: RemindersListViewModel by viewModel()
+    private val geofenceManager: GeofenceManager by inject()
+
     private lateinit var binding: FragmentReminderListBinding
+
+    private lateinit var geofenceClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        PendingIntent.getBroadcast(
+            requireContext(),
+            PENDING_INTENT_REQUEST_CODE,
+            Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
+                action = ReminderDescriptionActivity.ACTION_GEOFENCE_EVENT
+            },
+            when {
+                isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                else -> PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +71,7 @@ class ReminderListFragment : Fragment() {
         setupRecyclerView()
         setupActionListeners()
         setupObservers()
+        geofenceClient = LocationServices.getGeofencingClient(requireActivity())
     }
 
     private fun setupObservers() {
@@ -55,12 +90,34 @@ class ReminderListFragment : Fragment() {
                     binding.noDataTextView.text = getText(R.string.message_no_reminders_found)
                     binding.noDataTextView.isVisible = true
                 }
-                RemindersAction.NoRemindersFound -> {
+                RemindersAction.NoRemindersFound ->
                     binding.noDataTextView.isVisible = true
+                RemindersAction.UpdateRemindersSuccess -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_update_reminder_success,
+                        toastType = ToastType.SUCCESS
+                    )
+                    viewModel.loadReminders()
                 }
-                else -> {
-                    binding.noDataTextView.isVisible = false
+
+                RemindersAction.UpdateRemindersError ->
+                    context?.showCustomToast(
+                        titleResId = R.string.message_update_reminder_error,
+                        toastType = ToastType.ERROR
+                    )
+                is RemindersAction.DeleteRemindersSuccess -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_delete_reminder_success,
+                    )
+                    viewModel.loadReminders()
                 }
+                is RemindersAction.DeleteRemindersError -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_delete_reminder_error,
+                        toastType = ToastType.ERROR
+                    )
+                }
+                else -> binding.noDataTextView.isVisible = false
             }
         }
     }
@@ -98,9 +155,62 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // Todo improve this recycler view Setup
-        val adapter = RemindersListAdapter {
+        val adapter = RemindersListAdapter(
+                onReminderItemClick = {
+                    startActivity(ReminderDescriptionActivity.newIntent(requireContext(), it))
+                },
+                viewsResIdActions = listOf(
+                    Pair(R.id.imageReminderStatus) { updateGeofenceStatus(it) },
+                    Pair(R.id.imageDeleteReminder) { deleteReminder(it) }
+                )
+            )
+        binding.reminderssRecyclerView.setup(adapter)
+    }
+
+    private fun updateGeofenceStatus(reminder: ReminderItemView) {
+        viewModel.updateGeofenceStatus(
+            reminderId = reminder.id,
+            isGeofenceEnable = reminder.isGeofenceEnable.not()
+        )
+        if (reminder.isGeofenceEnable) {
+            removeGeofence(reminder)
+        } else {
+            addGeofence(reminder)
         }
-         binding.reminderssRecyclerView.setup(adapter)
+    }
+
+    private fun deleteReminder(reminder: ReminderItemView) {
+        removeGeofence(reminder)
+        viewModel.deleteReminder(reminder)
+    }
+
+    private fun addGeofence(reminder: ReminderItemView) {
+        geofenceManager.addGeofence(
+            geofenceClient = geofenceClient,
+            geofencePendingIntent = geofencePendingIntent,
+            id = reminder.id.toString(),
+            latitude = reminder.latitude,
+            longitude = reminder.longitude,
+            onAddGeofenceSuccess = { onAddGeofenceSuccess() },
+            onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
+        )
+    }
+
+    private fun removeGeofence(reminder: ReminderItemView) {
+        println("${reminder.title}")
+    }
+
+    private fun onAddGeofenceSuccess() {
+        context?.showCustomToast(titleResId = R.string.geofence_added)
+    }
+
+    private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {
+        context?.showCustomToast(
+            titleText = String.format(
+                getString(R.string.geofence_error),
+                getString(reasonStringRes)
+            ),
+            toastType = ToastType.WARNING
+        )
     }
 }
