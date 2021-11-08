@@ -15,7 +15,7 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
-import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity
+import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
@@ -23,7 +23,7 @@ import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEquals
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.setup
 import com.udacity.locationreminder.utils.showCustomToast
-import com.udacity.locationreminder.utils.showDialog
+import com.udacity.locationreminder.utils.showCustomDialog
 import com.udacity.locationreminder.utils.signOut
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -128,7 +128,7 @@ class ReminderListFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.logout -> {
-                    showDialog(
+                    activity?.showCustomDialog(
                         context = context,
                         title = getString(R.string.logout),
                         message = getString(R.string.logout_confirmation_message),

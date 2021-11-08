@@ -3,24 +3,116 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reminderDetailsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:context=".locationreminders.ReminderDescriptionActivity">
-        <!--TODO: add the design of the reminder details-->
+        android:background="@color/solidWhite">
 
-        <TextView
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/reminderDetailsAppBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Reminder Details"
-            android:textSize="@dimen/text_size_large"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:titleTextColor="@color/textColorPrimary">
 
-    </LinearLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/reminderDetailsToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:importantForAccessibility="yes"
+                app:layout_collapseMode="none"
+                app:navigationContentDescription="@string/label_go_back_to_reminders"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/reminder_details"
+                app:titleTextColor="@color/solidWhite" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/spacing_md"
+            app:layout_constraintTop_toBottomOf="@+id/reminderDetailsAppBarLayout">
+
+            <TextView
+                android:id="@+id/reminderTitle"
+                style="@style/TextAppearance.LocationReminderAppTheme.Title.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_very_large_01"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Take photos in the Android's park" />
+
+            <TextView
+                android:id="@+id/reminderDescription"
+                style="@style/TextAppearance.LocationReminderAppTheme.List.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderTitle"
+                tools:text="There is a lot of Androids in there! Go for it!" />
+
+            <TextView
+                android:id="@+id/reminderLocationName"
+                style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderDescription"
+                tools:text="Google Head Quarters" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageReminderGeofenceStatus"
+                android:layout_width="@dimen/icon_size_medium"
+                android:layout_height="@dimen/icon_size_medium"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@+id/isGeofenceEnableSwitch"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/isGeofenceEnableSwitch"
+                app:layout_constraintTop_toTopOf="@+id/isGeofenceEnableSwitch"
+                tools:srcCompat="@drawable/ic_map_alert_bg_transparent_enable" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/isGeofenceEnableSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:checked="true"
+                android:text="@string/geofence_is_enabled"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderLocationName" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonDeleteReminderAndGeofence"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xl"
+                android:layout_marginEnd="@dimen/spacing_xl"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:textColor="@color/colorAccent"
+                android:text="@string/text_button_delete_reminder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

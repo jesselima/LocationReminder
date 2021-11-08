@@ -26,7 +26,7 @@
             android:exported="false"
             android:label="@string/title_activity_on_boarding"
             android:theme="@style/LocationReminderAppTheme.NoActionBar" />
-        <activity android:name=".locationreminders.ReminderDescriptionActivity" />
+        <activity android:name=".locationreminders.reminderdetails.ReminderDescriptionActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

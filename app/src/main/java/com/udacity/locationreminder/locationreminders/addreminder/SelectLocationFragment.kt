@@ -32,7 +32,7 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentSelectLocationBinding
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
-import com.udacity.locationreminder.utils.showDialog
+import com.udacity.locationreminder.utils.showCustomDialog
 import java.util.Locale
 
 private const val MAP_START_ZOOM = 15.0F
@@ -110,7 +110,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun showBackgroundPermissionDialogError() {
-        showDialog(
+        activity?.showCustomDialog(
             context = requireContext(),
             title = getString(R.string.message_request_background_location_title),
             message = getString(R.string.message_request_background_location_description),

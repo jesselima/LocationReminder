@@ -1,16 +1,18 @@
 package com.udacity.locationreminder.utils
 
+import android.app.Activity
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.LayoutCustomToastBinding
 
-fun Fragment.showDialog(
+fun Activity.showCustomDialog(
     context: Context?,
     title: String = resources.getString(R.string.attention),
     message: String = resources.getString(R.string.something_went_wrong),

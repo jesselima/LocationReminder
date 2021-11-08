@@ -42,6 +42,22 @@ class GeofenceManagerImpl: GeofenceManager {
         }
     }
 
+    override fun removeGeofence(
+        geofenceClient: GeofencingClient,
+        id: String,
+        onRemoveGeofenceSuccess: (() -> Unit)?,
+        onRemoveGeofenceFailure: ((Int) -> Unit)?
+    ) {
+        geofenceClient.removeGeofences(listOf(id)).run {
+            addOnSuccessListener {
+                onRemoveGeofenceSuccess?.invoke()
+            }
+            addOnFailureListener {
+                onRemoveGeofenceFailure?.invoke((it as ApiException).mapCodeToMessage())
+            }
+        }
+    }
+
     private fun createGeofenceRequest(geofence: Geofence) = GeofencingRequest.Builder()
         .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
         .addGeofence(geofence)

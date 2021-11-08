@@ -9,6 +9,7 @@ import com.udacity.locationreminder.locationreminders.addreminder.AddReminderVie
 import com.udacity.locationreminder.locationreminders.addreminder.InputValidatorsUseCase
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManagerImpl
+import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionViewModel
 import com.udacity.locationreminder.utils.setupNotificationChannel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -33,6 +34,11 @@ class LocationReminderApp : Application() {
             }
             viewModel {
                 RemindersListViewModel(
+                    remindersLocalRepository = get(),
+                )
+            }
+            viewModel {
+                ReminderDescriptionViewModel(
                     remindersLocalRepository = get(),
                 )
             }

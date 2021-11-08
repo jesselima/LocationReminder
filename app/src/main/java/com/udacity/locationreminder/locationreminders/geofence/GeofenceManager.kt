@@ -6,6 +6,7 @@ import com.google.android.gms.location.GeofencingClient
 import java.util.concurrent.TimeUnit
 
 interface GeofenceManager {
+
     fun addGeofence(
         geofenceClient: GeofencingClient,
         geofencePendingIntent: PendingIntent,
@@ -17,5 +18,12 @@ interface GeofenceManager {
         transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
         onAddGeofenceSuccess: (() -> Unit)? = null,
         onAddGeofenceFailure: ((Int) -> Unit)? = null
+    )
+
+    fun removeGeofence(
+        geofenceClient: GeofencingClient,
+        id: String,
+        onRemoveGeofenceSuccess: (() -> Unit)? = null,
+        onRemoveGeofenceFailure: ((Int) -> Unit)? = null
     )
 }

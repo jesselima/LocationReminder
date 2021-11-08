@@ -27,7 +27,7 @@ import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentAddReminderBinding
-import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity.Companion.ACTION_GEOFENCE_EVENT
+import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity.Companion.ACTION_GEOFENCE_EVENT
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
@@ -36,7 +36,7 @@ import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGr
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.hideKeyboard
 import com.udacity.locationreminder.utils.showCustomToast
-import com.udacity.locationreminder.utils.showDialog
+import com.udacity.locationreminder.utils.showCustomDialog
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
@@ -264,7 +264,7 @@ class AddReminderFragment : Fragment() {
 
     private fun isBackgroundPermissionGranted(): Boolean {
         return if (isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-            showDialog(
+            activity?.showCustomDialog(
                 context = requireContext(),
                 title = getString(R.string.message_request_background_location_title),
                 message = getString(R.string.message_request_background_location_description),
