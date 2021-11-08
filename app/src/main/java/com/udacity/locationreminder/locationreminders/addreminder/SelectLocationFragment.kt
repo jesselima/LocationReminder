@@ -313,10 +313,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             currentLocationMarker = mapWithPoi.addMarker(
                 MarkerOptions()
                     .position(poi.latLng)
-                    .title(String.format(
-                        getString(R.string.poi_lat_long_snippet),
-                        getString(R.string.poi_dropped_pin),
-                        poi.name))
+                    .title(poi.name)
                     .snippet(snippet)
             )
             currentLocationMarker?.showInfoWindow()
