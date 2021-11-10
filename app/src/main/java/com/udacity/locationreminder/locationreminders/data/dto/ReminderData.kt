@@ -46,7 +46,7 @@ fun ReminderData.mapToPresentationModel() : ReminderItemView {
         poiId = poiId,
         circularRadius = circularRadius ?: 50f,
         expiration = TimeUnit.DAYS.toMillis(1),
-        transitionType = Geofence.GEOFENCE_TRANSITION_ENTER,
+        transitionType = transitionType ?: 1,
         isGeofenceEnable = isGeofenceEnable ?: false
     )
 }

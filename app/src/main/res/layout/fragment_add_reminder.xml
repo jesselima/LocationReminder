@@ -162,8 +162,8 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="@dimen/spacing_very_large_05"
-                    android:layout_height="@dimen/spacing_very_large_05"
+                    android:layout_width="@dimen/icon_size_very_large_03"
+                    android:layout_height="@dimen/icon_size_very_large_03"
                     android:layout_marginEnd="@dimen/slider_background_image_margin_end"
                     app:layout_constraintBottom_toBottomOf="@+id/sliderCircularRadius"
                     app:layout_constraintEnd_toEndOf="@+id/sliderCircularRadius"

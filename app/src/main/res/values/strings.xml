@@ -2,7 +2,7 @@
     <string name="app_name">Reminders in Location</string>
     <string name="error_happened">Error happened</string>
     <string name="retry">Retry</string>
-    <string name="no_data">No reminders data\n\nTry to add some reminder.</string>
+    <string name="no_data">I hope you do not forget anything\nbecause you have no reminder.\n\nWhat about to add some?</string>
     <string name="reminder_title">Reminder title</string>
     <string name="reminder_location_name">Location name</string>
     <string name="reminder_desc">Description</string>
@@ -183,11 +183,16 @@
     <string name="when_i_enter">When I enter</string>
     <string name="when_i_exit">When I exit</string>
     <string name="reminder_details">Reminder details</string>
-    <string name="geofence_is_enabled">Geofance is anebled</string>
-    <string name="text_button_delete_reminder">Delete reminder</string>
+    <string name="geofence_is_enabled">Enable/Disable Geofence</string>
+    <string name="text_button_delete_reminder">Delete</string>
+    <string name="text_button_edit_reminder">Edit reminder</string>
     <string name="geofence_updated">Geofence updated</string>
     <string name="message_delete_reminder">Delete reminder?</string>
     <string name="message_delete_reminder_description">The local reminder data and geofence trigger will be removed.</string>
+    <string name="circular_radius_and_alert_type">Circular radius (meters) and\nalert type (enter or exit)</string>
+    <string name="coordinates_lat">Latitude</string>
+    <string name="coordinates_lng">Longitude</string>
+
 
     <string-array name="units_array">
         <item>DAYS</item>

@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
@@ -22,6 +23,9 @@ import com.udacity.locationreminder.utils.showCustomDialog
 import com.udacity.locationreminder.utils.showCustomToast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+private const val FORMAT_LAT_LNG_DECIMALS = "%.4f"
+private const val ROTATION_FLIP_HORIZONTAL = 180f
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification
@@ -59,11 +63,15 @@ class ReminderDescriptionActivity : AppCompatActivity() {
             this,
             R.layout.activity_reminder_description
         )
-        val reminder = intent.extras?.getSerializable(EXTRA_REMINDER) as ReminderItemView?
-        updateUI(reminder)
         setupListeners()
         setupObservers()
         geofenceClient = LocationServices.getGeofencingClient(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val reminder = intent.extras?.getSerializable(EXTRA_REMINDER) as ReminderItemView?
+        updateUI(reminder)
     }
 
     private fun setupObservers() {
@@ -125,10 +133,25 @@ class ReminderDescriptionActivity : AppCompatActivity() {
         reminder?.let {
             _currentReminderData = reminder
             // update UI
-            binding.reminderTitle.text = reminder.title
-            binding.reminderDescription.text = reminder.description
-            binding.reminderLocationName.text = reminder.locationName
-            binding.isGeofenceEnableSwitch.isChecked = reminder.isGeofenceEnable
+            with(binding) {
+                reminderTitle.text = reminder.title
+                reminderDescription.text = reminder.description
+                reminderLocationName.text = reminder.locationName
+                isGeofenceEnableSwitch.isChecked = reminder.isGeofenceEnable
+                textCurrentCircularRadius.text = String.format(
+                    getString(R.string.circular_radius_unit),
+                    reminder.circularRadius.toInt().toString()
+                )
+                reminderLocationCoordinatesLat.text =
+                    String.format(FORMAT_LAT_LNG_DECIMALS, reminder.latitude)
+                reminderLocationCoordinatesLong.text =
+                    String.format(FORMAT_LAT_LNG_DECIMALS, reminder.longitude)
+
+                if (reminder.transitionType ==  Geofence.GEOFENCE_TRANSITION_EXIT) {
+                    imageViewGeofenceTriggerDirection.rotation = ROTATION_FLIP_HORIZONTAL
+                }
+            }
+
             toggleImageReminderGeofenceStatus(reminder.isGeofenceEnable)
         } ?: showCustomToast(
             titleResId = R.string.message_reminder_details_error,
@@ -137,15 +160,10 @@ class ReminderDescriptionActivity : AppCompatActivity() {
     }
 
     private fun toggleImageReminderGeofenceStatus(isGeofenceEnable: Boolean) {
-        if(isGeofenceEnable) {
-            binding.imageReminderGeofenceStatus.setImageResource(
-                R.drawable.ic_map_alert_bg_transparent_enable
-            )
-        } else {
-            binding.imageReminderGeofenceStatus.setImageResource(
-                R.drawable.ic_map_alert_bg_transparent_disable
-            )
-        }
+        binding.imageReminderGeofenceStatus.setImageResource(
+            if (isGeofenceEnable) R.drawable.ic_map_alert_bg_transparent_enable
+            else R.drawable.ic_map_alert_bg_transparent_disable
+        )
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
@@ -194,7 +212,7 @@ class ReminderDescriptionActivity : AppCompatActivity() {
     }
 
     private fun onRemoveGeofenceSuccess() {
-        showCustomToast(titleResId = R.string.geofence_removed)
+        showCustomToast(titleResId = R.string.geofence_removed, toastType = ToastType.INFO)
     }
 
     private fun geofenceFailure(@StringRes reasonStringRes: Int) {

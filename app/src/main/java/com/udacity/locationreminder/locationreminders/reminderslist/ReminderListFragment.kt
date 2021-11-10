@@ -197,7 +197,29 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {
-        println("${reminder.title}")
+        geofenceManager.removeGeofence(
+            geofenceClient,
+            reminder.id.toString(),
+            onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
+            onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
+        )
+    }
+
+    private fun onRemoveGeofenceSuccess() {
+        context?.showCustomToast(
+            titleResId = R.string.geofence_removed,
+            toastType = ToastType.INFO
+        )
+    }
+
+    private fun geofenceFailure(@StringRes reasonStringRes: Int) {
+        context?.showCustomToast(
+            titleText = String.format(
+                getString(R.string.geofence_error),
+                getString(reasonStringRes)
+            ),
+            toastType = ToastType.WARNING
+        )
     }
 
     private fun onAddGeofenceSuccess() {
