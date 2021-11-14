@@ -1,23 +1,18 @@
 package com.udacity.locationreminder.locationreminders.reminderdetails
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.ActivityReminderDescriptionBinding
 import com.udacity.locationreminder.locationreminders.ReminderItemView
-import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
-import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
-import com.udacity.locationreminder.locationreminders.reminderslist.PENDING_INTENT_REQUEST_CODE
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.showCustomDialog
 import com.udacity.locationreminder.utils.showCustomToast
@@ -39,37 +34,14 @@ class ReminderDescriptionActivity : AppCompatActivity() {
 
     private lateinit var geofenceClient: GeofencingClient
 
-    private val geofencePendingIntent: PendingIntent by lazy {
-        PendingIntent.getBroadcast(
-            this,
-            PENDING_INTENT_REQUEST_CODE,
-            Intent(this, GeofenceBroadcastReceiver::class.java).apply {
-                action = ACTION_GEOFENCE_EVENT
-            },
-            when {
-                isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                }
-                else -> PendingIntent.FLAG_UPDATE_CURRENT
-            }
-        )
-    }
-
     private var _currentReminderData: ReminderItemView = ReminderItemView()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_reminder_description
-        )
+        binding = ActivityReminderDescriptionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupListeners()
         setupObservers()
-        geofenceClient = LocationServices.getGeofencingClient(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
         val reminder = intent.extras?.getSerializable(EXTRA_REMINDER) as ReminderItemView?
         updateUI(reminder)
     }
@@ -90,32 +62,12 @@ class ReminderDescriptionActivity : AppCompatActivity() {
                         toastType = ToastType.ERROR
                     )
                 }
-                ReminderDetailsAction.UpdateReminderDatabaseSuccess -> {
-                    showCustomToast(
-                        titleResId = R.string.message_update_reminder_success,
-                        toastType = ToastType.SUCCESS
-                    )
-                }
-                ReminderDetailsAction.UpdateReminderDatabaseError -> {
-                    showCustomToast(
-                        titleResId = R.string.message_update_reminder_error,
-                        toastType = ToastType.ERROR
-                    )
-                }
             }
         }
     }
 
     private fun setupListeners() {
         binding.reminderDetailsToolbar.setNavigationOnClickListener { finish() }
-
-        binding.isGeofenceEnableSwitch.setOnCheckedChangeListener { _ , isChecked ->
-            _currentReminderData.isGeofenceEnable = isChecked
-            toggleImageReminderGeofenceStatus(isChecked)
-            updateReminderOnLocalDatabase(_currentReminderData)
-            updateGeofenceStatus(_currentReminderData)
-        }
-
         binding.buttonDeleteReminderAndGeofence.setOnClickListener {
             showCustomDialog(
                 context = this,
@@ -137,7 +89,23 @@ class ReminderDescriptionActivity : AppCompatActivity() {
                 reminderTitle.text = reminder.title
                 reminderDescription.text = reminder.description
                 reminderLocationName.text = reminder.locationName
-                isGeofenceEnableSwitch.isChecked = reminder.isGeofenceEnable
+
+                if (reminder.isGeofenceEnable) {
+                    imageReminderGeofenceStatusDisabled.isVisible = false
+                    isGeofenceEnableAnimation.playAnimation()
+                    textGeofenceStatus.text = getString(R.string.label_geofence_is_enable)
+                    textGeofenceStatus.setTextColor(ContextCompat.getColor(
+                        applicationContext, (R.color.colorPrimary))
+                    )
+                } else {
+                    imageReminderGeofenceStatusDisabled.isVisible = true
+                    isGeofenceEnableAnimation.isVisible = false
+                    textGeofenceStatus.text = getString(R.string.label_geofence_is_disable)
+                    textGeofenceStatus.setTextColor(
+                        ContextCompat.getColor(applicationContext, (R.color.colorSecondaryLight))
+                    )
+                }
+
                 textCurrentCircularRadius.text = String.format(
                     getString(R.string.circular_radius_unit),
                     reminder.circularRadius.toInt().toString()
@@ -152,50 +120,15 @@ class ReminderDescriptionActivity : AppCompatActivity() {
                 }
             }
 
-            toggleImageReminderGeofenceStatus(reminder.isGeofenceEnable)
         } ?: showCustomToast(
             titleResId = R.string.message_reminder_details_error,
             toastType = ToastType.ERROR
         )
     }
 
-    private fun toggleImageReminderGeofenceStatus(isGeofenceEnable: Boolean) {
-        binding.imageReminderGeofenceStatus.setImageResource(
-            if (isGeofenceEnable) R.drawable.ic_map_alert_bg_transparent_enable
-            else R.drawable.ic_map_alert_bg_transparent_disable
-        )
-    }
-
-    private fun updateGeofenceStatus(reminder: ReminderItemView) {
-        if (reminder.isGeofenceEnable) {
-            removeGeofence(reminder)
-        } else {
-            addGeofence(reminder)
-        }
-    }
-
-    private fun updateReminderOnLocalDatabase(reminder: ReminderItemView) {
-        viewModel.updateReminder(
-            reminderId = reminder.id,
-            isGeofenceEnable = reminder.isGeofenceEnable.not()
-        )
-    }
-
     private fun deleteReminder(reminder: ReminderItemView) {
         removeGeofence(reminder)
         viewModel.deleteReminder(reminder)
-    }
-
-    private fun addGeofence(reminder: ReminderItemView) {
-        geofenceManager.addGeofence(
-            geofenceClient = geofenceClient,
-            geofencePendingIntent = geofencePendingIntent,
-            id = reminder.id.toString(),
-            latitude = reminder.latitude,
-            longitude = reminder.longitude,
-            onAddGeofenceSuccess = { onAddGeofenceSuccess() },
-            onAddGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes)  }
-        )
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {
@@ -205,10 +138,6 @@ class ReminderDescriptionActivity : AppCompatActivity() {
             onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
             onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
         )
-    }
-
-    private fun onAddGeofenceSuccess() {
-        showCustomToast(titleResId = R.string.geofence_added)
     }
 
     private fun onRemoveGeofenceSuccess() {

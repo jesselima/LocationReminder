@@ -185,14 +185,15 @@
     <string name="reminder_details">Reminder details</string>
     <string name="geofence_is_enabled">Enable/Disable Geofence</string>
     <string name="text_button_delete_reminder">Delete</string>
-    <string name="text_button_edit_reminder">Edit reminder</string>
+    <string name="text_button_edit_reminder">Edit</string>
     <string name="geofence_updated">Geofence updated</string>
     <string name="message_delete_reminder">Delete reminder?</string>
     <string name="message_delete_reminder_description">The local reminder data and geofence trigger will be removed.</string>
     <string name="circular_radius_and_alert_type">Circular radius (meters) and\nalert type (enter or exit)</string>
     <string name="coordinates_lat">Latitude</string>
     <string name="coordinates_lng">Longitude</string>
-
+    <string name="label_geofence_is_disable">Geofence is disabled</string>
+    <string name="label_geofence_is_enable">Geofence is enabled</string>
 
     <string-array name="units_array">
         <item>DAYS</item>

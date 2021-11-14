@@ -23,19 +23,6 @@ class ReminderDescriptionViewModel(
         _state.value = ReminderDetailsState()
     }
 
-    fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean) {
-        viewModelScope.launch {
-            val result = remindersLocalRepository.updateReminder(reminderId, isGeofenceEnable)
-            if (result == 1) {
-                _action.value = ReminderDetailsAction.UpdateReminderDatabaseSuccess
-                _action.value = null
-            } else {
-                _action.value = ReminderDetailsAction.UpdateReminderDatabaseError
-                _action.value = null
-            }
-        }
-    }
-
     fun deleteReminder(reminderItemView: ReminderItemView) {
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
