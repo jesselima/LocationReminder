@@ -1,18 +1,23 @@
 package com.udacity.locationreminder.locationreminders.reminderdetails
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.databinding.ActivityReminderDescriptionBinding
+import com.udacity.locationreminder.databinding.FragmentReminderDescriptionBinding
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
+import com.udacity.locationreminder.utils.ReminderConstants
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.showCustomDialog
 import com.udacity.locationreminder.utils.showCustomToast
@@ -25,39 +30,48 @@ private const val ROTATION_FLIP_HORIZONTAL = 180f
 /**
  * Activity that displays the reminder details after the user clicks on the notification
  */
-class ReminderDescriptionActivity : AppCompatActivity() {
+class ReminderDescriptionFragment : Fragment() {
 
-    private lateinit var binding: ActivityReminderDescriptionBinding
+    private lateinit var binding: FragmentReminderDescriptionBinding
 
-    val viewModel: ReminderDescriptionViewModel by viewModel()
+    val viewModel: ReminderDetailsViewModel by viewModel()
     private val geofenceManager: GeofenceManager by inject()
 
     private lateinit var geofenceClient: GeofencingClient
 
     private var _currentReminderData: ReminderItemView = ReminderItemView()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityReminderDescriptionBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentReminderDescriptionBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupListeners()
         setupObservers()
-        val reminder = intent.extras?.getSerializable(EXTRA_REMINDER) as ReminderItemView?
+        geofenceClient = LocationServices.getGeofencingClient(requireContext())
+        val reminder = activity?.intent?.extras
+            ?.getSerializable(ReminderConstants.argsKeyReminder) as ReminderItemView?
         updateUI(reminder)
     }
 
     private fun setupObservers() {
-        viewModel.action.observe(this) { action ->
+        viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
                 ReminderDetailsAction.DeleteReminderSuccess -> {
-                    showCustomToast(
+                    context?.showCustomToast(
                         titleResId = R.string.message_delete_reminder_success,
                         toastType = ToastType.INFO
                     )
-                    finish()
+                    activity?.finish()
                 }
                 ReminderDetailsAction.DeleteReminderError -> {
-                    showCustomToast(
+                    context?.showCustomToast(
                         titleResId = R.string.message_delete_reminder_error,
                         toastType = ToastType.ERROR
                     )
@@ -67,10 +81,18 @@ class ReminderDescriptionActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.reminderDetailsToolbar.setNavigationOnClickListener { finish() }
+        binding.reminderDetailsToolbar.setNavigationOnClickListener { activity?.finish() }
+
+        binding.buttonEditReminderAndGeofence.setOnClickListener { view ->
+            view.findNavController().navigate(R.id.navigateToAddReminder, bundleOf(
+                ReminderConstants.argsKeyLastSelectedLocation to _currentReminderData,
+                ReminderConstants.argsKeyIsEditing to true
+            ))
+        }
+
         binding.buttonDeleteReminderAndGeofence.setOnClickListener {
-            showCustomDialog(
-                context = this,
+            activity?.showCustomDialog(
+                context = context,
                 title = getString(R.string.message_delete_reminder),
                 message = getString(R.string.message_delete_reminder_description),
                 positiveButtonText = getString(R.string.text_button_delete_reminder),
@@ -95,14 +117,14 @@ class ReminderDescriptionActivity : AppCompatActivity() {
                     isGeofenceEnableAnimation.playAnimation()
                     textGeofenceStatus.text = getString(R.string.label_geofence_is_enable)
                     textGeofenceStatus.setTextColor(ContextCompat.getColor(
-                        applicationContext, (R.color.colorPrimary))
+                        requireContext(), (R.color.colorPrimary))
                     )
                 } else {
                     imageReminderGeofenceStatusDisabled.isVisible = true
                     isGeofenceEnableAnimation.isVisible = false
                     textGeofenceStatus.text = getString(R.string.label_geofence_is_disable)
                     textGeofenceStatus.setTextColor(
-                        ContextCompat.getColor(applicationContext, (R.color.colorSecondaryLight))
+                        ContextCompat.getColor(requireContext(), (R.color.colorSecondaryLight))
                     )
                 }
 
@@ -120,7 +142,7 @@ class ReminderDescriptionActivity : AppCompatActivity() {
                 }
             }
 
-        } ?: showCustomToast(
+        } ?: context?.showCustomToast(
             titleResId = R.string.message_reminder_details_error,
             toastType = ToastType.ERROR
         )
@@ -141,33 +163,16 @@ class ReminderDescriptionActivity : AppCompatActivity() {
     }
 
     private fun onRemoveGeofenceSuccess() {
-        showCustomToast(titleResId = R.string.geofence_removed, toastType = ToastType.INFO)
+        context?.showCustomToast(titleResId = R.string.geofence_removed, toastType = ToastType.INFO)
     }
 
     private fun geofenceFailure(@StringRes reasonStringRes: Int) {
-        showCustomToast(
+        context?.showCustomToast(
             titleText = String.format(
                 getString(R.string.geofence_error),
                 getString(reasonStringRes)
             ),
             toastType = ToastType.WARNING
         )
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
-
-    companion object {
-        private const val EXTRA_REMINDER = "EXTRA_REMINDER"
-        internal const val ACTION_GEOFENCE_EVENT =
-            "ReminderDescriptionActivity.geofences.action.ACTION_GEOFENCE_EVENT"
-
-        fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
-            return Intent(context, ReminderDescriptionActivity::class.java).apply {
-                putExtra(EXTRA_REMINDER, reminderItemView)
-            }
-        }
     }
 }

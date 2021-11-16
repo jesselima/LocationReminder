@@ -15,15 +15,15 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
-import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
+import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.setup
-import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.showCustomDialog
+import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.signOut
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,7 +44,7 @@ class ReminderListFragment : Fragment() {
             requireContext(),
             PENDING_INTENT_REQUEST_CODE,
             Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
-                action = ReminderDescriptionActivity.ACTION_GEOFENCE_EVENT
+                action = ReminderEditorActivity.ACTION_GEOFENCE_EVENT
             },
             when {
                 isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
@@ -157,7 +157,7 @@ class ReminderListFragment : Fragment() {
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter(
                 onReminderItemClick = {
-                    startActivity(ReminderDescriptionActivity.newIntent(requireContext(), it))
+                    startActivity(ReminderEditorActivity.newIntent(requireContext(), it))
                 },
                 viewsResIdActions = listOf(
                     Pair(R.id.imageReminderStatus) { updateGeofenceStatus(it) },

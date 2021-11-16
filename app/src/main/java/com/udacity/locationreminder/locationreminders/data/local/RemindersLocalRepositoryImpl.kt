@@ -80,4 +80,10 @@ class RemindersLocalRepositoryImpl(
         }
     }
 
+    override suspend fun updateReminder(reminder: ReminderData): Int {
+        return withContext(ioDispatcher) {
+            remindersDao.updateReminder(reminder)
+        }
+    }
+
 }

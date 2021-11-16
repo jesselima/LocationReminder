@@ -50,4 +50,7 @@ interface RemindersDao {
     @Query("UPDATE reminders SET is_geofence_enable = :isGeofenceEnable WHERE id = :reminderId")
     fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int
 
+    @Update
+    fun updateReminder(reminder: ReminderData): Int
+
 }

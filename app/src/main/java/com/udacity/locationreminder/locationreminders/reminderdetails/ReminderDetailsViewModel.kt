@@ -9,7 +9,7 @@ import com.udacity.locationreminder.locationreminders.data.RemindersLocalReposit
 import com.udacity.locationreminder.locationreminders.mapToDataModel
 import kotlinx.coroutines.launch
 
-class ReminderDescriptionViewModel(
+class ReminderDetailsViewModel(
     private val remindersLocalRepository: RemindersLocalRepository
 ) : ViewModel() {
 

@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/reminderListFragment">
-
-    <activity
-        android:id="@+id/remindersActivity"
-        android:name="com.udacity.locationreminder.locationreminders.RemindersActivity"
-        android:label="MainActivity"/>
 
     <fragment
         android:id="@+id/reminderListFragment"
         android:name="com.udacity.locationreminder.locationreminders.reminderslist.ReminderListFragment"
-        android:label="ReminderListFragment">
+        android:label="ReminderListFragment"
+        tools:layout="@layout/fragment_reminder_list">
         <action
             android:id="@+id/navigateToSaveReminder"
             app:destination="@id/saveReminderFragment"
@@ -32,7 +29,8 @@
     <fragment
         android:id="@+id/copyrightsListFragment"
         android:name="com.udacity.locationreminder.copyright.CopyrightFragment"
-        android:label="Copyrights">
+        android:label="Copyrights"
+        tools:layout="@layout/fragment_copyrights">
         <action
             android:id="@+id/navigateToReminderList"
             app:destination="@id/reminderListFragment"
@@ -45,7 +43,8 @@
     <fragment
         android:id="@+id/saveReminderFragment"
         android:name="com.udacity.locationreminder.locationreminders.addreminder.AddReminderFragment"
-        android:label="Add Reminder">
+        android:label="Add Reminder"
+        tools:layout="@layout/fragment_add_reminder">
         <action
             android:id="@+id/navigateToReminderList"
             app:destination="@id/reminderListFragment"
@@ -68,12 +67,18 @@
             app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <argument
+            android:name="isEditing"
+            app:argType="boolean"
+            app:nullable="false"
+            android:defaultValue="false"/>
     </fragment>
 
     <fragment
         android:id="@+id/selectLocationFragment"
         android:name="com.udacity.locationreminder.locationreminders.addreminder.SelectLocationFragment"
-        android:label="Select Location">
+        android:label="Select Location"
+        tools:layout="@layout/fragment_select_location">
         <action
             android:id="@+id/navigateToSaveReminderFragment"
             app:destination="@id/saveReminderFragment" />

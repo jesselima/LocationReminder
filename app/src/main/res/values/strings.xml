@@ -68,6 +68,7 @@
     <string name="auth_error_define_linking_or_sign_in">You must determine if you want to continue linking or complete the sign in</string>
     <string name="auth_error_session_expired_or_cleared">The session associated with this sign-in request has either expired or was cleared</string>
     <string name="add_new_reminder">New reminder</string>
+    <string name="update_reminder">Update reminder</string>
     <string name="title_activity_on_boarding">OnBoarding</string>
 
     <string name="content_description_save_reminder">Save reminder</string>
@@ -180,6 +181,7 @@
     <string name="expiration_duration_input_helper_quantity">Number</string>
     <string name="expiration_units">Days/Hours</string>
     <string name="units_days">DAYS</string>
+    <string name="units_never">NEVER</string>
     <string name="when_i_enter">When I enter</string>
     <string name="when_i_exit">When I exit</string>
     <string name="reminder_details">Reminder details</string>
@@ -197,7 +199,6 @@
 
     <string-array name="units_array">
         <item>DAYS</item>
-        <item>HOURS</item>
         <item>NEVER</item>
     </string-array>
 

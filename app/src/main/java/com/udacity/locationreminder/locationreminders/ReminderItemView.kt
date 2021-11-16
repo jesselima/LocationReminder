@@ -18,7 +18,7 @@ data class ReminderItemView(
     var isPoi: Boolean? = null,
     var poiId: String? = null,
     var circularRadius: Float = 50f,
-    var expiration: Long = TimeUnit.DAYS.toMillis(1),
+    var expiration: Long? = null,
     var transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
     var id: Long = System.currentTimeMillis(),
     var isGeofenceEnable: Boolean = false

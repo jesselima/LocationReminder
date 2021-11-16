@@ -27,21 +27,23 @@ import com.google.android.gms.location.LocationServices
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentAddReminderBinding
-import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity.Companion.ACTION_GEOFENCE_EVENT
 import com.udacity.locationreminder.locationreminders.ReminderItemView
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
+import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.hideKeyboard
 import com.udacity.locationreminder.utils.showCustomToast
 import com.udacity.locationreminder.utils.showCustomDialog
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.*
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 private const val PENDING_INTENT_REQUEST_CODE = 0
+private const val CIRCULAR_RADIUS_DEFAULT = 50f
 
 class AddReminderFragment : Fragment() {
 
@@ -59,7 +61,7 @@ class AddReminderFragment : Fragment() {
             requireContext(),
             PENDING_INTENT_REQUEST_CODE,
             Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
-                action = ACTION_GEOFENCE_EVENT
+                action = ReminderEditorActivity.ACTION_GEOFENCE_EVENT
             },
             when {
                 isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
@@ -85,14 +87,26 @@ class AddReminderFragment : Fragment() {
         setupListeners()
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
         checkNavArgsUpdateViewModelData()
+        viewModel.setSelectedReminder(args.lastSelectedLocation)
+        setupAppBarTitle()
+    }
+
+    private fun setupAppBarTitle() {
+        binding.toolbar.title = if (args.isEditing) {
+            getString(R.string.update_reminder)
+        } else {
+            getString(R.string.add_new_reminder)
+        }
     }
 
     private fun checkNavArgsUpdateViewModelData() {
-        _currentReminderData.locationName = args.lastSelectedLocation?.locationName
-        _currentReminderData.latitude = args.lastSelectedLocation?.latitude
-        _currentReminderData.longitude = args.lastSelectedLocation?.longitude
-        _currentReminderData.isPoi = args.lastSelectedLocation?.isPoi ?: false
-        _currentReminderData.poiId = args.lastSelectedLocation?.poiId
+        with(_currentReminderData) {
+            locationName = args.lastSelectedLocation?.locationName
+            latitude = args.lastSelectedLocation?.latitude
+            longitude = args.lastSelectedLocation?.longitude
+            isPoi = args.lastSelectedLocation?.isPoi ?: false
+            poiId = args.lastSelectedLocation?.poiId
+        }
         viewModel.setSelectedReminder(_currentReminderData)
     }
 
@@ -103,25 +117,24 @@ class AddReminderFragment : Fragment() {
             )
         }
 
-        binding.saveReminderToolbar.setNavigationOnClickListener {
-            findNavController().navigate(AddReminderFragmentDirections.navigateToReminderList())
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
     private fun setupListeners() {
         with(binding) {
-
-            binding.reminderTitle.doOnTextChanged { text, _, _, _ ->
+            reminderTitle.doOnTextChanged { text, _, _, _ ->
                 if (viewModel.isTitleValid(text.toString())) binding.inputLayoutTitle.error = null
             }
 
-            binding.reminderLocationName.doOnTextChanged { text, _, _, _ ->
+            reminderLocationName.doOnTextChanged { text, _, _, _ ->
                 if (viewModel.isLocationNameValid(text.toString())) {
                     binding.inputLayoutLocationName.error = null
                 }
             }
 
-            binding.reminderDescription.doOnTextChanged { text, _, _, _ ->
+            reminderDescription.doOnTextChanged { text, _, _, _ ->
                 if (viewModel.isDescriptionValid(text.toString())) {
                     binding.inputLayoutDescription.error = null
                 }
@@ -135,13 +148,7 @@ class AddReminderFragment : Fragment() {
             }
 
             inputLayoutExpirationDuration.editText?.setText(getString(R.string.units_days))
-            (inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
-                ArrayAdapter(requireContext(), R.layout.list_item,resources.getStringArray(
-                    R.array.units_array)))
-            inputLayoutExpirationDuration.editText?.addTextChangedListener {
-                inputLayoutExpirationDurationValue.isEnabled =
-                    it.toString() != ExpirationUnits.NEVER.name
-            }
+            setupExpirationUnitInputList()
 
             inputLayoutExpirationDurationValue.editText?.addTextChangedListener { durationInput ->
                 durationInput?.let { value ->
@@ -169,11 +176,28 @@ class AddReminderFragment : Fragment() {
             inputLayoutExpirationDuration.setOnClickListener { hideKeyboard() }
             autocompleteExpirationDuration.setOnClickListener { hideKeyboard() }
 
+            isGeofenceEnableSwitch.setOnCheckedChangeListener { _, isChecked ->
+                _currentReminderData.isGeofenceEnable = isChecked
+                viewModel.setSelectedReminder(_currentReminderData)
+            }
+
             actionButtonSaveReminder.setOnClickListener {
                 extractInputValues()
-                viewModel.setSelectedReminder(_currentReminderData)
-                if(isBackgroundPermissionGranted()) viewModel.validateFieldsSaveReminder()
+                if(isBackgroundPermissionGranted()) {
+                    viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
+                }
             }
+        }
+    }
+
+    private fun setupExpirationUnitInputList(selectedResId: Int = R.string.units_days) {
+        binding.inputLayoutExpirationDuration.editText?.setText(getString(selectedResId))
+        (binding.inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
+            ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(
+                R.array.units_array)))
+        binding.inputLayoutExpirationDuration.editText?.addTextChangedListener {
+            binding.inputLayoutExpirationDurationValue.isEnabled =
+                it.toString() != ExpirationUnits.NEVER.name
         }
     }
 
@@ -181,25 +205,52 @@ class AddReminderFragment : Fragment() {
         _currentReminderData.title = binding.inputLayoutTitle.editText?.text.toString()
         _currentReminderData.locationName = binding.inputLayoutLocationName.editText?.text.toString()
         _currentReminderData.description = binding.inputLayoutDescription.editText?.text.toString()
+        viewModel.setSelectedReminder(_currentReminderData)
     }
 
     private fun setupObservers() {
         viewModel.selectedReminder.observe(viewLifecycleOwner) { reminder ->
-            reminder?.latitude?.let { lat ->
-                reminder.longitude?.let { lng ->
-                    binding.textSelectedLocation.text = String.format(
-                        Locale.getDefault(), getString(R.string.lat_long_snippet), lat, lng
-                    )
-                    binding.buttonSelectLocation.text =
-                        getString(R.string.text_button_change_location)
+            with(binding) {
+                reminder?.latitude?.let { lat ->
+                    reminder.longitude?.let { lng ->
+                        textSelectedLocation.text = String.format(
+                            Locale.getDefault(), getString(R.string.lat_long_snippet), lat, lng
+                        )
+                        buttonSelectLocation.text =
+                            getString(R.string.text_button_change_location)
+                    }
+                } ?: run {
+                    buttonSelectLocation.text = getString(R.string.text_button_select_location)
                 }
-            } ?: run {
-                binding.buttonSelectLocation.text = getString(R.string.text_button_select_location)
-            }
 
-            reminder?.locationName?.let {
-                binding.reminderLocationName.setText(it)
-            } ?: binding.reminderLocationName.setText("")
+                reminder?.locationName?.let {
+                    reminderLocationName.setText(it)
+                } ?: reminderLocationName.setText("")
+
+                reminderTitle.setText(reminder?.title)
+                reminderDescription.setText(reminder?.description)
+                sliderCircularRadius.value = reminder?.circularRadius ?: CIRCULAR_RADIUS_DEFAULT
+
+                radioGroupTransitionType.check(
+                    when(reminder?.transitionType) {
+                        Geofence.GEOFENCE_TRANSITION_ENTER -> R.id.radioButtonEnter
+                        else -> R.id.radioButtonExit
+                    }
+                )
+
+                isGeofenceEnableSwitch.isChecked = reminder?.isGeofenceEnable ?: false
+
+                reminder?.expiration?.let {
+                    if (it == -1L) {
+                        setupExpirationUnitInputList(R.string.units_never)
+                        inputLayoutExpirationDurationValue.isEnabled = false
+                    } else {
+                        expirationDurationEditText.setText(
+                            TimeUnit.MILLISECONDS.toDays(it).toString()
+                        )
+                    }
+                }
+            }
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
@@ -209,17 +260,23 @@ class AddReminderFragment : Fragment() {
 
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when(action) {
-                is AddReminderAction.AddReminderError ->
+                is AddReminderAction.AddReminderError,
+                is AddReminderAction.UpdateReminderError->
                     context?.showCustomToast(
                         titleResId = R.string.message_saving_reminder_error,
                         toastType = ToastType.ERROR
                     )
-                is AddReminderAction.AddReminderSuccess -> {
+                is AddReminderAction.AddReminderSuccess,
+                is AddReminderAction.UpdateReminderSuccess -> {
                     context?.showCustomToast(
                         titleResId = R.string.message_saving_reminder_success,
                         toastType = ToastType.SUCCESS
                     )
-                    addGeofence(_currentReminderData)
+                    if (_currentReminderData.isGeofenceEnable) {
+                        addGeofence(_currentReminderData)
+                    } else {
+                        findNavController().navigate(R.id.navigateToReminderList)
+                    }
                 }
                 is AddReminderAction.InputErrorFieldTitle ->
                     binding.inputLayoutTitle.error =
@@ -288,9 +345,7 @@ class AddReminderFragment : Fragment() {
 
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(titleResId = R.string.geofence_added)
-        findNavController().navigate(
-            AddReminderFragmentDirections.navigateToReminderList()
-        )
+        findNavController().navigate(R.id.navigateToReminderList)
     }
 
     private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {

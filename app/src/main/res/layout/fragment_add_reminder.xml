@@ -19,7 +19,7 @@
             app:titleTextColor="@color/textColorPrimary">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/saveReminderToolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
@@ -90,7 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_md"
-                    android:layout_marginTop="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_lg"
                     android:layout_marginEnd="@dimen/spacing_md"
                     android:hint="@string/reminder_location_name"
                     app:counterEnabled="true"
@@ -284,6 +284,17 @@
                         android:maxLength="100" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/isGeofenceEnableSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="@string/geofence_is_enabled"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutExpirationDuration" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/actionButtonSaveReminder"
                     style="@style/Widget.MaterialComponents.Button"
@@ -291,14 +302,14 @@
                     android:layout_height="@dimen/button_height_default"
                     android:layout_marginStart="@dimen/margin_button_large"
                     android:layout_marginEnd="@dimen/margin_button_large"
-                    android:layout_marginTop="@dimen/spacing_xl"
                     android:layout_marginBottom="@dimen/spacing_xl"
+                    android:layout_marginTop="@dimen/spacing_md"
                     android:enabled="true"
                     android:text="@string/content_description_save_reminder"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputLayoutExpirationDuration"
+                    app:layout_constraintTop_toBottomOf="@+id/isGeofenceEnableSwitch"
                     tools:enabled="true" />
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator

@@ -51,14 +51,31 @@ class AddReminderViewModel(
         }
     }
 
-    fun validateFieldsSaveReminder() {
+    private fun updateReminder(reminder: ReminderItemView) {
+        viewModelScope.launch {
+            val result = remindersLocalRepository.updateReminder(reminder.mapToDataModel())
+            if (result == 1) {
+                _action.value = AddReminderAction.UpdateReminderSuccess
+                _action.value = null
+            } else {
+                _action.value = AddReminderAction.UpdateReminderError
+                _action.value = null
+            }
+        }
+    }
+
+    fun validateFieldsSaveOrUpdateReminder(isEditing: Boolean = false) {
         if (isTitleValid(_selectedReminder.value?.title) &&
             isLocationNameValid(_selectedReminder.value?.locationName) &&
             isDescriptionValid(_selectedReminder.value?.description) &&
             isLatLngValid()
         ) {
             _selectedReminder.value?.let {
-                saveReminder(it.copy(isGeofenceEnable = true))
+                if (isEditing) {
+                    updateReminder(it)
+                } else {
+                    saveReminder(it)
+                }
             }
         }
     }

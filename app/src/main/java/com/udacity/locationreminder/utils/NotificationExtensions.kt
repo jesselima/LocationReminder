@@ -11,7 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity
+import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
 
 private const val MAX_PROGRESS = 100
 private const val REQUEST_CODE = 0
@@ -76,7 +76,7 @@ fun Context.showOrUpdateNotification(
 
         val notificationIntent = Intent(
             applicationContext,
-            ReminderDescriptionActivity::class.java
+            ReminderEditorActivity::class.java
         ).apply {
             if(shouldIntentNewTask) {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP

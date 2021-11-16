@@ -9,8 +9,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionActivity
 import com.udacity.locationreminder.locationreminders.ReminderItemView
+import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
 
 private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
 
@@ -31,11 +31,11 @@ fun sendNotification(context: Context, reminderItemView: ReminderItemView) {
         notificationManager.createNotificationChannel(channel)
     }
 
-    val intent = ReminderDescriptionActivity.newIntent(context.applicationContext, reminderItemView)
+    val intent = ReminderEditorActivity.newIntent(context.applicationContext, reminderItemView)
 
     //create a pending intent that opens ReminderDescriptionActivity when the user clicks on the notification
     val stackBuilder = TaskStackBuilder.create(context)
-        .addParentStack(ReminderDescriptionActivity::class.java)
+        .addParentStack(ReminderEditorActivity::class.java)
         .addNextIntent(intent)
     val notificationPendingIntent = stackBuilder
         .getPendingIntent(getUniqueId(), PendingIntent.FLAG_UPDATE_CURRENT)
