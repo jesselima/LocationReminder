@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
@@ -30,7 +31,7 @@ private const val ROTATION_FLIP_HORIZONTAL = 180f
 /**
  * Activity that displays the reminder details after the user clicks on the notification
  */
-class ReminderDescriptionFragment : Fragment() {
+class ReminderDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentReminderDescriptionBinding
 
@@ -40,6 +41,7 @@ class ReminderDescriptionFragment : Fragment() {
     private lateinit var geofenceClient: GeofencingClient
 
     private var _currentReminderData: ReminderItemView = ReminderItemView()
+    private val args: ReminderDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,9 +57,14 @@ class ReminderDescriptionFragment : Fragment() {
         setupListeners()
         setupObservers()
         geofenceClient = LocationServices.getGeofencingClient(requireContext())
-        val reminder = activity?.intent?.extras
-            ?.getSerializable(ReminderConstants.argsKeyReminder) as ReminderItemView?
-        updateUI(reminder)
+
+        if (args.isEditing) {
+            updateUI(args.lastSelectedLocation)
+        } else {
+            val reminder = activity?.intent?.extras
+                ?.getSerializable(ReminderConstants.argsKeyReminder) as ReminderItemView?
+            updateUI(reminder)
+        }
     }
 
     private fun setupObservers() {

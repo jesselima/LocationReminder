@@ -74,7 +74,7 @@ class RemindersLocalRepositoryImpl(
         }
     }
 
-    override suspend fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int {
+    override suspend fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean): Int {
         return withContext(ioDispatcher) {
             remindersDao.updateReminder(reminderId, isGeofenceEnable)
         }

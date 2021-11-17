@@ -15,6 +15,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -33,6 +34,7 @@ import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
 import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
+import com.udacity.locationreminder.utils.ReminderConstants
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.hideKeyboard
 import com.udacity.locationreminder.utils.showCustomToast
@@ -87,7 +89,6 @@ class AddReminderFragment : Fragment() {
         setupListeners()
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
         checkNavArgsUpdateViewModelData()
-        viewModel.setSelectedReminder(args.lastSelectedLocation)
         setupAppBarTitle()
     }
 
@@ -100,14 +101,10 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun checkNavArgsUpdateViewModelData() {
-        with(_currentReminderData) {
-            locationName = args.lastSelectedLocation?.locationName
-            latitude = args.lastSelectedLocation?.latitude
-            longitude = args.lastSelectedLocation?.longitude
-            isPoi = args.lastSelectedLocation?.isPoi ?: false
-            poiId = args.lastSelectedLocation?.poiId
+        args.lastSelectedLocation?.let { reminder ->
+            _currentReminderData = reminder
+            viewModel.setSelectedReminder(reminder)
         }
-        viewModel.setSelectedReminder(_currentReminderData)
     }
 
     private fun setupNavigationListeners() {
@@ -173,15 +170,9 @@ class AddReminderFragment : Fragment() {
                 }
             }
 
-            inputLayoutExpirationDuration.setOnClickListener { hideKeyboard() }
-            autocompleteExpirationDuration.setOnClickListener { hideKeyboard() }
-
-            isGeofenceEnableSwitch.setOnCheckedChangeListener { _, isChecked ->
-                _currentReminderData.isGeofenceEnable = isChecked
-                viewModel.setSelectedReminder(_currentReminderData)
-            }
-
             actionButtonSaveReminder.setOnClickListener {
+                _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
+                viewModel.setSelectedReminder(_currentReminderData)
                 extractInputValues()
                 if(isBackgroundPermissionGranted()) {
                     viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
@@ -191,13 +182,18 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun setupExpirationUnitInputList(selectedResId: Int = R.string.units_days) {
-        binding.inputLayoutExpirationDuration.editText?.setText(getString(selectedResId))
-        (binding.inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
-            ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(
-                R.array.units_array)))
-        binding.inputLayoutExpirationDuration.editText?.addTextChangedListener {
-            binding.inputLayoutExpirationDurationValue.isEnabled =
-                it.toString() != ExpirationUnits.NEVER.name
+        with(binding) {
+            inputLayoutExpirationDuration.editText?.setText(getString(selectedResId))
+            (inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
+                ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(
+                    R.array.units_array)))
+            inputLayoutExpirationDuration.editText?.addTextChangedListener {
+                inputLayoutExpirationDurationValue.isEnabled =
+                    it.toString() != ExpirationUnits.NEVER.name
+            }
+
+            inputLayoutExpirationDuration.setOnClickListener { hideKeyboard() }
+            autocompleteExpirationDuration.setOnClickListener { hideKeyboard() }
         }
     }
 
@@ -275,7 +271,7 @@ class AddReminderFragment : Fragment() {
                     if (_currentReminderData.isGeofenceEnable) {
                         addGeofence(_currentReminderData)
                     } else {
-                        findNavController().navigate(R.id.navigateToReminderList)
+                        findNavController().popBackStack()
                     }
                 }
                 is AddReminderAction.InputErrorFieldTitle ->
@@ -345,7 +341,13 @@ class AddReminderFragment : Fragment() {
 
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(titleResId = R.string.geofence_added)
-        findNavController().navigate(R.id.navigateToReminderList)
+        findNavController().navigate(
+            R.id.navigateToReminderDetails,
+            bundleOf(
+                ReminderConstants.argsKeyLastSelectedLocation to _currentReminderData,
+                ReminderConstants.argsKeyIsEditing to true,
+            )
+        )
     }
 
     private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {

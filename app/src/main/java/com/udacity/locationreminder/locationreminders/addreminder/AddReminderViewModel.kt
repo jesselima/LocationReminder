@@ -9,6 +9,8 @@ import com.udacity.locationreminder.locationreminders.data.RemindersLocalReposit
 import com.udacity.locationreminder.locationreminders.mapToDataModel
 import kotlinx.coroutines.launch
 
+private const val UPDATE_SUCCESS = 1
+
 class AddReminderViewModel(
     private val remindersLocalRepository: RemindersLocalRepository,
     private val inputValidatorsUseCase: InputValidatorsUseCase
@@ -33,6 +35,22 @@ class AddReminderViewModel(
         _selectedReminder.value = reminder
     }
 
+    fun validateFieldsSaveOrUpdateReminder(isEditing: Boolean = false) {
+        if (isTitleValid(_selectedReminder.value?.title) &&
+            isLocationNameValid(_selectedReminder.value?.locationName) &&
+            isDescriptionValid(_selectedReminder.value?.description) &&
+            isLatLngValid()
+        ) {
+            _selectedReminder.value?.let {
+                if (isEditing) {
+                    updateReminder(it)
+                } else {
+                    saveReminder(it)
+                }
+            }
+        }
+    }
+
     private fun saveReminder(reminder: ReminderItemView) {
         if (isFormValid.not()) return
         _state.value = state.value?.copy(isLoading = true)
@@ -47,35 +65,23 @@ class AddReminderViewModel(
             }.onFailure {
                 _state.value = state.value?.copy(isLoading = false)
                 _action.value = AddReminderAction.AddReminderError
+                _action.value = null
             }
         }
     }
 
     private fun updateReminder(reminder: ReminderItemView) {
         viewModelScope.launch {
-            val result = remindersLocalRepository.updateReminder(reminder.mapToDataModel())
-            if (result == 1) {
-                _action.value = AddReminderAction.UpdateReminderSuccess
-                _action.value = null
-            } else {
+            runCatching {
+                remindersLocalRepository.updateReminder(reminder.mapToDataModel())
+            }.onSuccess { result ->
+                if (result >= UPDATE_SUCCESS )
+                    _action.value = AddReminderAction.UpdateReminderSuccess
+                    _action.value = null
+
+            }.onFailure {
                 _action.value = AddReminderAction.UpdateReminderError
                 _action.value = null
-            }
-        }
-    }
-
-    fun validateFieldsSaveOrUpdateReminder(isEditing: Boolean = false) {
-        if (isTitleValid(_selectedReminder.value?.title) &&
-            isLocationNameValid(_selectedReminder.value?.locationName) &&
-            isDescriptionValid(_selectedReminder.value?.description) &&
-            isLatLngValid()
-        ) {
-            _selectedReminder.value?.let {
-                if (isEditing) {
-                    updateReminder(it)
-                } else {
-                    saveReminder(it)
-                }
             }
         }
     }

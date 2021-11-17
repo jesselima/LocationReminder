@@ -154,7 +154,7 @@
     <string name="content_text">You found a clue <xliff:g id="geofence_location">%1$s</xliff:g>.</string>
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
-    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\nPlease, click on SETTINGS button below, then go to:\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
+    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
     <string name="agreed_button_label">I agreed</string>
     <string name="message_request_background_location_deny_button_label">DENY</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
@@ -177,7 +177,7 @@
     <string name="circular_radius_unit">%s meters</string>
     <string name="circular_radius_unit_initial_value">50 meters</string>
     <string name="expiration_duration">Expiration duration</string>
-    <string name="expiration_duration_input_helper_text">Reminder life span</string>
+    <string name="expiration_duration_input_helper_text">Reminder life span type</string>
     <string name="expiration_duration_input_helper_quantity">Number</string>
     <string name="expiration_units">Days/Hours</string>
     <string name="units_days">DAYS</string>

@@ -59,7 +59,7 @@ class RemindersListViewModel(
 
     fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean) {
         viewModelScope.launch {
-            val result = remindersLocalRepository.updateReminder(reminderId, isGeofenceEnable)
+            val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
             if (result == 1) {
                 _action.value = RemindersAction.UpdateRemindersSuccess
                 _action.value = null

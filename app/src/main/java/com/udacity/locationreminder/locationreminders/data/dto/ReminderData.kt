@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "reminders")
 data class ReminderData(
-    @PrimaryKey @ColumnInfo(name = "id") val id: Long = System.currentTimeMillis(),
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
     @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "location") val locationName: String?,

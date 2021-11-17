@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_reminders_manager"
-    app:startDestination="@id/reminderDescriptionFragment">
+    app:startDestination="@id/reminderDetailsFragment">
 
     <fragment
-        android:id="@+id/reminderDescriptionFragment"
-        android:name="com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDescriptionFragment"
+        android:id="@+id/reminderDetailsFragment"
+        android:name="com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDetailsFragment"
         android:label="Reminder Description"
         tools:layout="@layout/fragment_reminder_description">
         <action
@@ -20,10 +20,15 @@
             app:exitAnim="@anim/fade_out"
             app:popExitAnim="@anim/fade_out"/>
         <argument
-            android:name="reminder"
+            android:name="lastSelectedLocation"
             app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <argument
+            android:name="isEditing"
+            app:argType="boolean"
+            app:nullable="false"
+            android:defaultValue="false"/>
     </fragment>
 
     <fragment
@@ -33,8 +38,8 @@
         tools:layout="@layout/fragment_add_reminder">
         <action
             android:id="@+id/navigateToReminderDetails"
-            app:destination="@id/reminderDescriptionFragment"
-            app:popUpTo="@id/reminderDescriptionFragment"
+            app:destination="@id/reminderDetailsFragment"
+            app:popUpTo="@id/reminderDetailsFragment"
             app:popUpToInclusive="true"
             app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/slide_in_left"

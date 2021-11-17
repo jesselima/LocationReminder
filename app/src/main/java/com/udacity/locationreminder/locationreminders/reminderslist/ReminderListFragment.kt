@@ -169,7 +169,7 @@ class ReminderListFragment : Fragment() {
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
         viewModel.updateGeofenceStatus(
-            reminderId = reminder.id,
+            reminderId = reminder.id ?: 0L,
             isGeofenceEnable = reminder.isGeofenceEnable.not()
         )
         if (reminder.isGeofenceEnable) {

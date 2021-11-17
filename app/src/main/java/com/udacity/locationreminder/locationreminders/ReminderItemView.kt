@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit
  * data class acts as a data mapper between the DB and the UI
  */
 data class ReminderItemView(
+    var id: Long? = null,
     var locationName: String? = null,
     var title: String? = null,
     var description: String? = null,
@@ -20,7 +21,6 @@ data class ReminderItemView(
     var circularRadius: Float = 50f,
     var expiration: Long? = null,
     var transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
-    var id: Long = System.currentTimeMillis(),
     var isGeofenceEnable: Boolean = false
 ) : Serializable
 
