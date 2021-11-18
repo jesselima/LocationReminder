@@ -34,6 +34,7 @@ import com.udacity.locationreminder.locationreminders.geofence.GeofenceManager
 import com.udacity.locationreminder.locationreminders.geofence.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.locationreminders.geofence.isPermissionNotGranted
 import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
+import com.udacity.locationreminder.locationreminders.RemindersActivity
 import com.udacity.locationreminder.utils.ReminderConstants
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.hideKeyboard
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit
 
 private const val PENDING_INTENT_REQUEST_CODE = 0
 private const val CIRCULAR_RADIUS_DEFAULT = 50f
+private const val TOAST_POSITION_ELEVATED = 300
 
 class AddReminderFragment : Fragment() {
 
@@ -266,12 +268,13 @@ class AddReminderFragment : Fragment() {
                 is AddReminderAction.UpdateReminderSuccess -> {
                     context?.showCustomToast(
                         titleResId = R.string.message_saving_reminder_success,
-                        toastType = ToastType.SUCCESS
+                        toastType = ToastType.SUCCESS,
+                        offSetY = TOAST_POSITION_ELEVATED
                     )
                     if (_currentReminderData.isGeofenceEnable) {
                         addGeofence(_currentReminderData)
                     } else {
-                        findNavController().popBackStack()
+                        navigateToReminderList()
                     }
                 }
                 is AddReminderAction.InputErrorFieldTitle ->
@@ -341,13 +344,22 @@ class AddReminderFragment : Fragment() {
 
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(titleResId = R.string.geofence_added)
-        findNavController().navigate(
-            R.id.navigateToReminderDetails,
-            bundleOf(
-                ReminderConstants.argsKeyLastSelectedLocation to _currentReminderData,
-                ReminderConstants.argsKeyIsEditing to true,
+        navigateToReminderList()
+    }
+
+    private fun navigateToReminderList() {
+        if (args.isEditing) {
+            findNavController().navigate(
+                R.id.navigateToReminderDetails,
+                bundleOf(
+                    ReminderConstants.argsKeyLastSelectedLocation to _currentReminderData,
+                    ReminderConstants.argsKeyIsEditing to true,
+                )
             )
-        )
+        } else {
+            startActivity(Intent(activity, RemindersActivity::class.java))
+            activity?.finish()
+        }
     }
 
     private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {

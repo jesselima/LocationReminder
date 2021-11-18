@@ -131,9 +131,11 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 SelectLocationFragmentDirections.navigateToSaveReminderFragment(selectedReminder)
             )
         }
+
         binding.selectLocationToolbar.setNavigationOnClickListener {
             findNavController().popBackStack(R.id.saveReminderFragment,false)
         }
+
         binding.selectLocationToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.normal_map -> {

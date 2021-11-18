@@ -32,7 +32,7 @@
         android:label="Copyrights"
         tools:layout="@layout/fragment_copyrights">
         <action
-            android:id="@+id/navigateToReminderList"
+            android:id="@+id/reminderListFragment"
             app:destination="@id/reminderListFragment"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
@@ -46,7 +46,7 @@
         android:label="Add Reminder"
         tools:layout="@layout/fragment_add_reminder">
         <action
-            android:id="@+id/navigateToReminderList"
+            android:id="@+id/navigateFromAddReminderToReminderList"
             app:destination="@id/reminderListFragment"
             app:popUpTo="@id/reminderListFragment"
             app:popUpToInclusive="true"
@@ -72,6 +72,9 @@
             app:argType="boolean"
             app:nullable="false"
             android:defaultValue="false"/>
+        <action
+            android:id="@+id/action_saveReminderFragment_to_copyrightsListFragment"
+            app:destination="@id/copyrightsListFragment" />
     </fragment>
 
     <fragment
@@ -81,7 +84,8 @@
         tools:layout="@layout/fragment_select_location">
         <action
             android:id="@+id/navigateToSaveReminderFragment"
-            app:destination="@id/saveReminderFragment" />
+            app:destination="@id/saveReminderFragment"
+            app:popUpToInclusive="true"/>
         <argument
             android:name="lastSelectedLocation"
             app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
