@@ -42,7 +42,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     private val currentClassName = SelectLocationFragment::class.java.simpleName
 
-    private lateinit var selectedReminder: ReminderItemView
+    private var selectedReminder: ReminderItemView? = null
 
     private lateinit var binding: FragmentSelectLocationBinding
     private var map: GoogleMap? = null
@@ -88,12 +88,8 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAppBarAndMenuListeners()
-        selectedReminder = ReminderItemView(
-            latitude = args.lastSelectedLocation?.latitude,
-            longitude = args.lastSelectedLocation?.longitude,
-            locationName = args.lastSelectedLocation?.locationName
-        )
+        setupListeners()
+        selectedReminder = args.lastSelectedLocation
     }
 
     private fun requestLocationPermissions() {
@@ -125,7 +121,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun setupAppBarAndMenuListeners() {
+    private fun setupListeners() {
         binding.buttonGetSelectedLocation.setOnClickListener {
             findNavController().navigate(
                 SelectLocationFragmentDirections.navigateToSaveReminderFragment(selectedReminder)
@@ -185,12 +181,12 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
-        val lat = selectedReminder.latitude
-        val lng = selectedReminder.longitude
+        val lat = selectedReminder?.latitude
+        val lng = selectedReminder?.longitude
 
         if (lat != null && lng != null) {
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), MAP_START_ZOOM))
-            setMarker(LatLng(lat, lng), selectedReminder.locationName)
+            setMarker(LatLng(lat, lng), selectedReminder?.locationName)
         } else {
             if (locationPermissionGranted) {
                 try {
@@ -290,14 +286,11 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 .draggable(true)
         )
         currentLocationMarker?.showInfoWindow()
-        selectedReminder = selectedReminder.copy(
-            title = null,
-            description = null,
+        selectedReminder = selectedReminder?.copy(
             isPoi = false,
             poiId = null,
             latitude = latLng.latitude,
             longitude = latLng.longitude,
-            locationName = null
         )
     }
 
@@ -319,9 +312,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                     .snippet(snippet)
             )
             currentLocationMarker?.showInfoWindow()
-            selectedReminder = selectedReminder.copy(
-                title = null,
-                description = null,
+            selectedReminder = selectedReminder?.copy(
                 isPoi = true,
                 poiId = poi.placeId,
                 latitude = poi.latLng.latitude,
