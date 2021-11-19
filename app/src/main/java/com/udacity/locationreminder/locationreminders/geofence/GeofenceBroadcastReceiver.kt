@@ -8,7 +8,7 @@ import androidx.core.os.bundleOf
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.locationreminders.ReminderDescriptionActivity
+import com.udacity.locationreminder.locationreminders.ReminderEditorActivity
 import com.udacity.locationreminder.utils.ReminderConstants
 import com.udacity.locationreminder.utils.ToastType
 import com.udacity.locationreminder.utils.showCustomToast
@@ -21,7 +21,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val tag = GeofenceBroadcastReceiver::class.java.simpleName
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == ReminderDescriptionActivity.ACTION_GEOFENCE_EVENT) {
+        if (intent.action == ReminderEditorActivity.ACTION_GEOFENCE_EVENT) {
 
             val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
