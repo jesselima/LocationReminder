@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit
 
 private const val PENDING_INTENT_REQUEST_CODE = 0
 private const val CIRCULAR_RADIUS_DEFAULT = 50f
-private const val TOAST_POSITION_ELEVATED = 300
+private const val TOAST_POSITION_ELEVATED = 350
 
 class AddReminderFragment : Fragment() {
 

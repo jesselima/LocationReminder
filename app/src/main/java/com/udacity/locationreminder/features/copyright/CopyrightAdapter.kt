@@ -8,12 +8,12 @@ import com.udacity.locationreminder.common.extensions.inflate
 import com.udacity.locationreminder.common.extensions.showWithFadeIn
 
 class CopyrightAdapter(
-	private var copyrights: List<Copyright> = emptyList()
+	private var copyrights: MutableList<Copyright> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 	@SuppressLint("NotifyDataSetChanged")
-	fun submitList(copyrightsData: List<Copyright>) {
-		copyrights = emptyList()
+	fun submitList(copyrightsData: MutableList<Copyright>) {
+		copyrights.clear()
 		copyrights = copyrightsData
 		notifyDataSetChanged()
 	}
