@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/reminderDetailsFragment"
-        android:name="com.udacity.locationreminder.locationreminders.reminderdetails.ReminderDetailsFragment"
+        android:name="com.udacity.locationreminder.features.reminderdetails.ReminderDetailsFragment"
         android:label="Reminder Description"
-        tools:layout="@layout/fragment_reminder_description">
+        tools:layout="@layout/fragment_reminder_details">
         <action
             android:id="@+id/navigateToAddReminder"
             app:destination="@id/saveReminderFragment"
@@ -21,7 +21,7 @@
             app:popExitAnim="@anim/fade_out"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
+            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
         <argument
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.locationreminder.locationreminders.addreminder.AddReminderFragment"
+        android:name="com.udacity.locationreminder.features.addreminder.presentation.AddReminderFragment"
         android:label="Add Reminder"
         tools:layout="@layout/fragment_add_reminder">
         <action
@@ -55,7 +55,7 @@
             app:popExitAnim="@anim/fade_out"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
+            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
         <argument
@@ -67,7 +67,7 @@
 
     <fragment
         android:id="@+id/selectLocationFragment"
-        android:name="com.udacity.locationreminder.locationreminders.addreminder.SelectLocationFragment"
+        android:name="com.udacity.locationreminder.features.addreminder.presentation.SelectLocationFragment"
         android:label="Select Location"
         tools:layout="@layout/fragment_select_location">
         <action
@@ -76,7 +76,7 @@
             app:popUpToInclusive="true"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.locationreminders.ReminderItemView"
+            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
     </fragment>

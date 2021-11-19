@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.udacity.locationreminder.locationreminders.data.RemindersLocalRepository
-import com.udacity.locationreminder.locationreminders.data.local.LocalDatabase
-import com.udacity.locationreminder.locationreminders.data.local.RemindersLocalRepositoryImpl
+import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepository
+import com.udacity.locationreminder.shareddata.localdatasource.database.LocalDatabase
+import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.runner.RunWith
