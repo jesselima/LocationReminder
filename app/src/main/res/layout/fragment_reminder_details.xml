@@ -32,203 +32,222 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_md"
-            app:layout_constraintTop_toBottomOf="@+id/reminderDetailsAppBarLayout"
-            tools:layout_editor_absoluteX="16dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reminderDetailsAppBarLayout">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="@dimen/icon_size_very_large_02"
-                android:layout_height="@dimen/icon_size_very_large_02"
-                android:layout_marginTop="@dimen/spacing_xxxl"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLocationCoordinatesLongLabel"
-                app:srcCompat="@drawable/ic_gps_fixed" />
-
-            <ImageView
-                android:id="@+id/imageViewGeofenceTriggerDirection"
-                android:layout_width="@dimen/icon_size_small"
-                android:layout_height="@dimen/icon_size_small"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toEndOf="@+id/imageView"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/imageView"
-                app:srcCompat="@drawable/ic_arrow_back_black"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/reminderTitle"
-                style="@style/TextAppearance.LocationReminderAppTheme.Title.Medium"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_very_large_01"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Take photos in the Android's park" />
+                app:layout_constraintTop_toBottomOf="@+id/reminderDetailsAppBarLayout">
 
-            <TextView
-                android:id="@+id/reminderDescription"
-                style="@style/TextAppearance.LocationReminderAppTheme.List.SubTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderTitle"
-                tools:text="There is a lot of Androids in there! Go for it!" />
+                <ImageView
+                    android:id="@+id/imageGeofenceStatus"
+                    android:layout_width="@dimen/icon_size_very_large_02"
+                    android:layout_height="@dimen/icon_size_very_large_02"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/reminderLocationCoordinatesLongLabel"
+                    app:srcCompat="@drawable/ic_gps_fixed" />
 
-            <TextView
-                android:id="@+id/reminderLocationName"
-                style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xxl"
-                android:textColor="@color/colorPrimary"
-                app:drawableStartCompat="@drawable/ic_location_color_primary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderDescription"
-                tools:text="Google Head Quarters" />
+                <ImageView
+                    android:id="@+id/imageViewGeofenceTriggerDirection"
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@id/imageGeofenceStatus"
+                    app:layout_constraintEnd_toEndOf="@id/imageGeofenceStatus"
+                    app:layout_constraintHorizontal_bias="0.9"
+                    app:layout_constraintStart_toStartOf="@id/imageGeofenceStatus"
+                    app:layout_constraintTop_toTopOf="@id/imageGeofenceStatus"
+                    app:srcCompat="@drawable/ic_arrow_back_black"
+                    tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/reminderLocationCoordinatesLatLabel"
-                style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
-                android:text="@string/coordinates_lat"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLocationName" />
+                <TextView
+                    android:id="@+id/reminderTitle"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Title.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_very_large_01"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Take photos in the Android's park" />
 
-            <TextView
-                android:id="@+id/reminderLocationCoordinatesLat"
-                style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
-                 android:layout_width="@dimen/spacing_very_large_03"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_marginStart="@dimen/spacing_xl"
-                app:layout_constraintBottom_toBottomOf="@+id/reminderLocationCoordinatesLatLabel"
-                app:layout_constraintStart_toEndOf="@+id/reminderLocationCoordinatesLatLabel"
-                app:layout_constraintTop_toTopOf="@+id/reminderLocationCoordinatesLatLabel"
-                tools:text="-46.0215" />
+                <TextView
+                    android:id="@+id/reminderDescription"
+                    style="@style/TextAppearance.LocationReminderAppTheme.List.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/reminderTitle"
+                    tools:text="There is a lot of Androids in there! Go for it!" />
 
-            <TextView
-                android:id="@+id/reminderLocationCoordinatesLongLabel"
-                style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
-                android:text="@string/coordinates_lng"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLocationCoordinatesLatLabel" />
+                <TextView
+                    android:id="@+id/reminderLocationName"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xxl"
+                    android:textColor="@color/colorPrimary"
+                    app:drawableStartCompat="@drawable/ic_location_color_primary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/reminderDescription"
+                    tools:text="Google Head Quarters" />
 
+                <TextView
+                    android:id="@+id/reminderLocationCoordinatesLatLabel"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:text="@string/coordinates_lat"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/reminderLocationName" />
 
-            <TextView
-                android:id="@+id/reminderLocationCoordinatesLong"
-                style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
-                android:layout_width="@dimen/spacing_very_large_03"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@+id/reminderLocationCoordinatesLongLabel"
-                app:layout_constraintStart_toStartOf="@+id/reminderLocationCoordinatesLat"
-                app:layout_constraintTop_toTopOf="@+id/reminderLocationCoordinatesLongLabel"
-                tools:text="20.3547" />
+                <TextView
+                    android:id="@+id/reminderLocationCoordinatesLat"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                    android:layout_width="@dimen/spacing_very_large_03"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xl"
+                    android:gravity="end"
+                    app:layout_constraintBottom_toBottomOf="@+id/reminderLocationCoordinatesLatLabel"
+                    app:layout_constraintStart_toEndOf="@+id/reminderLocationCoordinatesLatLabel"
+                    app:layout_constraintTop_toTopOf="@+id/reminderLocationCoordinatesLatLabel"
+                    tools:text="-46.0215" />
 
-            <TextView
-                android:id="@+id/textCircularRadius"
-                style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/circular_radius_and_alert_type"
-                app:layout_constraintStart_toStartOf="@+id/textCurrentCircularRadius"
-                app:layout_constraintTop_toTopOf="@+id/imageView" />
+                <TextView
+                    android:id="@+id/reminderLocationCoordinatesLongLabel"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="@string/coordinates_lng"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/reminderLocationCoordinatesLatLabel" />
 
-            <TextView
-                android:id="@+id/textCurrentCircularRadius"
-                style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_md"
-                android:gravity="center"
-                android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageViewGeofenceTriggerDirection"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/imageViewGeofenceTriggerDirection"
-                tools:text="@string/circular_radius_unit_initial_value" />
+                <TextView
+                    android:id="@+id/reminderLocationCoordinatesLong"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                    android:layout_width="@dimen/spacing_very_large_03"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    app:layout_constraintBottom_toBottomOf="@+id/reminderLocationCoordinatesLongLabel"
+                    app:layout_constraintStart_toStartOf="@+id/reminderLocationCoordinatesLat"
+                    app:layout_constraintTop_toTopOf="@+id/reminderLocationCoordinatesLongLabel"
+                    tools:text="20.3547" />
 
-            <TextView
-                android:id="@+id/textGeofenceStatus"
-                style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/isGeofenceEnableAnimation"
-                tools:text="@string/label_geofence_is_disable" />
+                <TextView
+                    android:id="@+id/textCircularRadius"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/circular_radius_and_alert_type"
+                    app:layout_constraintStart_toStartOf="@+id/textCurrentCircularRadius"
+                    app:layout_constraintTop_toBottomOf="@+id/textCurrentCircularRadius" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageReminderGeofenceStatusDisabled"
-                android:layout_width="@dimen/icon_size_large"
-                android:layout_height="@dimen/icon_size_large"
-                android:background="?attr/selectableItemBackground"
-                android:layout_marginTop="@dimen/spacing_xl"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="centerInside"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
-                app:srcCompat="@drawable/ic_map_alert_bg_transparent_disable" />
+                <TextView
+                    android:id="@+id/textCurrentCircularRadius"
+                    style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:gravity="center"
+                    android:textColor="@color/textColorPrimary"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewGeofenceTriggerDirection"
+                    app:layout_constraintStart_toEndOf="@+id/imageGeofenceStatus"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewGeofenceTriggerDirection"
+                    tools:text="@string/circular_radius_unit_initial_value" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/isGeofenceEnableAnimation"
-                android:layout_width="@dimen/lottie_tiny_width"
-                android:layout_height="@dimen/lottie_tiny_height"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/animation_location_pin_alert"
-                tools:background="@color/colorStateOn"
-                tools:visibility="visible" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerGeofenceStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_tiny"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageGeofenceStatus">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonEditReminderAndGeofence"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_md"
-                android:drawableEnd="@drawable/ic_edit"
-                android:text="@string/text_button_edit_reminder"
-                android:textColor="@color/colorPrimary"
-                app:layout_constraintBottom_toTopOf="@+id/buttonDeleteReminderAndGeofence"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                    <TextView
+                        android:id="@+id/textGeofenceStatus"
+                        style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/colorAccent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="@string/label_geofence_is_disable" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDeleteReminderAndGeofence"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xl"
-                android:layout_marginEnd="@dimen/spacing_xl"
-                android:text="@string/text_button_delete_reminder"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-            
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imageReminderGeofenceStatusDisabled"
+                        android:layout_width="@dimen/icon_size_large"
+                        android:layout_height="@dimen/icon_size_large"
+                        android:background="?attr/selectableItemBackground"
+                        android:scaleType="centerInside"
+                        app:layout_constraintBottom_toBottomOf="@+id/isGeofenceEnableAnimation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_map_alert_bg_transparent_disable" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/isGeofenceEnableAnimation"
+                        android:layout_width="@dimen/lottie_tiny_width"
+                        android:layout_height="@dimen/lottie_tiny_height"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/animation_location_pin_alert"
+                        tools:visibility="visible" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonEditReminderAndGeofence"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:text="@string/text_button_edit_reminder"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonDeleteReminderAndGeofence"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/containerGeofenceStatus"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonDeleteReminderAndGeofence"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xl"
+                    android:layout_marginEnd="@dimen/spacing_xl"
+                    android:layout_marginBottom="@dimen/spacing_xl"
+                    android:text="@string/text_button_delete_reminder"
+                    android:textColor="@color/colorAccent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
