@@ -83,6 +83,7 @@ class ReminderDetailsFragment : Fragment() {
                         toastType = ToastType.ERROR
                     )
                 }
+                null -> Unit
             }
         }
     }

@@ -304,6 +304,7 @@ class AddReminderFragment : Fragment() {
                     binding.inputLayoutLocationName.error = null
                     binding.inputLayoutDescription.error = null
                 }
+                null -> Unit
             }
         }
     }

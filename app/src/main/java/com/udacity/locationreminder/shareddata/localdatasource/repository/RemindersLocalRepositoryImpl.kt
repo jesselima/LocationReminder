@@ -2,7 +2,7 @@ package com.udacity.locationreminder.shareddata.localdatasource.repository
 
 import com.udacity.locationreminder.shareddata.localdatasource.database.RemindersDao
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
-import com.udacity.locationreminder.shareddata.localdatasource.models.Result
+import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
 import kotlinx.coroutines.*
 
 /**
@@ -20,13 +20,13 @@ class RemindersLocalRepositoryImpl(
 
     /**
      * Get the reminders list from the local db
-     * @return Result the holds a Success with all the reminders or an Error object with the error message
+     * @return ResultData the holds a Success with all the reminders or an Error object with the error message
      */
-    override suspend fun getReminders(): Result<List<ReminderData>> = withContext(ioDispatcher) {
+    override suspend fun getReminders(): ResultData<List<ReminderData>> = withContext(ioDispatcher) {
         return@withContext try {
-            Result.Success(remindersDao.getReminders())
+            ResultData.Success(remindersDao.getReminders())
         } catch (ex: Exception) {
-            Result.Error(ex.localizedMessage)
+            ResultData.Error(ex.localizedMessage)
         }
     }
 
@@ -44,26 +44,26 @@ class RemindersLocalRepositoryImpl(
     /**
      * Get a reminder by its id
      * @param id to be used to get the reminder
-     * @return Result the holds a Success object with the Reminder or an Error object with the error message
+     * @return ResultData the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<ReminderData> = withContext(ioDispatcher) {
+    override suspend fun getReminder(id: String): ResultData<ReminderData> = withContext(ioDispatcher) {
         try {
             val reminder = remindersDao.getReminderById(id)
             if (reminder != null) {
-                return@withContext Result.Success(reminder)
+                return@withContext ResultData.Success(reminder)
             } else {
-                return@withContext Result.Error("Reminder not found!")
+                return@withContext ResultData.Error("Reminder not found!")
             }
         } catch (e: Exception) {
-            return@withContext Result.Error(e.localizedMessage)
+            return@withContext ResultData.Error(e.localizedMessage)
         }
     }
 
     /**
      * Deletes all the reminders in the db
      */
-    override suspend fun deleteAllReminders() {
-        withContext(ioDispatcher) {
+    override suspend fun deleteAllReminders(): Int {
+        return withContext(ioDispatcher) {
             remindersDao.deleteAllReminders()
         }
     }

@@ -38,7 +38,7 @@ interface RemindersDao {
      * Delete all reminders.
      */
     @Query("DELETE FROM reminders")
-    fun deleteAllReminders()
+    fun deleteAllReminders(): Int
 
     /**
      * Delete all reminders.
