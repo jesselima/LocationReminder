@@ -2,9 +2,6 @@ package com.udacity.locationreminder.features
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.locationreminder.R
@@ -13,7 +10,7 @@ import com.udacity.locationreminder.features.reminderdetails.ReminderDetailsFrag
 import com.udacity.locationreminder.stubs.reminderItemView
 import com.udacity.locationreminder.util.AppViewAction
 import com.udacity.locationreminder.util.AppViewAssertion
-import junit.framework.Assert.assertEquals
+import com.udacity.locationreminder.util.shouldNavigateTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +19,8 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @MediumTest
 class ReminderDetailsFragmentTest {
+
+    private  val navGraphOfReminderDetailsFragment = R.navigation.nav_graph_reminder_editor
 
     @Test
     fun when_screen_open_with_args_should_display_reminder_details() {
@@ -71,7 +70,7 @@ class ReminderDetailsFragmentTest {
 
     @Test
     fun onEditReminderClicked_should_navigate_to_edit_reminder_screen() {
-
+        // Given
         val fragmentScenario = launchFragmentInContainer<ReminderDetailsFragment>(
             bundleOf(
                 ReminderConstants.argsKeyLastSelectedLocation to reminderItemView,
@@ -80,15 +79,14 @@ class ReminderDetailsFragmentTest {
             R.style.LocationReminderAppTheme
         )
 
-        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
-        fragmentScenario.onFragment { fragment ->
-            navController.setGraph(R.navigation.nav_graph_reminder_editor)
-            Navigation.setViewNavController(fragment.requireView(), navController)
-        }
-
+        // When
         AppViewAction.scrollTo(R.id.buttonEditReminderAndGeofence)
-        AppViewAction.performClick(R.id.buttonEditReminderAndGeofence)
 
-        assertEquals(navController.currentDestination?.id, R.id.saveReminderFragment)
+        // Then
+        fragmentScenario.shouldNavigateTo(
+            onClickedViewWithResId = R.id.buttonEditReminderAndGeofence,
+            destinationResId = R.id.saveReminderFragment,
+            navGraph = navGraphOfReminderDetailsFragment
+        )
     }
 }
