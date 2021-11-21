@@ -29,6 +29,11 @@
             app:argType="boolean"
             app:nullable="false"
             android:defaultValue="false"/>
+        <argument
+            android:name="isFromList"
+            app:argType="boolean"
+            app:nullable="false"
+            android:defaultValue="false"/>
     </fragment>
 
     <fragment

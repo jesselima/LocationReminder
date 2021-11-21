@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
-import com.udacity.locationreminder.shareddata.localdatasource.models.Result
+import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
 import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -20,7 +20,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
     companion object {
         private const val JOB_ID = 573
 
-        //        TODO: call this to start the JobIntentService to handle the geofencing transition events
+        // TODO: call this to start the JobIntentService to handle the geofencing transition events
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(
                 context,
@@ -46,7 +46,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         CoroutineScope(coroutineContext).launch(SupervisorJob()) {
             //get the reminder with the request id
             val result = remindersLocalRepositoryImpl.getReminder(requestId)
-            if (result is Result.Success<ReminderData>) {
+            if (result is ResultData.Success<ReminderData>) {
                 val reminderData = result.data
                 //send a notification to the user with the reminder details
 //                sendNotification(

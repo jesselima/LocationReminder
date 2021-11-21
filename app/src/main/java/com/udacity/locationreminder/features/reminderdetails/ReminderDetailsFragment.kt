@@ -58,7 +58,7 @@ class ReminderDetailsFragment : Fragment() {
         setupObservers()
         geofenceClient = LocationServices.getGeofencingClient(requireContext())
 
-        if (args.isEditing) {
+        if (args.isEditing || args.isFromList) {
             updateUI(args.lastSelectedLocation)
         } else {
             val reminder = activity?.intent?.extras

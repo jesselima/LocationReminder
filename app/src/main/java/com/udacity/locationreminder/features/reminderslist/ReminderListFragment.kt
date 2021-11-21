@@ -20,6 +20,7 @@ import com.udacity.locationreminder.geofence.GeofenceManager
 import com.udacity.locationreminder.common.extensions.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.features.ReminderEditorActivity
 import com.udacity.locationreminder.common.extensions.ToastType
+import com.udacity.locationreminder.common.extensions.launchActivity
 import com.udacity.locationreminder.common.extensions.setup
 import com.udacity.locationreminder.common.extensions.showCustomDialog
 import com.udacity.locationreminder.common.extensions.showCustomToast
