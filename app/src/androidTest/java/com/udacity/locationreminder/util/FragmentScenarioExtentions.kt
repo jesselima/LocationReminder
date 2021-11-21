@@ -10,7 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import junit.framework.Assert
+import junit.framework.TestCase.assertEquals
 
 
 inline fun <reified F : Fragment> FragmentScenario<F>.shouldNavigateTo(
@@ -28,5 +28,5 @@ inline fun <reified F : Fragment> FragmentScenario<F>.shouldNavigateTo(
         Espresso.onView(ViewMatchers.withId(onClickedViewWithResId)).perform(ViewActions.click())
     }
 
-    Assert.assertEquals(navController.currentDestination?.id, destinationResId)
+    assertEquals(navController.currentDestination?.id, destinationResId)
 }
