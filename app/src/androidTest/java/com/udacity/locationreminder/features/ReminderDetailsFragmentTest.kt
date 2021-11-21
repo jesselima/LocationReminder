@@ -1,6 +1,7 @@
 package com.udacity.locationreminder.features
 
 import androidx.core.os.bundleOf
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -12,6 +13,7 @@ import com.udacity.locationreminder.util.AppViewAction
 import com.udacity.locationreminder.util.AppViewAssertion
 import com.udacity.locationreminder.util.shouldNavigateTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -22,17 +24,21 @@ class ReminderDetailsFragmentTest {
 
     private  val navGraphOfReminderDetailsFragment = R.navigation.nav_graph_reminder_editor
 
-    @Test
-    fun when_screen_open_with_args_should_display_reminder_details() {
+    private var fragmentScenario: FragmentScenario<ReminderDetailsFragment>? = null
 
-        launchFragmentInContainer<ReminderDetailsFragment>(
+    @Before
+    fun setup() {
+        fragmentScenario = launchFragmentInContainer(
             bundleOf(
                 ReminderConstants.argsKeyLastSelectedLocation to reminderItemView,
                 ReminderConstants.argsKeyIsFromList to true
             ),
             R.style.LocationReminderAppTheme
         )
+    }
 
+    @Test
+    fun when_screen_open_with_args_should_display_reminder_details() {
         AppViewAssertion.isDisplayed(R.id.reminderDetailsToolbar)
         AppViewAssertion.isTextDisplayed("Reminder details")
         AppViewAssertion.isTextDisplayed("Barbecue stuff")
@@ -50,15 +56,6 @@ class ReminderDetailsFragmentTest {
 
     @Test
     fun onDeleteReminderClicked_should_display_delete_dialog() {
-
-        launchFragmentInContainer<ReminderDetailsFragment>(
-            bundleOf(
-                ReminderConstants.argsKeyLastSelectedLocation to reminderItemView,
-                ReminderConstants.argsKeyIsFromList to true
-            ),
-            R.style.LocationReminderAppTheme
-        )
-
         AppViewAssertion.isTextDisplayed("DELETE")
         AppViewAction.scrollTo(R.id.buttonDeleteReminderAndGeofence)
         AppViewAction.performClick(R.id.buttonDeleteReminderAndGeofence)
@@ -70,20 +67,9 @@ class ReminderDetailsFragmentTest {
 
     @Test
     fun onEditReminderClicked_should_navigate_to_edit_reminder_screen() {
-        // Given
-        val fragmentScenario = launchFragmentInContainer<ReminderDetailsFragment>(
-            bundleOf(
-                ReminderConstants.argsKeyLastSelectedLocation to reminderItemView,
-                ReminderConstants.argsKeyIsFromList to true
-            ),
-            R.style.LocationReminderAppTheme
-        )
-
-        // When
         AppViewAction.scrollTo(R.id.buttonEditReminderAndGeofence)
 
-        // Then
-        fragmentScenario.shouldNavigateTo(
+        fragmentScenario?.shouldNavigateTo(
             onClickedViewWithResId = R.id.buttonEditReminderAndGeofence,
             destinationResId = R.id.saveReminderFragment,
             navGraph = navGraphOfReminderDetailsFragment
