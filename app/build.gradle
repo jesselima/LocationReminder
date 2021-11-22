@@ -136,6 +136,10 @@ dependencies {
 
     // Once https://issuetracker.google.com/127986458 is fixed this can be testImplementation
     debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"
+
+    // UiAutomator Testing
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:' + rootProject.uiAutomatorVersion
+    androidTestImplementation 'org.hamcrest:hamcrest-integration:' + rootProject.hamcrestIntegrationVersion
 }
 
 apply plugin: 'com.google.gms.google-services'
