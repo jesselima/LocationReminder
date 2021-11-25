@@ -239,7 +239,7 @@
                     android:layout_marginStart="@dimen/spacing_xl"
                     android:layout_marginEnd="@dimen/spacing_xl"
                     android:layout_marginBottom="@dimen/spacing_xl"
-                    android:text="@string/text_button_delete_reminder"
+                    android:text="@string/label_delete"
                     android:textColor="@color/colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

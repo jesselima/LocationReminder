@@ -32,15 +32,23 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/copyrightRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_md"
+            android:layout_marginBottom="@dimen/spacing_xxxl"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/favoritePicturesAppBarLayout"
-            app:spanCount="5"
-            tools:itemCount="5"
+            tools:itemCount="10"
             tools:listitem="@layout/layout_item_list_copyright" />
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

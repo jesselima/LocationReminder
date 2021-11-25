@@ -9,4 +9,8 @@
         android:id="@+id/copyrights"
         android:title="@string/label_copyright"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_account"
+        android:title="@string/label_delete_account"
+        app:showAsAction="never" />
 </menu>

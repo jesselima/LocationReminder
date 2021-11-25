@@ -11,6 +11,8 @@
     <string name="reminder_saved">Reminder Saved !</string>
     <string name="logout">Logout</string>
     <string name="logout_confirmation_message">Do you really want to logout?</string>
+    <string name="delete_account_title">Delete your account?</string>
+    <string name="delete_account_confirmation_message">Do you really want to delete your account?</string>
     <string name="welcome_to_the_location_reminder_app">Location Reminder</string>
     <string name="welcome_message_caption">Set your mind free to what matters most and do the things at the right time and place.</string>
     <string name="login">Login</string>
@@ -67,12 +69,14 @@
     <string name="auth_error_wrong_device">You must open the email link on the same device.</string>
     <string name="auth_error_define_linking_or_sign_in">You must determine if you want to continue linking or complete the sign in</string>
     <string name="auth_error_session_expired_or_cleared">The session associated with this sign-in request has either expired or was cleared</string>
+    <string name="auth_account_deleted">Your account have been deleted!</string>
     <string name="add_new_reminder">New reminder</string>
     <string name="update_reminder">Update reminder</string>
     <string name="title_activity_on_boarding">OnBoarding</string>
 
     <string name="content_description_save_reminder">Save reminder</string>
     <string name="label_copyright">Copyrights</string>
+    <string name="label_delete_account">Delete account</string>
     <string name="label_source">Source</string>
     <string name="label_link">LINK</string>
     <string name="label_author">Author</string>
@@ -186,7 +190,7 @@
     <string name="when_i_exit">When I exit</string>
     <string name="reminder_details">Reminder details</string>
     <string name="geofence_is_enabled">Enable/Disable Geofence</string>
-    <string name="text_button_delete_reminder">Delete</string>
+    <string name="label_delete">Delete</string>
     <string name="text_button_edit_reminder">Edit</string>
     <string name="geofence_updated">Geofence updated</string>
     <string name="message_delete_reminder">Delete reminder?</string>
