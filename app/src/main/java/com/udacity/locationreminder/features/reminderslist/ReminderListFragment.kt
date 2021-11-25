@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
 import com.udacity.locationreminder.geofence.GeofenceBroadcastReceiver
@@ -20,7 +21,6 @@ import com.udacity.locationreminder.geofence.GeofenceManager
 import com.udacity.locationreminder.common.extensions.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.features.ReminderEditorActivity
 import com.udacity.locationreminder.common.extensions.ToastType
-import com.udacity.locationreminder.common.extensions.launchActivity
 import com.udacity.locationreminder.common.extensions.setup
 import com.udacity.locationreminder.common.extensions.showCustomDialog
 import com.udacity.locationreminder.common.extensions.showCustomToast
@@ -144,8 +144,33 @@ class ReminderListFragment : Fragment() {
                     )
                     true
                 }
+                R.id.delete_account -> {
+                    activity?.showCustomDialog(
+                        context = context,
+                        title = getString(R.string.delete_account_title),
+                        message = getString(R.string.delete_account_confirmation_message),
+                        negativeButtonText = getString(R.string.label_cancel),
+                        positiveButtonText = getString(R.string.label_delete_account),
+                        positiveButtonAction = {
+                            deleteAccount()
+                        }
+                    )
+                    true
+                }
                 else -> false
             }
+        }
+    }
+
+    private fun deleteAccount() {
+        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                context?.showCustomToast(
+                    titleResId = R.string.auth_account_deleted,
+                    toastType = ToastType.INFO
+                )
+            }
+            signOut()
         }
     }
 
