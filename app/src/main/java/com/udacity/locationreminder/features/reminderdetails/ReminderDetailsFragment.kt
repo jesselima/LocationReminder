@@ -103,7 +103,7 @@ class ReminderDetailsFragment : Fragment() {
                 context = context,
                 title = getString(R.string.message_delete_reminder),
                 message = getString(R.string.message_delete_reminder_description),
-                positiveButtonText = getString(R.string.text_button_delete_reminder),
+                positiveButtonText = getString(R.string.label_delete),
                 negativeButtonText = getString(R.string.label_cancel),
                 positiveButtonAction = {
                     deleteReminder(_currentReminderData)
