@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.uiautomator
+package com.udacity.locationreminder.e2e
 
 import android.content.Context
 import android.content.Intent

@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.uiautomator
+package com.udacity.locationreminder.e2e
 
 enum class UserAction {
     HOME, BACK, LEFT, RIGHT, UP, DOWN, CENTER, MENU, SEARCH, ENTER, DELETE, DEL, RECENT,

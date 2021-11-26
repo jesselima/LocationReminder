@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.uiautomator
+package com.udacity.locationreminder.e2e
 
 import android.view.KeyEvent
 import androidx.test.uiautomator.UiDevice
