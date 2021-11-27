@@ -11,6 +11,7 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
+import kotlinx.coroutines.currentCoroutineContext
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert
@@ -43,16 +44,26 @@ class LaunchAppValidateLoginContentTest {
         val intent: Intent? = context.packageManager.getLaunchIntentForPackage(locationReminderPackage)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
+
         /** Wait for the app to appear */
-        device.wait(Until.hasObject(By.pkg(locationReminderPackage)), 5000)
+        device.waitUltiScreenLoads(currentAppPackage = locationReminderPackage)
 
         // Verify the test is displayed in the Ui
-        val textWelcome: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "textWelcome")), 1000)
-        val textWelcomeDescription: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "textWelcomeDescription")), 1000)
-        val loginButton: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "buttonLogin")), 1000)
-        MatcherAssert.assertThat(textWelcome.text, `is`(equalTo("Location Reminder")))
-        MatcherAssert.assertThat(textWelcomeDescription.text, `is`(equalTo("Set your mind free to what matters most and do the things at the right time and place.")))
-        MatcherAssert.assertThat(loginButton.text, `is`(equalTo("LOGIN")))
+        device.waitUntilVisibleAndAssertHasText(
+            viewId = "textWelcome",
+            text = "Location Reminder",
+            currentAppPackage = locationReminderPackage)
+
+        device.waitUntilVisibleAndAssertHasText(
+            viewId = "textWelcomeDescription",
+            text = "Set your mind free to what matters most and do the things at the right time and place.",
+            currentAppPackage = locationReminderPackage)
+
+        device.waitUntilVisibleAndAssertHasText(
+            viewId = "buttonLogin",
+            text = "LOGIN",
+            currentAppPackage = locationReminderPackage
+        )
     }
 
     /**

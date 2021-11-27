@@ -8,13 +8,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject
-import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.udacity.locationreminder.BuildConfig
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,101 +44,142 @@ class AutomatorFullFlow {
 
         /** Launch the App */
         val context: Context = getApplicationContext()
-        val intent: Intent? = context.packageManager.getLaunchIntentForPackage(locationReminderPackage)
+        val intent: Intent? = context.packageManager
+            .getLaunchIntentForPackage(locationReminderPackage)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
+
         /** Wait for the app to appear */
         device.wait(Until.hasObject(By.pkg(locationReminderPackage)), 5000)
 
         /** Login for new Users */
-        val loginButtonAction: UiObject = device.findObject(UiSelector().textContains("LOGIN"))
-        loginButtonAction.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "LOGIN")
 
-        val signInWithEmailButtonAction: UiObject =
-            device.findObject(UiSelector().textContains("Sign in with email"))
-        signInWithEmailButtonAction.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "Sign in with email")
 
-        device.findObject(By.res(appPackage, "email")).text = BuildConfig.SAMPLE_USER_EMAIL
+        device.onViewWithIdPerformTypeText(
+            viewId = "email",
+            text = BuildConfig.SAMPLE_USER_EMAIL,
+            currentAppPackage = locationReminderPackage
+        )
 
-        val nextButtonAction: UiObject = device.findObject(UiSelector().textContains("NEXT"))
-        nextButtonAction.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "NEXT")
 
-        device.findObject(By.res(appPackage, "name")).text =  BuildConfig.SAMPLE_USER_NAME
-        device.findObject(By.res(appPackage, "password")).text =  BuildConfig.SAMPLE_USER_PASS
+        device.onViewWithIdPerformTypeText(
+            viewId = "name",
+            text = BuildConfig.SAMPLE_USER_NAME,
+            currentAppPackage =   locationReminderPackage
+        )
 
-        val saveButtonAction: UiObject = device.findObject(UiSelector().textContains("SAVE"))
-        saveButtonAction.clickAndWaitForNewWindow()
+        device.onViewWithIdPerformTypeText(
+            viewId = "password",
+            text = BuildConfig.SAMPLE_USER_PASS,
+            currentAppPackage = locationReminderPackage
+        )
 
-        val onBoardingStepImage = device.findObject(UiSelector().resourceId("$appPackage:id/onBoardingStepImage"))
-        // int startX, int startY, int endX, int endY, int steps
-        with(onBoardingStepImage) {
-            device.swipe(bounds.right - 5, bounds.centerY(), bounds.left / 4, bounds.centerY(), 10)
-            device.swipe(bounds.right - 5, bounds.centerY(), bounds.left / 4, bounds.centerY(), 10)
-        }
+        device.onViewContainsTextClickAndWait(text = "SAVE")
 
-        val onboardingButtonSkipOrStart = device.findObject(UiSelector().resourceId("$appPackage:id/onboardingButtonSkip"))
-        onboardingButtonSkipOrStart.clickAndWaitForNewWindow()
+        device.onViewWithIdPerformSwipe(
+            viewId = "onBoardingStepImage",
+            numberOfSwipes = 2,
+            currentAppPackage = locationReminderPackage
+        )
+
+        device.onViewWithIdClickAndWait(
+            viewId = "onboardingButtonSkip",
+            currentAppPackage = locationReminderPackage
+        )
 
         /**  ADDd REMINDER WITH PERMISSIONS REQUESTS */
 
-        val actionButtonAddReminder = device.findObject(UiSelector().resourceId("$appPackage:id/actionButtonAddReminder"))
-        actionButtonAddReminder.clickAndWaitForNewWindow()
+        device.onViewWithIdClickAndWait(
+            viewId = "actionButtonAddReminder",
+            currentAppPackage = locationReminderPackage
+        )
 
-        val textSelectedLocation: UiObject = device.findObject(UiSelector().textContains("SELECT LOCATION"))
-        textSelectedLocation.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "SELECT LOCATION")
 
-        val confirmLocationPermission: UiObject = device.findObject(UiSelector().textContains("Allow only while using the app"))
-        confirmLocationPermission.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "Allow only while using the app")
 
-        val textGetThisLocation: UiObject = device.findObject(UiSelector().textContains("GET THIS LOCATION"))
-        textGetThisLocation.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "GET THIS LOCATION")
 
-        device.findObject(By.res(appPackage, "reminderLocationName")).text = "Work"
-        device.findObject(By.res(appPackage, "reminderTitle")).text = "Get my umbrella"
-        device.findObject(By.res(appPackage, "reminderDescription")).text = "Set location alert to never forget again"
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderLocationName",
+            text = "Work",
+            currentAppPackage = locationReminderPackage
+        )
 
-        device.swipe(device.displayWidth / 2, device.displayHeight / 2, device.displayWidth / 2, device.displayHeight / 4, 10)
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderTitle",
+            text = "Get my umbrella",
+            currentAppPackage = locationReminderPackage
+        )
 
-        device.findObject(By.res(appPackage, "expirationDurationEditText")).text = "5"
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderDescription",
+            text = "Set location alert to never forget again",
+            currentAppPackage = locationReminderPackage
+        )
 
-        device.findObject(By.res(appPackage, "isGeofenceEnableSwitch")).click()
+        // Todo - Make a better reuse of this
+        device.swipe(
+            device.displayWidth / 2,
+            device.displayHeight / 2,
+            device.displayWidth / 2,
+            device.displayHeight / 4, 10
+        )
 
-        val buttonSaveReminder: UiObject = device.findObject(UiSelector().textContains("SAVE REMINDER"))
-        buttonSaveReminder.clickAndWaitForNewWindow()
+        device.onViewWithIdPerformTypeText(
+            viewId = "expirationDurationEditText",
+            text = "5",
+            currentAppPackage = locationReminderPackage)
 
-        val settingAction: UiObject =device.findObject(UiSelector().resourceId("android:id/button1"))
-        settingAction.clickAndWaitForNewWindow()
+        device.onViewWithIdPerformClick(
+            viewId = "isGeofenceEnableSwitch",
+            currentAppPackage = locationReminderPackage
+        )
 
-        val permissionsAction: UiObject = device.findObject(UiSelector().textContains("Permissions"))
-        permissionsAction.clickAndWaitForNewWindow()
+        device.onViewWithTextClickAndWait(text = "SAVE REMINDER")
 
-        val permissionsLocationAction: UiObject = device.findObject(UiSelector().textMatches("Only while app is in use"))
-        permissionsLocationAction.clickAndWaitForNewWindow()
+        device.onViewWithIdClickAndWait(viewId = "android:id/button1")
 
-        device.findObject(UiSelector().textMatches("Allow all the time")).click()
+        device.onViewContainsTextClickAndWait(text = "Permissions")
+
+        device.onViewTextMatchesClickAndWait(text = "Only while app is in use")
+
+        device.onViewTextMatchesClick(text = "Allow all the time")
 
         device.pressBack()
         device.pressBack()
         device.pressBack()
 
-        buttonSaveReminder.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "SAVE REMINDER")
 
         /** Click on AppBar menu action */
         val topAppBar = device.findObject(UiSelector().resourceId("$appPackage:id/topAppBar"))
         device.click(topAppBar.bounds.width() - 20, 100)
 
-        val menuItm = device.findObject(UiSelector().textContains("Delete account"))
-        menuItm.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "Delete account")
 
-        val deleteAccountAction: UiObject = device.findObject(UiSelector().textContains("DELETE ACCOUNT"))
-        deleteAccountAction.clickAndWaitForNewWindow()
+        device.onViewContainsTextClickAndWait(text = "DELETE ACCOUNT")
 
-        // Verify the test is displayed in the Ui
-        val textWelcome: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "textWelcome")), 1000)
-        val textWelcomeDescription: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "textWelcomeDescription")), 1000)
-        val loginButton: UiObject2 = device.wait(Until.findObject(By.res(locationReminderPackage, "buttonLogin")), 1000)
-        MatcherAssert.assertThat(textWelcome.text, CoreMatchers.`is`(CoreMatchers.equalTo("Location Reminder")))
-        MatcherAssert.assertThat(textWelcomeDescription.text, CoreMatchers.`is`(CoreMatchers.equalTo("Set your mind free to what matters most and do the things at the right time and place.")))
-        MatcherAssert.assertThat(loginButton.text, CoreMatchers.`is`(CoreMatchers.equalTo("LOGIN")))
+        /** Validate Login screen after account is deleted */
+        device.assertViewHasText(
+            viewId = "textWelcome",
+            text = "Location Reminder",
+            currentAppPackage = locationReminderPackage
+        )
+
+        device.assertViewHasText(
+            viewId = "textWelcomeDescription",
+            text = "Set your mind free to what matters most and do the things at the right time and place.",
+            currentAppPackage = locationReminderPackage
+        )
+
+        device.assertViewHasText(
+            viewId = "buttonLogin",
+            text = "LOGIN",
+            currentAppPackage = locationReminderPackage
+        )
     }
 }
