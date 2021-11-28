@@ -48,16 +48,21 @@ class LaunchAppValidateLoginContentTest {
         )
     }
 
-    /**
-     * Uses package manager to find the package name of the device launcher. Usually this package
-     * is "com.android.launcher" but can be different at times. This is a generic solution which
-     * works on all platforms.`
-     */
-    private fun getLauncherPackageName(): String? {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        val packageManager = ApplicationProvider.getApplicationContext<Context>().packageManager
-        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) as ResolveInfo
-        return resolveInfo.activityInfo?.packageName
+    @Test
+    fun openFromSearchLocationReminderApp() {
+        device.pressHome()
+
+        device.pressSearch()
+
+        device.pressKeyCode(KeyEvent.KEYCODE_R)
+        device.pressKeyCode(KeyEvent.KEYCODE_E)
+        device.pressKeyCode(KeyEvent.KEYCODE_M)
+        device.pressKeyCode(KeyEvent.KEYCODE_I)
+        device.pressKeyCode(KeyEvent.KEYCODE_N)
+        device.pressKeyCode(KeyEvent.KEYCODE_D)
+        device.pressKeyCode(KeyEvent.KEYCODE_E)
+        device.pressKeyCode(KeyEvent.KEYCODE_R)
+
+        // TODO : "Implement: Assert the App was found in the search result"
     }
 }
