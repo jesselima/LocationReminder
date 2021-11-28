@@ -68,7 +68,7 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformTypeText(
             viewId = "name",
             text = BuildConfig.SAMPLE_USER_NAME,
-            currentAppPackage =   locationReminderPackage
+            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithIdPerformTypeText(
@@ -132,7 +132,8 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformTypeText(
             viewId = "expirationDurationEditText",
             text = "5",
-            currentAppPackage = locationReminderPackage)
+            currentAppPackage = locationReminderPackage
+        )
 
         device.onViewWithIdPerformClick(
             viewId = "isGeofenceEnableSwitch",
