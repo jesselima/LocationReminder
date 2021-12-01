@@ -12,7 +12,9 @@
     <string name="logout">Logout</string>
     <string name="logout_confirmation_message">Do you really want to logout?</string>
     <string name="delete_account_title">Delete your account?</string>
+    <string name="delete_reminder_title">Delete reminder?</string>
     <string name="delete_account_confirmation_message">Do you really want to delete your account?</string>
+    <string name="delete_reminder_confirmation_message">Do you really want to delete this reminder?</string>
     <string name="welcome_to_the_location_reminder_app">Location Reminder</string>
     <string name="welcome_message_caption">Set your mind free to what matters most and do the things at the right time and place.</string>
     <string name="login">Login</string>

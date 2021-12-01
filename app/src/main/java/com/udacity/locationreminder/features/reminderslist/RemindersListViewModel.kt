@@ -82,4 +82,11 @@ class RemindersListViewModel(
             }
         }
     }
+
+    fun deleteAllRemindersThenDeleteAccount() {
+        viewModelScope.launch {
+            remindersLocalRepository.deleteAllReminders()
+            _action.value = RemindersAction.DeleteAllRemindersSuccess
+        }
+    }
 }

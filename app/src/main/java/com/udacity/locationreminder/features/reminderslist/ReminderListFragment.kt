@@ -118,6 +118,9 @@ class ReminderListFragment : Fragment() {
                         toastType = ToastType.ERROR
                     )
                 }
+                is RemindersAction.DeleteAllRemindersSuccess -> {
+                    deleteAccount()
+                }
                 else -> binding.noDataTextView.isVisible = false
             }
         }
@@ -152,7 +155,7 @@ class ReminderListFragment : Fragment() {
                         negativeButtonText = getString(R.string.label_cancel),
                         positiveButtonText = getString(R.string.label_delete_account),
                         positiveButtonAction = {
-                            deleteAccount()
+                            viewModel.deleteAllRemindersThenDeleteAccount()
                         }
                     )
                     true
@@ -206,8 +209,17 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun deleteReminder(reminder: ReminderItemView) {
-        removeGeofence(reminder)
-        viewModel.deleteReminder(reminder)
+        activity?.showCustomDialog(
+            context = context,
+            title = getString(R.string.delete_reminder_title),
+            message = getString(R.string.delete_reminder_confirmation_message),
+            negativeButtonText = getString(R.string.label_cancel),
+            positiveButtonText = getString(R.string.label_delete),
+            positiveButtonAction = {
+                removeGeofence(reminder)
+                viewModel.deleteReminder(reminder)
+            }
+        )
     }
 
     private fun addGeofence(reminder: ReminderItemView) {

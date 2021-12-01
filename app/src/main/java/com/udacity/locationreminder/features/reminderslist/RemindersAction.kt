@@ -7,4 +7,6 @@ sealed class RemindersAction {
     object UpdateRemindersError: RemindersAction()
     object DeleteRemindersSuccess: RemindersAction()
     object DeleteRemindersError: RemindersAction()
+    object DeleteAllRemindersSuccess: RemindersAction()
+    object DeleteAllRemindersError: RemindersAction()
 }
