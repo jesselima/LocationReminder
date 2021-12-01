@@ -54,7 +54,7 @@ fun UiDevice.onViewWithIdPerformTypeText(
     findObject(By.res(currentAppPackage, viewId)).text =  text
 }
 
-fun UiDevice.onViewWithIdPerformSwipe(
+fun UiDevice.onViewWithIdPerformSwipeLeft(
     viewId: String,
     currentAppPackage: String,
     numberOfSwipes: Int = 1
@@ -70,4 +70,44 @@ fun UiDevice.onViewWithIdPerformSwipe(
             )
         }
     }
+}
+
+fun UiDevice.swipeRight(steps: Int = 10) {
+    swipe(
+        (displayWidth / 6) * 5,
+        displayHeight / 2,  // Center vertically
+        displayWidth / 6,
+        displayHeight / 2, // Center vertically
+        steps
+    )
+}
+
+fun UiDevice.swipeLeft(steps: Int = 10) {
+    swipe(
+        (displayWidth / 6) * 5,
+        displayHeight / 2, // Center vertically
+        displayWidth / 6,
+        displayHeight / 2, // Center vertically
+        steps
+    )
+}
+
+fun UiDevice.swipeUp(steps: Int = 10) {
+    swipe(
+        displayWidth / 2, // Center horizontally
+        (displayHeight / 3) * 2,
+        displayWidth / 2, // Center horizontally
+        displayHeight / 3,
+        steps
+    )
+}
+
+fun UiDevice.swipeDown(steps: Int = 10) {
+    swipe(
+        displayWidth / 2, // Center horizontally
+        displayHeight / 3,
+        displayWidth / 2, // Center horizontally
+        (displayHeight / 3) * 2,
+        steps
+    )
 }
