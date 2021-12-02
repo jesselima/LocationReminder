@@ -46,11 +46,9 @@ interface RemindersDao {
     @Delete
     fun deleteReminder(reminder: ReminderData): Int
 
-
     @Query("UPDATE reminders SET is_geofence_enable = :isGeofenceEnable WHERE id = :reminderId")
     fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateReminder(reminder: ReminderData): Int
-
 }
