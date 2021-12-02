@@ -9,8 +9,10 @@ import com.google.android.gms.location.Geofence
 import com.udacity.locationreminder.shareddata.localdatasource.database.RemindersDatabase
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
 import com.udacity.locationreminder.stubs.reminderData
+import com.udacity.locationreminder.stubs.reminderData2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -49,6 +51,7 @@ class RemindersDaoTest {
         // When
         val result = database.reminderDao().getReminderById(reminderData.id.toString())
 
+        // Then
         assertThat(result as ReminderData, CoreMatchers.notNullValue())
         assertThat(result.title,  `is`("Grow tomatoes"))
         assertThat(result.description,  `is`("Do not forget the fertilizer"))
@@ -120,5 +123,19 @@ class RemindersDaoTest {
         assertThat(updatedReminder.expiration,  `is`(5))
         assertThat(updatedReminder.transitionType,  `is`(Geofence.GEOFENCE_TRANSITION_ENTER))
         assertThat(updatedReminder.isGeofenceEnable,  `is`(false))
+    }
+
+    @Test
+    fun getAllReminders() = runBlockingTest {
+        // Given
+        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData2)
+
+        // When
+        val result = database.reminderDao().getReminders()
+
+        // Then
+        assertThat(result, CoreMatchers.notNullValue())
+        assertThat(result.size,  `is`(2))
     }
 }

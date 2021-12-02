@@ -33,3 +33,17 @@ val reminderData = ReminderData(
     transitionType = Geofence.GEOFENCE_TRANSITION_EXIT,
     isGeofenceEnable = true,
 )
+
+val reminderData2 = ReminderData(
+    title="Grow potatoes",
+    description ="Do not forget the fertilizer and water",
+    locationName="Mars, North Pole",
+    latitude=90.0,
+    longitude = 340.0,
+    isPoi=false,
+    poiId="etAlienHumansPotatoes",
+    circularRadius= 300.0f,
+    expiration=5,
+    transitionType=Geofence.GEOFENCE_TRANSITION_ENTER,
+    isGeofenceEnable=false
+)
