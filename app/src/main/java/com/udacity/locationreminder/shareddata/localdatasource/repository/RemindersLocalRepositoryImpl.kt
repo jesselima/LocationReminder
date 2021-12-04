@@ -85,5 +85,4 @@ class RemindersLocalRepositoryImpl(
             remindersDao.updateReminder(reminder)
         }
     }
-
 }

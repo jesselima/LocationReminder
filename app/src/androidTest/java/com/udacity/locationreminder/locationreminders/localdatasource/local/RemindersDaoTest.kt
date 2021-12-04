@@ -44,15 +44,16 @@ class RemindersDaoTest {
     fun closeDatabase() = database.close()
 
     @Test
-    fun saveReminderAndGetReminderById() = runBlocking {
+    fun saveReminder_should_return_its_id_reminder_and_save_all_data() = runBlocking {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        val reminderId = database.reminderDao().saveReminder(reminderData)
 
         // When
         val result = database.reminderDao().getReminderById(reminderData.id.toString())
 
         // Then
         assertThat(result as ReminderData, CoreMatchers.notNullValue())
+        assertThat(result.id,  `is`(reminderId))
         assertThat(result.title,  `is`("Grow tomatoes"))
         assertThat(result.description,  `is`("Do not forget the fertilizer"))
         assertThat(result.locationName,  `is`("Mars, South Pole"))
@@ -67,7 +68,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun updateReminder() = runBlocking {
+    fun updateReminder_should_update_all_reminder_data_on_database() = runBlocking {
         // Given
         database.reminderDao().saveReminder(reminderData)
 
@@ -126,7 +127,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun updateReminderGeofenceStatus() = runBlocking {
+    fun updateReminderGeofenceStatus_should_update_geofence_status_to_disabled() = runBlocking {
         // Given
         database.reminderDao().saveReminder(reminderData)
 
@@ -143,7 +144,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun getAllReminders() = runBlockingTest {
+    fun getAllReminders_should_return_all_reminders() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData)
         database.reminderDao().saveReminder(reminderData2)
@@ -157,7 +158,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun deleteAllReminders() = runBlockingTest {
+    fun deleteAllReminders_shouls_delete_all_reminders() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData)
         database.reminderDao().saveReminder(reminderData2)
@@ -177,7 +178,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun deleteReminder() = runBlockingTest {
+    fun deleteReminder_should_delete_reminder() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData)
         database.reminderDao().saveReminder(reminderData2)
