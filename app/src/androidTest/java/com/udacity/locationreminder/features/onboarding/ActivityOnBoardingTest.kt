@@ -11,18 +11,16 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.features.RemindersActivity
 import com.udacity.locationreminder.util.AppViewAction
 import com.udacity.locationreminder.util.AppViewAssertion
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@ExperimentalCoroutinesApi
 @MediumTest
 class ActivityOnBoardingTest {
 
     @Test
-    fun launchOnBoardingActivity_should_pass_throughout_all_steps_then_call_reminders_screen() {
+    fun launchOnBoardingActivity_should_pass_throughout_all_steps_then_launch_reminders_screen() {
         /**
          * Initializes Intents and begins recording intents. Must be called prior to triggering any
          * actions that send out intents which need to be verified or stubbed. This is similar to
