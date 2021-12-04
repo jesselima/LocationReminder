@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.locationreminders.localdatasource
+package com.udacity.locationreminder.shareddata.localdatasource
 
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
 import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData

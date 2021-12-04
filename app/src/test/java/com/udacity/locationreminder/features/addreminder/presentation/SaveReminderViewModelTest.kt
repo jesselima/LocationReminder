@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.locationreminders.addreminder
+package com.udacity.locationreminder.features.addreminder.presentation
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 

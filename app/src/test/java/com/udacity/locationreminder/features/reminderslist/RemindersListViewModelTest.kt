@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.locationreminders.reminderslist
+package com.udacity.locationreminder.features.reminderslist
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi

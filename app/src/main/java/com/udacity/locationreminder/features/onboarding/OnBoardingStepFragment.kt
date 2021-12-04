@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.udacity.locationreminder.R
+import com.udacity.locationreminder.common.EventObserver
 import com.udacity.locationreminder.databinding.FragmentOnBoardingBinding
 import com.udacity.locationreminder.common.extensions.AnimDuration
 import com.udacity.locationreminder.common.extensions.TranslationType
@@ -36,7 +37,7 @@ class OnBoardingStepFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onBoardingViewModel.onBoardingStepLiveData.observe(viewLifecycleOwner) {
+        onBoardingViewModel.onBoardingStepLiveData.observe(viewLifecycleOwner, EventObserver {
             binding.onBoardingStepImage.apply {
                 showAnimated(
                     translationType = TranslationType.TRANSLATION_X,
@@ -61,7 +62,7 @@ class OnBoardingStepFragment : Fragment() {
                 )
                 text = getString(it.description)
             }
-        }
+        })
     }
 
     companion object {

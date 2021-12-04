@@ -1,24 +1,9 @@
-package com.udacity.locationreminder.features.onboarding
+package com.udacity.locationreminder.shareddata.stub
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.common.Event
+import com.udacity.locationreminder.features.onboarding.OnBoardingStep
 
-class OnBoardingViewModel : ViewModel() {
-
-    private val _onBoardingStepMutableLiveData = MutableLiveData<Event<OnBoardingStep>>()
-    val onBoardingStepLiveData: LiveData<Event<OnBoardingStep>> = Transformations.map(
-        _onBoardingStepMutableLiveData
-    ) { it }
-
-
-    fun setOnBoardingStep(index: Int) {
-        _onBoardingStepMutableLiveData.value = Event(onBoardingSteps[index])
-    }
-
+object Steps {
     val onBoardingSteps = listOf(
         OnBoardingStep(
             title = R.string.onboard_step_1_title,
@@ -36,5 +21,4 @@ class OnBoardingViewModel : ViewModel() {
             animationResId = R.raw.animation_location_pin_alert,
         ),
     )
-
 }

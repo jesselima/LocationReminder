@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.locationreminders.localdatasource.local
+package com.udacity.locationreminder.shareddata.localdatasource.database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
@@ -6,7 +6,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.android.gms.location.Geofence
-import com.udacity.locationreminder.shareddata.localdatasource.database.RemindersDatabase
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
 import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
 import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl

@@ -1,6 +1,5 @@
-package com.udacity.locationreminder.locationreminders.features.addreminder.usecase
+package com.udacity.locationreminder.features.addreminder.usecase
 
-import com.udacity.locationreminder.features.addreminder.usecase.InputValidatorsUseCase
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
