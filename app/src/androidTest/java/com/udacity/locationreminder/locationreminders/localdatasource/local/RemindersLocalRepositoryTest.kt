@@ -12,7 +12,6 @@ import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
 import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl
 import com.udacity.locationreminder.stubs.reminderData
 import com.udacity.locationreminder.stubs.reminderData2
-import com.udacity.locationreminder.util.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
@@ -34,9 +33,6 @@ class RemindersLocalRepositoryTest {
 
     private lateinit var database: RemindersDatabase
     private lateinit var repository: RemindersLocalRepositoryImpl
-
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun initLocalDatabase() {
