@@ -38,19 +38,19 @@ class OnBoardingActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 if(position + 1 == viewModel.onBoardingSteps.size) {
-                    binding.onboardingButtonSkip.showAnimated(
+                    binding.onboardingButtonStart.showAnimated(
                         translationType = TranslationType.TRANSLATION_X,
                         animDuration = AnimDuration.TIME_2000_MS
                     )
-                    binding.onboardingButtonSkip.text = getString(R.string.start)
-                    binding.onboardingButtonSkip.setOnClickListener {
+                    binding.onboardingButtonStart.text = getString(R.string.start)
+                    binding.onboardingButtonStart.setOnClickListener {
                         startActivity(Intent(applicationContext, RemindersActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         })
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                     }
                 } else {
-                    binding.onboardingButtonSkip.visibility = View.GONE
+                    binding.onboardingButtonStart.visibility = View.GONE
                 }
                 super.onPageSelected(position)
             }

@@ -22,7 +22,7 @@ class OnBoardingStepFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBoardingViewModel = ViewModelProvider(this).get(OnBoardingViewModel::class.java).apply {
-            setOnBoardingStep(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
+            setOnBoardingStep(arguments?.getInt(ARG_SECTION_NUMBER) ?: 0)
         }
     }
 

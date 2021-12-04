@@ -1,4 +1,4 @@
-package com.udacity.locationreminder.features
+package com.udacity.locationreminder.features.reminderdetails
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.common.ReminderConstants
-import com.udacity.locationreminder.features.reminderdetails.ReminderDetailsFragment
 import com.udacity.locationreminder.stubs.reminderItemView
 import com.udacity.locationreminder.util.AppViewAction
 import com.udacity.locationreminder.util.AppViewAssertion
