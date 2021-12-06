@@ -36,7 +36,7 @@ class RemindersListViewModel(
                         reminder.mapToPresentationModel()
                     })
                     if (dataList.isEmpty()) {
-                        _action.value = RemindersAction.NoRemindersFound
+                        _action.postValue(RemindersAction.NoRemindersFound)
                         _state.postValue(
                             state.value?.copy(isLoading = false, reminders = emptyList())
                         )
@@ -47,8 +47,8 @@ class RemindersListViewModel(
                     }
                 }
                 is ResultData.Error ->  {
-                    _action.value = RemindersAction.LoadRemindersError
                     _state.postValue(state.value?.copy(isLoading = false))
+                    _action.value = RemindersAction.LoadRemindersError
                 }
             }
         }
