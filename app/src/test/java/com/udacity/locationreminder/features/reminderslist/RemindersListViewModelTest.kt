@@ -59,8 +59,6 @@ class RemindersListViewModelTest {
     @After
     fun tearDown() {
         stopKoin()
-        observerState =  Observer { RemindersState() }
-        observerAction = Observer { }
         MockitoAnnotations.openMocks(this).close()
     }
 
