@@ -134,4 +134,59 @@ class RemindersListViewModelTest {
         verify(observerState, times(2)).onChanged(finalState)
         verify(observerAction).onChanged(RemindersAction.LoadRemindersError)
     }
+
+    @Test
+    fun updateGeofenceStatus_should_set_UpdateRemindersSuccess_action_when_update_is_success() = mainCoroutineRule.runBlockingTest {
+        // Given
+        /** The return value is stands for the number of row update on the database */
+        whenever(repository.updateGeofenceStatus(202112060802, true))
+            .thenReturn(1)
+
+        // When
+        viewModel.updateGeofenceStatus(202112060802, true)
+
+        // Then
+        verify(observerAction).onChanged(RemindersAction.UpdateRemindersSuccess)
+    }
+
+    @Test
+    fun updateGeofenceStatus_should_set_UpdateRemindersError_action_when_update_is_error() = mainCoroutineRule.runBlockingTest {
+        // Given
+        whenever(repository.updateGeofenceStatus(202112060802, true))
+            .thenReturn(0)
+
+        // When
+        viewModel.updateGeofenceStatus(202112060802, true)
+
+        // Then
+        verify(observerAction).onChanged(RemindersAction.UpdateRemindersError)
+    }
+
+    @Test
+    fun deleteAllReminders_should_set_UpdateRemindersSuccess_action_when_delete_is_success() = mainCoroutineRule.runBlockingTest {
+        // Given
+        /** The return value is stands for the number of row deleted from the database */
+        whenever(repository.deleteAllReminders())
+            .thenReturn(3)
+
+        // When
+        viewModel.deleteAllReminders()
+
+        // Then
+        verify(observerAction).onChanged(RemindersAction.DeleteAllRemindersSuccess)
+    }
+
+    @Test
+    fun deleteAllReminders_should_set_UpdateRemindersError_action_when_delete_is_error() = mainCoroutineRule.runBlockingTest {
+        // Given
+        /** The return value is stands for the number of row deleted from the database */
+        whenever(repository.deleteAllReminders())
+            .thenReturn(0)
+
+        // When
+        viewModel.deleteAllReminders()
+
+        // Then
+        verify(observerAction).onChanged(RemindersAction.DeleteAllRemindersError)
+    }
 }

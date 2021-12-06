@@ -158,7 +158,7 @@ class ReminderListFragment : Fragment() {
                         negativeButtonText = getString(R.string.label_cancel),
                         positiveButtonText = getString(R.string.label_delete_account),
                         positiveButtonAction = {
-                            viewModel.deleteAllRemindersThenDeleteAccount()
+                            viewModel.deleteAllReminders()
                         }
                     )
                     true

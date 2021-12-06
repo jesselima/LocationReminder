@@ -12,6 +12,9 @@ import com.udacity.locationreminder.sharedpresentation.ReminderItemView
 import com.udacity.locationreminder.sharedpresentation.mapToDataModel
 import kotlinx.coroutines.launch
 
+private const val RESULT_NO_DATA_DELETED = 0
+private const val RESULT_DATA_AFFECTED = 1
+
 class RemindersListViewModel(
     private val remindersLocalRepository: RemindersLocalRepository
 ) : ViewModel() {
@@ -57,7 +60,7 @@ class RemindersListViewModel(
     fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean) {
         viewModelScope.launch {
             val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
-            if (result == 1) {
+            if (result == RESULT_DATA_AFFECTED) {
                 _action.postValue(RemindersAction.UpdateRemindersSuccess)
             } else {
                 _action.postValue(RemindersAction.UpdateRemindersError)
@@ -68,7 +71,7 @@ class RemindersListViewModel(
     fun deleteReminder(reminderItemView: ReminderItemView) {
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
-            if (result == 1) {
+            if (result == RESULT_DATA_AFFECTED) {
                 _action.postValue(RemindersAction.DeleteRemindersSuccess)
             } else {
                 _action.postValue(RemindersAction.DeleteRemindersError)
@@ -76,10 +79,10 @@ class RemindersListViewModel(
         }
     }
 
-    fun deleteAllRemindersThenDeleteAccount() {
+    fun deleteAllReminders() {
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteAllReminders()
-            if (result <= 0) {
+            if (result <= RESULT_NO_DATA_DELETED) {
                 _action.postValue(RemindersAction.DeleteAllRemindersError)
             } else {
                 _action.postValue(RemindersAction.DeleteAllRemindersSuccess)
