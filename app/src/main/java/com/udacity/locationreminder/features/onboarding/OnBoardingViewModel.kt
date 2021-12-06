@@ -36,5 +36,4 @@ class OnBoardingViewModel : ViewModel() {
             animationResId = R.raw.animation_location_pin_alert,
         ),
     )
-
 }

@@ -209,10 +209,10 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.selectedReminder.observe(viewLifecycleOwner) { reminder ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             with(binding) {
-                reminder?.latitude?.let { lat ->
-                    reminder.longitude?.let { lng ->
+                state.selectedReminder?.latitude?.let { lat ->
+                    state.selectedReminder.longitude?.let { lng ->
                         textSelectedLocation.text = String.format(
                             Locale.getDefault(), getString(R.string.lat_long_snippet), lat, lng
                         )
@@ -223,24 +223,24 @@ class AddReminderFragment : Fragment() {
                     buttonSelectLocation.text = getString(R.string.text_button_select_location)
                 }
 
-                reminder?.locationName?.let {
+                state.selectedReminder?.locationName?.let {
                     reminderLocationName.setText(it)
                 } ?: reminderLocationName.setText("")
 
-                reminderTitle.setText(reminder?.title)
-                reminderDescription.setText(reminder?.description)
-                sliderCircularRadius.value = reminder?.circularRadius ?: CIRCULAR_RADIUS_DEFAULT
+                reminderTitle.setText(state.selectedReminder?.title)
+                reminderDescription.setText(state.selectedReminder?.description)
+                sliderCircularRadius.value = state.selectedReminder?.circularRadius ?: CIRCULAR_RADIUS_DEFAULT
 
                 radioGroupTransitionType.check(
-                    when(reminder?.transitionType) {
+                    when(state.selectedReminder?.transitionType) {
                         Geofence.GEOFENCE_TRANSITION_ENTER -> R.id.radioButtonEnter
                         else -> R.id.radioButtonExit
                     }
                 )
 
-                isGeofenceEnableSwitch.isChecked = reminder?.isGeofenceEnable ?: false
+                isGeofenceEnableSwitch.isChecked = state.selectedReminder?.isGeofenceEnable ?: false
 
-                reminder?.expiration?.let {
+                state.selectedReminder?.expiration?.let {
                     if (it == -1L) {
                         setupExpirationUnitInputList(R.string.units_never)
                         inputLayoutExpirationDurationValue.isEnabled = false

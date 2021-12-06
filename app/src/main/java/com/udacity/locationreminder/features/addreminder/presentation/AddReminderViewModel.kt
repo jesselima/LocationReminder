@@ -17,14 +17,11 @@ class AddReminderViewModel(
     private val inputValidatorsUseCase: InputValidatorsUseCase
 ): ViewModel() {
 
-    private var _selectedReminder = MutableLiveData<ReminderItemView?>()
-    val selectedReminder: LiveData<ReminderItemView?> = _selectedReminder
-
     private var _state = MutableLiveData<AddReminderState>()
     val state: LiveData<AddReminderState> = _state
 
-    private var _action = MutableLiveData<AddReminderAction?>()
-    val action: LiveData<AddReminderAction?> = _action
+    private var _action = MutableLiveData<AddReminderAction>()
+    val action: LiveData<AddReminderAction> = _action
 
     private var isFormValid: Boolean = false
 
@@ -33,16 +30,16 @@ class AddReminderViewModel(
     }
 
     fun setSelectedReminder(reminder: ReminderItemView?) {
-        _selectedReminder.value = reminder
+        reminder?.let {  _state.postValue(state.value?.copy(selectedReminder = it)) }
     }
 
     fun validateFieldsSaveOrUpdateReminder(isEditing: Boolean = false) {
-        if (isTitleValid(_selectedReminder.value?.title) &&
-            isLocationNameValid(_selectedReminder.value?.locationName) &&
-            isDescriptionValid(_selectedReminder.value?.description) &&
+        if (isTitleValid(state.value?.selectedReminder?.title) &&
+            isLocationNameValid(state.value?.selectedReminder?.locationName) &&
+            isDescriptionValid(state.value?.selectedReminder?.description) &&
             isLatLngValid()
         ) {
-            _selectedReminder.value?.let {
+            state.value?.selectedReminder?.let {
                 if (isEditing) {
                     updateReminder(it)
                 } else {
@@ -54,19 +51,17 @@ class AddReminderViewModel(
 
     private fun saveReminder(reminder: ReminderItemView) {
         if (isFormValid.not()) return
-        _state.value = state.value?.copy(isLoading = true)
+        _state.postValue(state.value?.copy(isLoading = true))
 
         viewModelScope.launch {
             runCatching {
                 remindersLocalRepository.saveReminder(reminder.mapToDataModel())
             }.onSuccess {
-                _state.value = state.value?.copy(isLoading = false)
-                _action.value = AddReminderAction.AddReminderSuccess
-                _action.value = null
+                _state.postValue(state.value?.copy(isLoading = false))
+                _action.postValue(AddReminderAction.AddReminderSuccess)
             }.onFailure {
-                _state.value = state.value?.copy(isLoading = false)
-                _action.value = AddReminderAction.AddReminderError
-                _action.value = null
+                _state.postValue(state.value?.copy(isLoading = false))
+                _action.postValue(AddReminderAction.AddReminderError)
             }
         }
     }
@@ -77,22 +72,19 @@ class AddReminderViewModel(
                 remindersLocalRepository.updateReminder(reminder.mapToDataModel())
             }.onSuccess { result ->
                 if (result >= UPDATE_SUCCESS )
-                    _action.value = AddReminderAction.UpdateReminderSuccess
-                    _action.value = null
+                    _action.postValue(AddReminderAction.UpdateReminderSuccess)
 
             }.onFailure {
-                _action.value = AddReminderAction.UpdateReminderError
-                _action.value = null
+                _action.postValue(AddReminderAction.UpdateReminderError)
             }
         }
     }
 
     fun isTitleValid(title: String?): Boolean {
-        _selectedReminder.value?.title = title
+        state.value?.selectedReminder?.title = title
         inputValidatorsUseCase.validateTitle(title).run {
             if (this.not()) {
-                _action.value = AddReminderAction.InputErrorFieldTitle
-                _action.value = null
+                _action.postValue(AddReminderAction.InputErrorFieldTitle)
             }
             isFormValid = this
             return this
@@ -100,11 +92,10 @@ class AddReminderViewModel(
     }
 
     fun isLocationNameValid(locationName: String?): Boolean {
-        _selectedReminder.value?.locationName = locationName
+        state.value?.selectedReminder?.locationName = locationName
         inputValidatorsUseCase.validateLocationName(locationName).run {
             if (this.not()) {
-                _action.value = AddReminderAction.InputErrorFieldLocationName
-                _action.value = null
+                _action.postValue(AddReminderAction.InputErrorFieldLocationName)
             }
             isFormValid = this
             return this
@@ -112,11 +103,10 @@ class AddReminderViewModel(
     }
 
     fun isDescriptionValid(description: String?): Boolean {
-        _selectedReminder.value?.description = description
+        state.value?.selectedReminder?.description = description
         inputValidatorsUseCase.validateDescription(description).run {
             if (this.not()) {
-                _action.value = AddReminderAction.InputErrorFieldDescription
-                _action.value = null
+                _action.postValue(AddReminderAction.InputErrorFieldDescription)
             }
             isFormValid = this
             return this
@@ -125,11 +115,10 @@ class AddReminderViewModel(
 
     private fun isLatLngValid(): Boolean {
         inputValidatorsUseCase.validateLatLng(
-            selectedReminder.value?.latitude, selectedReminder.value?.longitude
+            state.value?.selectedReminder?.latitude, state.value?.selectedReminder?.longitude
         ).run {
             if (this.not()) {
-                _action.value = AddReminderAction.InputErrorMissingLatLong
-                _action.value = null
+                _action.postValue(AddReminderAction.InputErrorMissingLatLong)
             }
             return this
         }
