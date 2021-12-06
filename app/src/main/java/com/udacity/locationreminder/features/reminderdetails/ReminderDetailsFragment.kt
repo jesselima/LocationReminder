@@ -68,6 +68,10 @@ class ReminderDetailsFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            binding.progressBar.isVisible = state.isLoading
+            binding.layoutReminderDetails.isVisible = state.isLoading.not()
+        }
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
                 ReminderDetailsAction.DeleteReminderSuccess -> {
