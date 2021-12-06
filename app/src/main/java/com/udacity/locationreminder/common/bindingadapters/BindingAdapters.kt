@@ -17,13 +17,13 @@ object BindingAdapters {
      * Use binding adapter to set the recycler view data using livedata object
      */
     @Suppress("UNCHECKED_CAST")
-    @BindingAdapter("android:liveData")
+    @BindingAdapter("android:recyclerListItems")
     @JvmStatic
-    fun <T> setRecyclerViewData(recyclerView: RecyclerView, items: LiveData<List<T>>?) {
-        items?.value?.let { itemList ->
+    fun <T> setRecyclerViewData(recyclerView: RecyclerView, items: List<T>?) {
+        items?.let { list ->
             (recyclerView.adapter as? BaseRecyclerViewAdapter<T>)?.apply {
                 clear()
-                addData(itemList)
+                addData(list)
             }
         }
     }
@@ -46,6 +46,16 @@ object BindingAdapters {
                 if (view.visibility == View.VISIBLE)
                     view.hideWithFadeOut()
             }
+        }
+    }
+
+    @BindingAdapter("android:loadingStatus")
+    @JvmStatic
+    fun setLoadingStatus(view: View, isLoading: Boolean? = false) {
+        if (isLoading == true) {
+            view.showWithFadeIn()
+        } else {
+            view.hideWithFadeOut()
         }
     }
 

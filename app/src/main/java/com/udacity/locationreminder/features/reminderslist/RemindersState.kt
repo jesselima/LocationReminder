@@ -4,5 +4,5 @@ import com.udacity.locationreminder.sharedpresentation.ReminderItemView
 
 data class RemindersState(
     val isLoading: Boolean = false,
-    var reminders: List<ReminderItemView> = emptyList()
+    var reminders: List<ReminderItemView>? = null
 )

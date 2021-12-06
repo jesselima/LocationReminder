@@ -16,23 +16,19 @@ class RemindersListViewModel(
     private val remindersLocalRepository: RemindersLocalRepository
 ) : ViewModel() {
 
-    // Todo improve this Party of live Data
     private var _state = MutableLiveData<RemindersState>()
     val state: LiveData<RemindersState> = _state
 
-    private var _action = MutableLiveData<RemindersAction?>()
-    val action: LiveData<RemindersAction?> = _action
-
-    private var _remindersList = MutableLiveData<List<ReminderItemView>>()
-    val remindersList: LiveData<List<ReminderItemView>> = _remindersList
+    private var _action = MutableLiveData<RemindersAction>()
+    val action: LiveData<RemindersAction> = _action
 
     init {
-        _state.value = RemindersState()
+        _state.postValue(RemindersState())
     }
 
-    fun loadReminders() {
+    fun getReminders() {
         viewModelScope.launch {
-            _state.value = state.value?.copy(isLoading = true)
+            _state.postValue(state.value?.copy(isLoading = true))
             when (val result = remindersLocalRepository.getReminders()) {
                 is ResultData.Success<*> -> {
                     val dataList = ArrayList<ReminderItemView>()
@@ -41,17 +37,18 @@ class RemindersListViewModel(
                     })
                     if (dataList.isEmpty()) {
                         _action.value = RemindersAction.NoRemindersFound
-                        _state.value = state.value?.copy(isLoading = false)
-                        _remindersList.value = emptyList()
+                        _state.postValue(
+                            state.value?.copy(isLoading = false, reminders = emptyList())
+                        )
                     } else {
-                        _remindersList.value = dataList
-                        _state.value = state.value?.copy(isLoading = false)
+                        _state.postValue(
+                            state.value?.copy(isLoading = false, reminders = dataList)
+                        )
                     }
                 }
                 is ResultData.Error ->  {
                     _action.value = RemindersAction.LoadRemindersError
-                    _action.value = null
-                    _state.value = state.value?.copy(isLoading = false)
+                    _state.postValue(state.value?.copy(isLoading = false))
                 }
             }
         }
@@ -61,11 +58,9 @@ class RemindersListViewModel(
         viewModelScope.launch {
             val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
             if (result == 1) {
-                _action.value = RemindersAction.UpdateRemindersSuccess
-                _action.value = null
+                _action.postValue(RemindersAction.UpdateRemindersSuccess)
             } else {
-                _action.value = RemindersAction.UpdateRemindersError
-                _action.value = null
+                _action.postValue(RemindersAction.UpdateRemindersError)
             }
         }
     }
@@ -74,19 +69,21 @@ class RemindersListViewModel(
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
             if (result == 1) {
-                _action.value = RemindersAction.DeleteRemindersSuccess
-                _action.value = null
+                _action.postValue(RemindersAction.DeleteRemindersSuccess)
             } else {
-                _action.value = RemindersAction.DeleteRemindersError
-                _action.value = null
+                _action.postValue(RemindersAction.DeleteRemindersError)
             }
         }
     }
 
     fun deleteAllRemindersThenDeleteAccount() {
         viewModelScope.launch {
-            remindersLocalRepository.deleteAllReminders()
-            _action.value = RemindersAction.DeleteAllRemindersSuccess
+            val result = remindersLocalRepository.deleteAllReminders()
+            if (result <= 0) {
+                _action.postValue(RemindersAction.DeleteAllRemindersError)
+            } else {
+                _action.postValue(RemindersAction.DeleteAllRemindersSuccess)
+            }
         }
     }
 }

@@ -61,7 +61,7 @@ class ReminderListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentReminderListBinding.inflate(layoutInflater)
-        binding.refreshLayout.setOnRefreshListener { viewModel.loadReminders() }
+        binding.refreshLayout.setOnRefreshListener { viewModel.getReminders() }
         return binding.root
     }
 
@@ -76,11 +76,14 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.remindersList.observe(viewLifecycleOwner) {
-            binding.noDataAnimation.isVisible = it.isEmpty()
-            binding.noDataTextView.isVisible = it.isEmpty()
-            binding.refreshLayout.isRefreshing = false
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            with(state) {
+                binding.noDataAnimation.isVisible = reminders?.isEmpty() ?: false && isLoading.not()
+                binding.noDataTextView.isVisible = reminders?.isEmpty() ?: false && isLoading.not()
+                binding.refreshLayout.isRefreshing = false
+            }
         }
+
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
                 RemindersAction.LoadRemindersError -> {
@@ -98,7 +101,7 @@ class ReminderListFragment : Fragment() {
                         titleResId = R.string.message_update_reminder_success,
                         toastType = ToastType.SUCCESS
                     )
-                    viewModel.loadReminders()
+                    viewModel.getReminders()
                 }
 
                 RemindersAction.UpdateRemindersError ->
@@ -110,7 +113,7 @@ class ReminderListFragment : Fragment() {
                     context?.showCustomToast(
                         titleResId = R.string.message_delete_reminder_success,
                     )
-                    viewModel.loadReminders()
+                    viewModel.getReminders()
                 }
                 is RemindersAction.DeleteRemindersError -> {
                     context?.showCustomToast(
@@ -179,7 +182,7 @@ class ReminderListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadReminders()
+        viewModel.getReminders()
         binding.noDataAnimation.playAnimation()
     }
 
