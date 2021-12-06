@@ -23,6 +23,7 @@ import org.koin.core.context.stopKoin
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -42,34 +43,37 @@ class RemindersListViewModelTest {
     private lateinit var viewModel: RemindersListViewModel
 
     @Mock
-    private var observerState: Observer<RemindersState>? = null
-    private var observerAction: Observer<RemindersAction>? = null
+    private var observerState: Observer<RemindersState> = Observer { RemindersState() }
+
+    @Mock
+    private var observerAction: Observer<RemindersAction> = Observer {  }
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
         viewModel = RemindersListViewModel(repository)
-        observerState?.let { viewModel.state.observeForever(it) }
-        observerAction?.let { viewModel.action.observeForever(it) }
+        viewModel.state.observeForever(observerState)
+        viewModel.action.observeForever(observerAction)
     }
 
     @After
     fun tearDown() {
         stopKoin()
+        observerState =  Observer { RemindersState() }
+        observerAction = Observer { }
         MockitoAnnotations.openMocks(this).close()
-        observerState = null
-        observerAction = null
     }
 
     @Test
-    fun viewModel_should_have_initial_state_observers_when_init() {
+    fun viewModel_should_have_active_state_observers_after_init() {
         assertThat(viewModel.state.value, `is`(RemindersState()))
         assertTrue(viewModel.state.hasActiveObservers())
     }
 
     @Test
-    fun viewModel_should_have_initial_action_when_init() {
+    fun viewModel_should_have_active_action_observers_after_init() {
         assertEquals(viewModel.action.value, null)
+        assertTrue(viewModel.action.hasActiveObservers())
     }
 
     @Test
@@ -79,10 +83,6 @@ class RemindersListViewModelTest {
 
         whenever(repository.getReminders()).thenReturn(ResultData.Success(list))
 
-        // When
-        viewModel.getReminders()
-
-        // Then
         val initialState = RemindersState()
         val loadingState = initialState.copy(isLoading = true)
         val finalState = loadingState.copy(
@@ -90,8 +90,48 @@ class RemindersListViewModelTest {
             reminders = list.map { it.mapToPresentationModel() }
         )
 
-        verify(observerState)?.onChanged(initialState)
-        verify(observerState)?.onChanged(loadingState)
-        verify(observerState)?.onChanged(finalState)
+        // When
+        viewModel.getReminders()
+
+        // Then
+        verify(observerState).onChanged(initialState)
+        verify(observerState).onChanged(loadingState)
+        verify(observerState).onChanged(finalState)
+    }
+
+    @Test
+    fun getReminders_should_set_NoRemindersFound_action_when_no_reminders_was_found() = mainCoroutineRule.runBlockingTest {
+        // Given
+        whenever(repository.getReminders()).thenReturn(ResultData.Success(emptyList()))
+        val initialState = RemindersState()
+        val loadingState = initialState.copy(isLoading = true)
+        val finalState = loadingState.copy(isLoading = false, reminders = emptyList())
+
+        // When
+        viewModel.getReminders()
+
+        // Then
+        verify(observerState).onChanged(initialState)
+        verify(observerState).onChanged(loadingState)
+        verify(observerState).onChanged(finalState)
+        verify(observerAction).onChanged(RemindersAction.NoRemindersFound)
+    }
+
+    @Test
+    fun getReminders_should_set_LoadRemindersError_action_when_no_reminders_was_found() = mainCoroutineRule.runBlockingTest {
+        // Given
+        whenever(repository.getReminders()).thenReturn(ResultData.Error("Ooops!"))
+        val initialState = RemindersState()
+        val loadingState = initialState.copy(isLoading = true)
+        val finalState = loadingState.copy(isLoading = false, reminders = null)
+
+        // When
+        viewModel.getReminders()
+
+        // Then
+        verify(observerState, times(2)).onChanged(initialState)
+        verify(observerState).onChanged(loadingState)
+        verify(observerState, times(2)).onChanged(finalState)
+        verify(observerAction).onChanged(RemindersAction.LoadRemindersError)
     }
 }
