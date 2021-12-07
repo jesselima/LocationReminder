@@ -57,13 +57,21 @@ class AddReminderViewModel(
             runCatching {
                 remindersLocalRepository.saveReminder(reminder.mapToDataModel())
             }.onSuccess {
-                _state.postValue(state.value?.copy(isLoading = false))
-                _action.postValue(AddReminderAction.AddReminderSuccess)
+                if (it > 0) {
+                    _state.postValue(state.value?.copy(isLoading = false))
+                    _action.postValue(AddReminderAction.AddReminderSuccess)
+                } else {
+                   setErrorActionAndState()
+                }
             }.onFailure {
-                _state.postValue(state.value?.copy(isLoading = false))
-                _action.postValue(AddReminderAction.AddReminderError)
+                setErrorActionAndState()
             }
         }
+    }
+
+    private fun setErrorActionAndState() {
+        _state.postValue(state.value?.copy(isLoading = false))
+        _action.postValue(AddReminderAction.AddReminderError)
     }
 
     private fun updateReminder(reminder: ReminderItemView) {
@@ -71,9 +79,11 @@ class AddReminderViewModel(
             runCatching {
                 remindersLocalRepository.updateReminder(reminder.mapToDataModel())
             }.onSuccess { result ->
-                if (result >= UPDATE_SUCCESS )
+                if (result >= UPDATE_SUCCESS ) {
                     _action.postValue(AddReminderAction.UpdateReminderSuccess)
-
+                } else {
+                    _action.postValue(AddReminderAction.UpdateReminderError)
+                }
             }.onFailure {
                 _action.postValue(AddReminderAction.UpdateReminderError)
             }
@@ -82,7 +92,7 @@ class AddReminderViewModel(
 
     fun isTitleValid(title: String?): Boolean {
         state.value?.selectedReminder?.title = title
-        inputValidatorsUseCase.validateTitle(title).run {
+        inputValidatorsUseCase.isTitleValid(title).run {
             if (this.not()) {
                 _action.postValue(AddReminderAction.InputErrorFieldTitle)
             }
@@ -93,7 +103,7 @@ class AddReminderViewModel(
 
     fun isLocationNameValid(locationName: String?): Boolean {
         state.value?.selectedReminder?.locationName = locationName
-        inputValidatorsUseCase.validateLocationName(locationName).run {
+        inputValidatorsUseCase.isLocationNameValid(locationName).run {
             if (this.not()) {
                 _action.postValue(AddReminderAction.InputErrorFieldLocationName)
             }
@@ -104,7 +114,7 @@ class AddReminderViewModel(
 
     fun isDescriptionValid(description: String?): Boolean {
         state.value?.selectedReminder?.description = description
-        inputValidatorsUseCase.validateDescription(description).run {
+        inputValidatorsUseCase.isDescriptionValid(description).run {
             if (this.not()) {
                 _action.postValue(AddReminderAction.InputErrorFieldDescription)
             }
@@ -113,14 +123,16 @@ class AddReminderViewModel(
         }
     }
 
-    private fun isLatLngValid(): Boolean {
-        inputValidatorsUseCase.validateLatLng(
-            state.value?.selectedReminder?.latitude, state.value?.selectedReminder?.longitude
-        ).run {
-            if (this.not()) {
-                _action.postValue(AddReminderAction.InputErrorMissingLatLong)
-            }
-            return this
+    fun isLatLngValid(): Boolean {
+        val latitude = _state.value?.selectedReminder?.latitude
+        val longitude = _state.value?.selectedReminder?.longitude
+        return if (latitude != null && longitude != null) {
+            isFormValid = true
+            true
+        } else {
+            _action.postValue(AddReminderAction.InputErrorMissingLatLong)
+            isFormValid = false
+            false
         }
     }
 }

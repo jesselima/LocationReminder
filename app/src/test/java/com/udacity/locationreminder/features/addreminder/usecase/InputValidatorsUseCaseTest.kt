@@ -11,7 +11,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateLocationName_should_return_false_when_value_is_empty() {
         // When
-        val result = useCase.validateLocationName("")
+        val result = useCase.isLocationNameValid("")
 
         // Then
         assertFalse(result)
@@ -20,7 +20,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateLocationName_should_return_false_when_value_is_null() {
         // When
-        val result = useCase.validateLocationName(null)
+        val result = useCase.isLocationNameValid(null)
 
         // Then
         assertFalse(result)
@@ -29,7 +29,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateLocationName_should_return_false_when_value_is_valid() {
         // When
-        val result = useCase.validateLocationName("Home")
+        val result = useCase.isLocationNameValid("Home")
 
         // Then
         assertTrue(result)
@@ -38,7 +38,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateTitle_should_return_false_when_value_is_empty() {
         // When
-        val result = useCase.validateTitle("")
+        val result = useCase.isTitleValid("")
 
         // Then
         assertFalse(result)
@@ -47,7 +47,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateTitle_should_return_false_when_value_is_null() {
         // When
-        val result = useCase.validateTitle(null)
+        val result = useCase.isTitleValid(null)
 
         // Then
         assertFalse(result)
@@ -56,7 +56,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateTitle_should_return_false_when_value_is_valid() {
         // When
-        val result = useCase.validateTitle("Home")
+        val result = useCase.isTitleValid("Home")
 
         // Then
         assertTrue(result)
@@ -65,7 +65,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateDescription_should_return_false_when_value_is_empty() {
         // When
-        val result = useCase.validateDescription("")
+        val result = useCase.isDescriptionValid("")
 
         // Then
         assertFalse(result)
@@ -74,7 +74,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateDescription_should_return_false_when_value_is_null() {
         // When
-        val result = useCase.validateDescription(null)
+        val result = useCase.isDescriptionValid(null)
 
         // Then
         assertFalse(result)
@@ -83,34 +83,7 @@ class InputValidatorsUseCaseTest {
     @Test
     fun validateDescription_should_return_false_when_value_is_valid() {
         // When
-        val result = useCase.validateDescription("Home")
-
-        // Then
-        assertTrue(result)
-    }
-
-    @Test
-    fun validateLatLng_should_return_false_when_values_are_zero() {
-        // When
-        val result = useCase.validateLatLng(latitude = 0.0, longitude = 0.0)
-
-        // Then
-        assertFalse(result)
-    }
-
-    @Test
-    fun validateLatLng_should_return_false_when_values_are_null() {
-        // When
-        val result = useCase.validateLatLng(latitude = null, longitude = null)
-
-        // Then
-        assertFalse(result)
-    }
-
-    @Test
-    fun validateLatLng_should_return_false_when_values_are_valid() {
-        // When
-        val result = useCase.validateLatLng(latitude = 90.0, longitude = -120.0)
+        val result = useCase.isDescriptionValid("Home")
 
         // Then
         assertTrue(result)
