@@ -1,9 +1,9 @@
 package com.udacity.locationreminder.common.bindingadapters
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.common.extensions.hideWithFadeOut
@@ -16,6 +16,7 @@ object BindingAdapters {
     /**
      * Use binding adapter to set the recycler view data using livedata object
      */
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNCHECKED_CAST")
     @BindingAdapter("android:recyclerListItems")
     @JvmStatic
@@ -24,6 +25,7 @@ object BindingAdapters {
             (recyclerView.adapter as? BaseRecyclerViewAdapter<T>)?.apply {
                 clear()
                 addData(list)
+                notifyDataSetChanged()
             }
         }
     }

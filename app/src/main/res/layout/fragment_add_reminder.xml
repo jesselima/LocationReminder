@@ -6,8 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addReminderLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/solidWhite">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/saveReminderAppBarLayout"
@@ -95,7 +94,7 @@
                     android:hint="@string/reminder_location_name"
                     app:counterEnabled="true"
                     app:counterMaxLength="100"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textSelectedLocation">
@@ -120,7 +119,7 @@
                     android:hint="@string/reminder_title"
                     app:counterEnabled="true"
                     app:counterMaxLength="100"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/inputLayoutLocationName">
@@ -146,6 +145,7 @@
                     app:counterEnabled="true"
                     app:counterMaxLength="300"
                     app:expandedHintEnabled="true"
+                    app:errorEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/inputLayoutTitle">

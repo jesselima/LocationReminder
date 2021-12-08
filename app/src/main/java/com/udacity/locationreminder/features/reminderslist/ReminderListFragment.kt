@@ -77,11 +77,9 @@ class ReminderListFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            with(state) {
-                binding.noDataAnimation.isVisible = reminders?.isEmpty() ?: false && isLoading.not()
-                binding.noDataTextView.isVisible = reminders?.isEmpty() ?: false && isLoading.not()
-                binding.refreshLayout.isRefreshing = false
-            }
+            binding.noDataAnimation.isVisible = state?.reminders?.isEmpty() ?: false
+            binding.noDataTextView.isVisible = state?.reminders?.isEmpty() ?: false
+            binding.refreshLayout.isRefreshing = false
         }
 
         viewModel.action.observe(viewLifecycleOwner) { action ->

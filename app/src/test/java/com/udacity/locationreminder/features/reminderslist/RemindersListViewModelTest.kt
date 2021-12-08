@@ -103,15 +103,13 @@ class RemindersListViewModelTest {
         whenever(repository.getReminders()).thenReturn(ResultData.Success(emptyList()))
         val initialState = RemindersState()
         val loadingState = initialState.copy(isLoading = true)
-        val finalState = loadingState.copy(isLoading = false, reminders = emptyList())
 
         // When
         viewModel.getReminders()
 
         // Then
-        verify(observerState).onChanged(initialState)
+        verify(observerState, times(2)).onChanged(initialState)
         verify(observerState).onChanged(loadingState)
-        verify(observerState).onChanged(finalState)
         verify(observerAction).onChanged(RemindersAction.NoRemindersFound)
     }
 
@@ -121,7 +119,7 @@ class RemindersListViewModelTest {
         whenever(repository.getReminders()).thenReturn(ResultData.Error("Ooops!"))
         val initialState = RemindersState()
         val loadingState = initialState.copy(isLoading = true)
-        val finalState = loadingState.copy(isLoading = false, reminders = null)
+        val finalState = loadingState.copy(isLoading = false, reminders = emptyList())
 
         // When
         viewModel.getReminders()

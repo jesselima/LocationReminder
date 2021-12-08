@@ -125,20 +125,17 @@ class AddReminderFragment : Fragment() {
 
     private fun setupListeners() {
         with(binding) {
-            reminderTitle.doOnTextChanged { text, _, _, _ ->
-                if (viewModel.isTitleValid(text.toString())) binding.inputLayoutTitle.error = null
-            }
 
             reminderLocationName.doOnTextChanged { text, _, _, _ ->
-                if (viewModel.isLocationNameValid(text.toString())) {
-                    binding.inputLayoutLocationName.error = null
-                }
+                viewModel.isLocationNameValid(text.toString())
+            }
+
+            reminderTitle.doOnTextChanged { text, _, _, _ ->
+                viewModel.isTitleValid(text.toString())
             }
 
             reminderDescription.doOnTextChanged { text, _, _, _ ->
-                if (viewModel.isDescriptionValid(text.toString())) {
-                    binding.inputLayoutDescription.error = null
-                }
+                viewModel.isDescriptionValid(text.toString())
             }
 
             sliderCircularRadius.addOnChangeListener { _, value, _ ->
@@ -259,52 +256,72 @@ class AddReminderFragment : Fragment() {
         }
 
         viewModel.action.observe(viewLifecycleOwner) { action ->
-            when(action) {
-                is AddReminderAction.AddReminderError,
-                is AddReminderAction.UpdateReminderError ->
-                    context?.showCustomToast(
-                        titleResId = R.string.message_saving_reminder_error,
-                        toastType = ToastType.ERROR
-                    )
-                is AddReminderAction.AddReminderSuccess,
-                is AddReminderAction.UpdateReminderSuccess -> {
-                    context?.showCustomToast(
-                        titleResId = R.string.message_saving_reminder_success,
-                        toastType = ToastType.SUCCESS,
-                        offSetY = TOAST_POSITION_ELEVATED
-                    )
-                    if (_currentReminderData.isGeofenceEnable) {
-                        addGeofence(_currentReminderData)
-                    } else {
-                        navigateToReminderList()
+            with(binding) {
+                when(action) {
+                    is AddReminderAction.AddReminderError,
+                    is AddReminderAction.UpdateReminderError ->
+                        context?.showCustomToast(
+                            titleResId = R.string.message_saving_reminder_error,
+                            toastType = ToastType.ERROR
+                        )
+                    is AddReminderAction.AddReminderSuccess,
+                    is AddReminderAction.UpdateReminderSuccess -> {
+                        context?.showCustomToast(
+                            titleResId = R.string.message_saving_reminder_success,
+                            toastType = ToastType.SUCCESS,
+                            offSetY = TOAST_POSITION_ELEVATED
+                        )
+                        if (_currentReminderData.isGeofenceEnable) {
+                            addGeofence(_currentReminderData)
+                        } else {
+                            navigateToReminderList()
+                        }
                     }
+                    is AddReminderAction.InputErrorFieldTitle -> {
+                        inputLayoutTitle.isErrorEnabled = true
+                        inputLayoutTitle.error = getString(R.string.message_input_error_title)
+                    }
+                    is AddReminderAction.InputClearErrorFieldTitle ->
+                        inputLayoutTitle.error = null
+                    is AddReminderAction.InputErrorFieldLocationName -> {
+                        inputLayoutLocationName.isErrorEnabled = true
+                        inputLayoutLocationName.error =
+                            getString(R.string.message_input_error_location)
+                    }
+                    is AddReminderAction.InputClearErrorFieldLocationName -> {
+                        inputLayoutLocationName.error = null
+                    }
+                    is AddReminderAction.InputErrorFieldDescription -> {
+                        inputLayoutDescription.isErrorEnabled = true
+                        inputLayoutDescription.error =
+                            getString(R.string.message_input_error_description)
+                    }
+                    is AddReminderAction.InputClearErrorFieldDescription ->
+                        inputLayoutDescription.error = null
+                    is AddReminderAction.InputErrorMissingLatLong -> {
+                        binding.buttonSelectLocation.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                        )
+                        binding.buttonSelectLocation.setStrokeColorResource(R.color.colorAccent)
+                        context?.showCustomToast(
+                            titleResId = R.string.message_input_error_lat_long_missing,
+                            toastType = ToastType.INFO,
+                            durationToast = Toast.LENGTH_LONG
+                        )
+                    }
+                    is AddReminderAction.InputClearErrorMissingLatLong -> {
+                        binding.buttonSelectLocation.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+                        )
+                        binding.buttonSelectLocation.setStrokeColorResource(R.color.colorPrimary)
+                    }
+                    is AddReminderAction.ClearErrors -> {
+                        inputLayoutExpirationDuration.error = null
+                        inputLayoutLocationName.error = null
+                        inputLayoutDescription.error = null
+                    }
+                    null -> Unit
                 }
-                is AddReminderAction.InputErrorFieldTitle ->
-                    binding.inputLayoutTitle.error =
-                        getString(R.string.message_input_error_title)
-                is AddReminderAction.InputErrorFieldLocationName ->
-                    binding.inputLayoutLocationName.error =
-                        getString(R.string.message_input_error_location)
-                is AddReminderAction.InputErrorFieldDescription ->
-                    binding.inputLayoutDescription.error =
-                        getString(R.string.message_input_error_description)
-                is AddReminderAction.InputErrorMissingLatLong -> {
-                    binding.buttonSelectLocation.setTextColor(
-                        ContextCompat.getColor(requireContext(), R.color.colorAccent)
-                    )
-                    binding.buttonSelectLocation.setStrokeColorResource(R.color.colorAccent)
-                    context?.showCustomToast(
-                        titleResId = R.string.message_input_error_lat_long_missing,
-                        toastType = ToastType.INFO,
-                        durationToast = Toast.LENGTH_LONG
-                    )
-                }
-                is AddReminderAction.ClearErrors -> {
-                    binding.inputLayoutExpirationDuration.error = null
-                    binding.inputLayoutLocationName.error = null
-                    binding.inputLayoutDescription.error = null
-                }
-                null -> Unit
             }
         }
     }

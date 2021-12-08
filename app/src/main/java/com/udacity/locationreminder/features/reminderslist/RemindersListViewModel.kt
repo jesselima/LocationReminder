@@ -26,12 +26,12 @@ class RemindersListViewModel(
     val action: LiveData<RemindersAction> = _action
 
     init {
-        _state.postValue(RemindersState())
+        _state.value = RemindersState()
     }
 
     fun getReminders() {
         viewModelScope.launch {
-            _state.postValue(state.value?.copy(isLoading = true))
+            _state.value = state.value?.copy(isLoading = true)
             when (val result = remindersLocalRepository.getReminders()) {
                 is ResultData.Success<*> -> {
                     val dataList = ArrayList<ReminderItemView>()
@@ -39,18 +39,14 @@ class RemindersListViewModel(
                         reminder.mapToPresentationModel()
                     })
                     if (dataList.isEmpty()) {
-                        _action.postValue(RemindersAction.NoRemindersFound)
-                        _state.postValue(
-                            state.value?.copy(isLoading = false, reminders = emptyList())
-                        )
+                        _action.value = RemindersAction.NoRemindersFound
+                        _state.value = state.value?.copy(isLoading = false, reminders = emptyList())
                     } else {
-                        _state.postValue(
-                            state.value?.copy(isLoading = false, reminders = dataList)
-                        )
+                        _state.value = state.value?.copy(isLoading = false, reminders = dataList)
                     }
                 }
                 is ResultData.Error ->  {
-                    _state.postValue(state.value?.copy(isLoading = false))
+                    _state.value = state.value?.copy(isLoading = false)
                     _action.value = RemindersAction.LoadRemindersError
                 }
             }
@@ -61,9 +57,9 @@ class RemindersListViewModel(
         viewModelScope.launch {
             val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
             if (result == RESULT_DATA_AFFECTED) {
-                _action.postValue(RemindersAction.UpdateRemindersSuccess)
+                _action.value = RemindersAction.UpdateRemindersSuccess
             } else {
-                _action.postValue(RemindersAction.UpdateRemindersError)
+                _action.value = RemindersAction.UpdateRemindersError
             }
         }
     }
@@ -72,9 +68,9 @@ class RemindersListViewModel(
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
             if (result == RESULT_DATA_AFFECTED) {
-                _action.postValue(RemindersAction.DeleteRemindersSuccess)
+                _action.value = RemindersAction.DeleteRemindersSuccess
             } else {
-                _action.postValue(RemindersAction.DeleteRemindersError)
+                _action.value = RemindersAction.DeleteRemindersError
             }
         }
     }
@@ -83,9 +79,9 @@ class RemindersListViewModel(
         viewModelScope.launch {
             val result = remindersLocalRepository.deleteAllReminders()
             if (result <= RESULT_NO_DATA_DELETED) {
-                _action.postValue(RemindersAction.DeleteAllRemindersError)
+                _action.value = RemindersAction.DeleteAllRemindersError
             } else {
-                _action.postValue(RemindersAction.DeleteAllRemindersSuccess)
+                _action.value = RemindersAction.DeleteAllRemindersSuccess
             }
         }
     }
