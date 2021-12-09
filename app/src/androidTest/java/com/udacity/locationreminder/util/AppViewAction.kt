@@ -15,12 +15,17 @@ import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matcher
 
 object AppViewAction {
 
     fun performClick(@IdRes resId: Int) {
-        onView(withId(resId)).perform(ViewActions.click())
+        onView(withId(resId)).perform(click())
+    }
+
+    fun performClick(text: String) {
+        onView(withText(text)).perform(click())
     }
 
     fun typeText(@IdRes resId: Int, text: String) {

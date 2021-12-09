@@ -16,4 +16,9 @@ object AppViewAssertion {
         Espresso.onView(ViewMatchers.withText(text))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
+
+    fun isViewIdWithTextDisplayed(@IdRes viewId: Int, text: String) {
+        Espresso.onView(ViewMatchers.withId(viewId))
+            .check(ViewAssertions.matches(ViewMatchers.withText(text)))
+    }
 }
