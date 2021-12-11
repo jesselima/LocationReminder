@@ -7,7 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 
 object AppViewAssertion {
 
-    fun isDisplayed(@IdRes resId: Int) {
+    fun isViewDisplayed(@IdRes resId: Int) {
         Espresso.onView(ViewMatchers.withId(resId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
@@ -15,6 +15,20 @@ object AppViewAssertion {
     fun isTextDisplayed(text: String) {
         Espresso.onView(ViewMatchers.withText(text))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    fun isViewGone(@IdRes resId: Int) {
+        Espresso.onView(ViewMatchers.withId(resId))
+            .check(ViewAssertions.matches(
+                ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+            )
+    }
+
+    fun isViewInvisible(@IdRes resId: Int) {
+        Espresso.onView(ViewMatchers.withId(resId))
+            .check(ViewAssertions.matches(
+                ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE))
+            )
     }
 
     fun isViewIdWithTextDisplayed(@IdRes viewId: Int, text: String) {

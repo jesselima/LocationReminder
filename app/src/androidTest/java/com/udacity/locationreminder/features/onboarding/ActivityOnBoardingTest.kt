@@ -30,13 +30,13 @@ class ActivityOnBoardingTest {
 
         launchActivity<OnBoardingActivity>()
 
-        AppViewAssertion.isDisplayed(R.id.onBoardingViewPager)
-        AppViewAssertion.isDisplayed(R.id.tabLayout)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingViewPager)
+        AppViewAssertion.isViewDisplayed(R.id.tabLayout)
 
         AppViewAction.actionSwipeLeft(R.id.onBoardingStepImage)
         AppViewAction.actionSwipeLeft(R.id.onBoardingStepImage)
 
-        AppViewAssertion.isDisplayed(R.id.onboardingButtonStart)
+        AppViewAssertion.isViewDisplayed(R.id.onboardingButtonStart)
         AppViewAssertion.isTextDisplayed("Start")
         AppViewAction.performClick(R.id.onboardingButtonStart)
 

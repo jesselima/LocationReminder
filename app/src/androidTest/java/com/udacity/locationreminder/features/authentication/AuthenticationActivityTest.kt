@@ -10,7 +10,8 @@ import androidx.test.filters.MediumTest
 import com.firebase.ui.auth.KickoffActivity
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.util.AppViewAction
-import com.udacity.locationreminder.util.AppViewAssertion
+import com.udacity.locationreminder.util.AppViewAssertion.isTextDisplayed
+import com.udacity.locationreminder.util.AppViewAssertion.isViewDisplayed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 import org.junit.Test
@@ -32,18 +33,18 @@ class AuthenticationActivityTest {
 
         launchActivity<AuthenticationActivity>()
 
-        AppViewAssertion.isDisplayed(R.id.imageViewLoginBackground)
-        AppViewAssertion.isDisplayed(R.id.viewSemiTransparentMask)
-        AppViewAssertion.isDisplayed(R.id.textWelcome)
-        AppViewAssertion.isDisplayed(R.id.textWelcomeDescription)
+        isViewDisplayed(R.id.imageViewLoginBackground)
+        isViewDisplayed(R.id.viewSemiTransparentMask)
+        isViewDisplayed(R.id.textWelcome)
+        isViewDisplayed(R.id.textWelcomeDescription)
 
-        AppViewAssertion.isTextDisplayed("Location Reminder")
-        AppViewAssertion.isTextDisplayed(
+        isTextDisplayed("Location Reminder")
+        isTextDisplayed(
             "Set your mind free to what matters most and do the " +
                 "things at the right time and place."
         )
-        AppViewAssertion.isTextDisplayed("LOGIN")
-        AppViewAssertion.isDisplayed(R.id.buttonLogin)
+        isTextDisplayed("LOGIN")
+        isViewDisplayed(R.id.buttonLogin)
         AppViewAction.performClick(R.id.buttonLogin)
 
         val matcher: Matcher<Intent> = hasComponent(KickoffActivity::class.java.name)

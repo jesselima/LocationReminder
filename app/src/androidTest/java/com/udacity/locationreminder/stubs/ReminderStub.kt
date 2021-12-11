@@ -19,7 +19,7 @@ val reminderItemView =  ReminderItemView(
     isGeofenceEnable = true
 )
 
-val reminderData = ReminderData(
+val reminderData1 = ReminderData(
     id = System.currentTimeMillis(),
     title= "Grow tomatoes",
     description ="Do not forget the fertilizer",

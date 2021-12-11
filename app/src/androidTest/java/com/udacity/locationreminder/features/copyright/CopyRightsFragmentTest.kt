@@ -8,7 +8,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.util.AppViewAction
-import com.udacity.locationreminder.util.AppViewAssertion
+import com.udacity.locationreminder.util.AppViewAction.onItemListPositionClicked
+import com.udacity.locationreminder.util.AppViewAssertion.isTextDisplayed
+import com.udacity.locationreminder.util.AppViewAssertion.isViewDisplayed
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,10 +23,10 @@ class CopyRightsFragmentTest {
     fun when_screen_open_should_display_copyrights_content() {
         launchFragmentInContainer<CopyrightFragment>(themeResId = R.style.LocationReminderAppTheme)
 
-        AppViewAssertion.isDisplayed(R.id.favoritePicturesAppBarLayout)
-        AppViewAssertion.isDisplayed(R.id.copyrightTopAppBar)
-        AppViewAssertion.isDisplayed(R.id.copyrightRecyclerView)
-        AppViewAssertion.isTextDisplayed("Copyrights")
+        isViewDisplayed(R.id.favoritePicturesAppBarLayout)
+        isViewDisplayed(R.id.copyrightTopAppBar)
+        isViewDisplayed(R.id.copyrightRecyclerView)
+        isTextDisplayed("Copyrights")
     }
 
     @Test
@@ -33,7 +35,7 @@ class CopyRightsFragmentTest {
 
         launchFragmentInContainer<CopyrightFragment>(themeResId = R.style.LocationReminderAppTheme)
 
-        AppViewAction.onItemListPositionClicked(R.id.copyrightRecyclerView)
+        onItemListPositionClicked(R.id.copyrightRecyclerView)
 
         val matcher: Matcher<Intent> = IntentMatchers.hasAction(Intent.ACTION_VIEW)
         Intents.intended(matcher)

@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.android.gms.location.Geofence
 import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
-import com.udacity.locationreminder.stubs.reminderData
+import com.udacity.locationreminder.stubs.reminderData1
 import com.udacity.locationreminder.stubs.reminderData2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -45,10 +45,10 @@ class RemindersDaoTest {
     @Test
     fun saveReminder_should_return_its_id_reminder_and_save_all_data() = runBlocking {
         // Given
-        val reminderId = database.reminderDao().saveReminder(reminderData)
+        val reminderId = database.reminderDao().saveReminder(reminderData1)
 
         // When
-        val result = database.reminderDao().getReminderById(reminderData.id.toString())
+        val result = database.reminderDao().getReminderById(reminderData1.id.toString())
 
         // Then
         assertThat(result as ReminderData, CoreMatchers.notNullValue())
@@ -69,24 +69,24 @@ class RemindersDaoTest {
     @Test
     fun updateReminder_should_update_all_reminder_data_on_database() = runBlocking {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData1)
 
         // When
-        val result = database.reminderDao().getReminderById(reminderData.id.toString()) as ReminderData
+        val result = database.reminderDao().getReminderById(reminderData1.id.toString()) as ReminderData
 
         /** Assert reminder was saved properly */
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(result.title,  `is`(reminderData.title))
-        assertThat(result.description,  `is`(reminderData.description))
-        assertThat(result.locationName,  `is`(reminderData.locationName))
-        assertThat(result.latitude,  `is`(reminderData.latitude))
-        assertThat(result.longitude,  `is`(reminderData.longitude))
-        assertThat(result.isPoi,  `is`(reminderData.isPoi))
-        assertThat(result.poiId,  `is`(reminderData.poiId))
-        assertThat(result.circularRadius,  `is`( reminderData.circularRadius))
-        assertThat(result.expiration,  `is`(reminderData.expiration))
-        assertThat(result.transitionType,  `is`(reminderData.transitionType))
-        assertThat(result.isGeofenceEnable,  `is`(reminderData.isGeofenceEnable))
+        assertThat(result.title,  `is`(reminderData1.title))
+        assertThat(result.description,  `is`(reminderData1.description))
+        assertThat(result.locationName,  `is`(reminderData1.locationName))
+        assertThat(result.latitude,  `is`(reminderData1.latitude))
+        assertThat(result.longitude,  `is`(reminderData1.longitude))
+        assertThat(result.isPoi,  `is`(reminderData1.isPoi))
+        assertThat(result.poiId,  `is`(reminderData1.poiId))
+        assertThat(result.circularRadius,  `is`( reminderData1.circularRadius))
+        assertThat(result.expiration,  `is`(reminderData1.expiration))
+        assertThat(result.transitionType,  `is`(reminderData1.transitionType))
+        assertThat(result.isGeofenceEnable,  `is`(reminderData1.isGeofenceEnable))
 
         /** Update the reminder instance */
         val reminderData = result.copy(
@@ -128,24 +128,24 @@ class RemindersDaoTest {
     @Test
     fun updateReminderGeofenceStatus_should_update_geofence_status_to_disabled() = runBlocking {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData1)
 
         // When
         /** Chek the update result - The updateResult will should be the numbers of rows affected */
-        val updateResult = database.reminderDao().updateReminder(reminderId = reminderData.id ?: 0, isGeofenceEnable = false)
+        val updateResult = database.reminderDao().updateReminder(reminderId = reminderData1.id ?: 0, isGeofenceEnable = false)
         assertThat(updateResult,  `is`(1))
 
-        val result = database.reminderDao().getReminderById(reminderData.id.toString()) as ReminderData
+        val result = database.reminderDao().getReminderById(reminderData1.id.toString()) as ReminderData
         /** Assert reminder was saved properly */
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(result.title,  `is`(reminderData.title))
+        assertThat(result.title,  `is`(reminderData1.title))
         assertThat(result.isGeofenceEnable,  `is`(false))
     }
 
     @Test
     fun getAllReminders_should_return_all_reminders() = runBlockingTest {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData1)
         database.reminderDao().saveReminder(reminderData2)
 
         // When
@@ -159,7 +159,7 @@ class RemindersDaoTest {
     @Test
     fun deleteAllReminders_shouls_delete_all_reminders() = runBlockingTest {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData1)
         database.reminderDao().saveReminder(reminderData2)
 
         // When
@@ -179,12 +179,12 @@ class RemindersDaoTest {
     @Test
     fun deleteReminder_should_delete_reminder() = runBlockingTest {
         // Given
-        database.reminderDao().saveReminder(reminderData)
+        database.reminderDao().saveReminder(reminderData1)
         database.reminderDao().saveReminder(reminderData2)
 
         // When
-        val deletedResult = database.reminderDao().deleteReminder(reminderData)
-        val getReminderResult = database.reminderDao().getReminderById(reminderData.id.toString())
+        val deletedResult = database.reminderDao().deleteReminder(reminderData1)
+        val getReminderResult = database.reminderDao().getReminderById(reminderData1.id.toString())
         val remainingReminderResult = database.reminderDao().getReminders()
 
         // Then

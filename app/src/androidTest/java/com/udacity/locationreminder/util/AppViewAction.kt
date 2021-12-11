@@ -3,7 +3,7 @@ package com.udacity.locationreminder.util
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
@@ -12,55 +12,63 @@ import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.action.ViewActions.swipeUp
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.udacity.locationreminder.R
 import org.hamcrest.Matcher
 
 object AppViewAction {
 
     fun performClick(@IdRes resId: Int) {
-        onView(withId(resId)).perform(click())
+        Espresso.onView(ViewMatchers.withId(resId)).perform(click())
     }
 
     fun performClick(text: String) {
-        onView(withText(text)).perform(click())
+        Espresso.onView(ViewMatchers.withText(text)).perform(click())
     }
 
     fun typeText(@IdRes resId: Int, text: String) {
-        onView(ViewMatchers.withId(resId)).perform(ViewActions.typeText(text))
+        Espresso.onView(ViewMatchers.withId(resId)).perform(ViewActions.typeText(text))
     }
 
     fun scrollTo(@IdRes resId: Int) {
-        onView(withId(resId)).perform(ViewActions.scrollTo())
+        Espresso.onView(ViewMatchers.withId(resId)).perform(ViewActions.scrollTo())
     }
 
     fun actionSwipeLeft(@IdRes viewId: Int) {
-        onView(withId(viewId)).perform(swipeLeft());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeLeft());
     }
 
     fun actionSwipeUp(@IdRes viewId: Int) {
-        onView(withId(viewId)).perform(swipeUp());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeUp());
     }
 
     fun actionSwipeDown(@IdRes viewId: Int) {
-        onView(withId(viewId)).perform(swipeDown());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeDown());
     }
 
     fun actionSwipeRight(@IdRes viewId: Int) {
-        onView(withId(viewId)).perform(swipeRight());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeRight());
     }
 
-    /** Recycler View Actions */
     fun onItemListPositionClicked(@IdRes recyclerViewResId: Int, position: Int = 2) {
-        onView(withId(recyclerViewResId))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
+        Espresso.onView(ViewMatchers.withId(recyclerViewResId))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
+    }
+
+    fun clickOnItemAtPosition(position: Int = 0) {
+        Espresso.onView(ViewMatchers.withId(R.id.reminderssRecyclerView))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    position,
+                    click()
+                )
+            )
     }
 
     fun clickChildViewWithId(@IdRes recyclerViewId: Int, @IdRes viewId: Int, position: Int = 0) {
-        onView(withId(recyclerViewId))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(
+        Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
                 actionClickChildViewWithId(viewId)
             )

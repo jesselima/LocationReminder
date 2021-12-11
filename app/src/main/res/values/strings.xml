@@ -202,6 +202,7 @@
     <string name="coordinates_lng">Longitude</string>
     <string name="label_geofence_is_disable">Geofence is disabled</string>
     <string name="label_geofence_is_enable">Geofence is enabled</string>
+    <string name="dismiss">Dismiss</string>
 
     <string-array name="units_array">
         <item>DAYS</item>

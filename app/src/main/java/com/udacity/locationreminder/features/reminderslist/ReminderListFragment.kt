@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
@@ -85,10 +86,14 @@ class ReminderListFragment : Fragment() {
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
                 RemindersAction.LoadRemindersError -> {
-                    context?.showCustomToast(
-                        titleResId = R.string.message_loading_reminder_error,
-                        toastType = ToastType.ERROR
+                    Snackbar.make(
+                        binding.reminderListMainLayout,
+                        R.string.message_loading_reminder_error,
+                        Snackbar.LENGTH_LONG
                     )
+                    .setAction(getString(R.string.dismiss)) { }
+                    .setAnchorView(R.id.actionButtonAddReminder)
+                    .show()
                     binding.noDataTextView.text = getText(R.string.message_no_reminders_found)
                     binding.noDataTextView.isVisible = true
                 }

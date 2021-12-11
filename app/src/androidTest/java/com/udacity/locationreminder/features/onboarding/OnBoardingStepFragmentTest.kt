@@ -26,9 +26,9 @@ class OnBoardingStepFragmentTest {
             ),
             themeResId = R.style.LocationReminderAppTheme
         )
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepImage)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepTitle)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepDescription)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepImage)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepTitle)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepDescription)
         AppViewAssertion.isTextDisplayed("Need remember something?")
         AppViewAssertion.isTextDisplayed("Have you forgot to do something while you was in some place?")
         AppViewAction.actionSwipeLeft(R.id.onBoardingStepImage)
@@ -43,9 +43,9 @@ class OnBoardingStepFragmentTest {
             ),
             themeResId = R.style.LocationReminderAppTheme
         )
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepImage)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepTitle)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepDescription)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepImage)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepTitle)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepDescription)
         AppViewAssertion.isTextDisplayed("No worries!")
         AppViewAssertion.isTextDisplayed("Here you can select a location and save your reminder.")
         AppViewAction.actionSwipeLeft(R.id.onBoardingStepImage)
@@ -60,9 +60,9 @@ class OnBoardingStepFragmentTest {
             ),
             themeResId = R.style.LocationReminderAppTheme
         )
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepImage)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepTitle)
-        AppViewAssertion.isDisplayed(R.id.onBoardingStepDescription)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepImage)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepTitle)
+        AppViewAssertion.isViewDisplayed(R.id.onBoardingStepDescription)
         AppViewAssertion.isTextDisplayed("And get notified when you are in place.")
         AppViewAssertion.isTextDisplayed("Now you can save you reminders location based and get notified when you get into or leave the place!")
         AppViewAction.actionSwipeLeft(R.id.onBoardingStepImage)
