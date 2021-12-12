@@ -28,6 +28,14 @@ object AppViewAssertion {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
+    fun isTextNotDisplayed(text: String) {
+        Espresso.onView(ViewMatchers.withText(text)).check(ViewAssertions.doesNotExist());
+    }
+
+    fun isTextNotDisplayed(@IdRes resId: Int) {
+        Espresso.onView(ViewMatchers.withId(resId)).check(ViewAssertions.doesNotExist());
+    }
+
     fun isViewGone(@IdRes resId: Int) {
         Espresso.onView(ViewMatchers.withId(resId))
             .check(ViewAssertions.matches(

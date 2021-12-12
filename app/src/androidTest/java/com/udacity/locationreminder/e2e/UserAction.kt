@@ -3,6 +3,7 @@ package com.udacity.locationreminder.e2e
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import com.udacity.locationreminder.BuildConfig
 
 enum class UserAction {
     HOME, BACK, LEFT, RIGHT, UP, DOWN, CENTER, MENU, SEARCH, ENTER, DELETE, DEL, RECENT,
@@ -49,14 +50,14 @@ fun UiDevice.onViewWithIdPerformClick(viewId: String, currentAppPackage: String)
 fun UiDevice.onViewWithIdPerformTypeText(
     viewId: String,
     text: String,
-    currentAppPackage: String
+    currentAppPackage: String = BuildConfig.APPLICATION_ID
 ) {
     findObject(By.res(currentAppPackage, viewId)).text =  text
 }
 
 fun UiDevice.onViewWithIdPerformSwipeLeft(
     viewId: String,
-    currentAppPackage: String,
+    currentAppPackage: String = BuildConfig.APPLICATION_ID,
     numberOfSwipes: Int = 1
 ) {
     val view = findObject(UiSelector().resourceId("$currentAppPackage:id/$viewId"))

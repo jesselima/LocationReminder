@@ -1,20 +1,21 @@
 package com.udacity.locationreminder.e2e
 
-import android.content.Context
-import android.content.Intent
 import android.util.Log
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
 import com.udacity.locationreminder.BuildConfig
+import com.udacity.locationreminder.R
+import com.udacity.locationreminder.util.AppViewAssertion.isTextDisplayed
+import com.udacity.locationreminder.util.AppViewAssertion.isTextNotDisplayed
+import com.udacity.locationreminder.util.AppViewAssertion.isViewDisplayed
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -22,49 +23,55 @@ import org.junit.runner.RunWith
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @LargeTest
 class AutomatorFullFlow {
 
     private lateinit var device: UiDevice
+    private lateinit var appPackage: String
     private val locationReminderPackage = "com.udacity.locationreminder"
 
     @Before
     fun setup() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        // Context of the app under test.
+        appPackage = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+        Log.d("CURRENT APP PACKAGE:", appPackage)
     }
 
     /**
-     * This method will be break down into small reusable code
-     * */
+     * The testes run in sequence to simulate user experience and due to authentication dependency.
+     * The ideal scenario is the fist test to remove location permission from the App before to
+     * run the full test.
+     */
+
     @Test
-    fun launchApp_signup_permissions_addreminder_editReminder_deleteAccount() {
-        // Context of the app under test.
-        val appPackage = InstrumentationRegistry.getInstrumentation().targetContext.packageName
-        Log.d("CURRENT APP PACKAGE:", appPackage)
+    fun b_launch_app_should_display_login_screen() {
+        device.launchApp(locationReminderPackage)
 
-        device.pressHome()
+        device.assertViewHasText(
+            viewId = "textWelcome",
+            text = "Location Reminder",
+            currentAppPackage = locationReminderPackage
+        )
 
-        /** Launch the App */
-        val context: Context = getApplicationContext()
-        val intent: Intent? = context.packageManager
-            .getLaunchIntentForPackage(locationReminderPackage)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        context.startActivity(intent)
+        device.assertViewHasText(
+            viewId = "textWelcomeDescription",
+            text = "Set your mind free to what matters most and do the things at the right time and place.",
+            currentAppPackage = locationReminderPackage
+        )
 
-        /** Wait for the app to appear */
-        device.wait(Until.hasObject(By.pkg(locationReminderPackage)), 5000)
+        device.assertViewHasText(
+            viewId = "buttonLogin",
+            text = "LOGIN",
+            currentAppPackage = locationReminderPackage
+        )
+    }
 
-        /**
-         * TODO COMMANDS TO CLEAR APP DATA - NOT WORKING PROPERLY. FURTHER INVESTIGATION IS REQUIRED.
-        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_FINE_LOCATION")
-        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_COARSE_LOCATION")
-        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_BACKGROUND_LOCATION")
-        device.executeShellCommand("adb shell pm reset-permissions")
-        device.executeShellCommand("adb shell pm clear $appPackage")
-        InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand("pm clear $appPackage")
-        */
+    @Test
+    fun c_launchApp_should_signup_and_display_onboarding() {
+        device.launchApp()
 
-        /** Login for new Users */
         device.onViewContainsTextClickAndWait(text = "LOGIN")
 
         device.onViewContainsTextClickAndWait(text = "Sign in with email")
@@ -72,7 +79,6 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformTypeText(
             viewId = "email",
             text = BuildConfig.SAMPLE_USER_EMAIL,
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewContainsTextClickAndWait(text = "NEXT")
@@ -80,13 +86,11 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformTypeText(
             viewId = "name",
             text = BuildConfig.SAMPLE_USER_NAME,
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithIdPerformTypeText(
             viewId = "password",
             text = BuildConfig.SAMPLE_USER_PASS,
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewContainsTextClickAndWait(text = "SAVE")
@@ -94,7 +98,6 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformSwipeLeft(
             viewId = "onBoardingStepImage",
             numberOfSwipes = 2,
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithIdClickAndWait(
@@ -102,7 +105,12 @@ class AutomatorFullFlow {
             currentAppPackage = locationReminderPackage
         )
 
-        /**  ADDd REMINDER WITH PERMISSIONS REQUESTS */
+        isTextDisplayed("LOGOUT")
+    }
+
+    @Test
+    fun d_added_reminder_should_add_reminder_to_reminder_list() {
+        device.launchApp()
 
         device.onViewWithIdClickAndWait(
             viewId = "actionButtonAddReminder",
@@ -118,42 +126,24 @@ class AutomatorFullFlow {
         device.onViewWithIdPerformTypeText(
             viewId = "reminderLocationName",
             text = "Work",
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithIdPerformTypeText(
             viewId = "reminderTitle",
             text = "Get my umbrella",
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithIdPerformTypeText(
             viewId = "reminderDescription",
             text = "Set location alert to never forget again",
-            currentAppPackage = locationReminderPackage
         )
 
-        // Todo - Make a better reuse of this
-        device.swipe(
-            device.displayWidth / 2,
-            device.displayHeight / 2,
-            device.displayWidth / 2,
-            device.displayHeight / 4,
-            10
-        )
-
-        device.swipe(
-            device.displayWidth / 2,
-            device.displayHeight / 2,
-            device.displayWidth / 2,
-            device.displayHeight / 4,
-            10
-        )
+        device.swipeUp()
+        device.swipeUp()
 
         device.onViewWithIdPerformTypeText(
             viewId = "expirationDurationEditText",
             text = "5",
-            currentAppPackage = locationReminderPackage
         )
 
         device.onViewWithTextClickAndWait(text = "SAVE REMINDER")
@@ -171,8 +161,144 @@ class AutomatorFullFlow {
         device.pressBack()
 
         device.onViewContainsTextClickAndWait(text = "SAVE REMINDER")
+    }
 
-        /** Click on AppBar menu action */
+    @Test
+    fun e_added_reminder_should_be_displayed_on_reminder_list() {
+        device.launchApp()
+        isTextDisplayed("Get my umbrella")
+        isTextDisplayed("Set location alert to never forget again")
+        isTextDisplayed("Work")
+        isViewDisplayed(R.id.imageDeleteReminder)
+        isViewDisplayed(R.id.imageReminderStatus)
+    }
+
+    @Test
+    fun f_reminder_item_list_clicked_should_be_displayed_on_reminder_details() {
+        device.launchApp()
+
+        device.onViewContainsTextClickAndWait(text = "Get my umbrella")
+
+        device.assertViewHasText(
+            viewId = "reminderTitle",
+            text = "Get my umbrella",
+        )
+
+        device.assertViewHasText(
+            viewId = "reminderDescription",
+            text = "Set location alert to never forget again",
+        )
+
+        device.assertViewHasText(
+            viewId = "reminderLocationName",
+            text = "Work",
+        )
+
+        device.assertViewHasText(
+            viewId = "textCurrentCircularRadius",
+            text = "50 meters",
+        )
+
+        device.assertViewHasText(
+            viewId = "textGeofenceStatus",
+            text = "Geofence is disabled",
+        )
+    }
+
+    @Test
+    fun g_edit_reminder_should_update_its_content_and_display_new_info_on_details_screen_and_on_the_reminder_list() {
+        device.launchApp()
+
+        device.onViewContainsTextClickAndWait(text = "Get my umbrella")
+
+        device.onViewContainsTextClickAndWait(text = "EDIT")
+
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderLocationName",
+            text = "At work",
+        )
+
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderTitle",
+            text = "Get my new umbrella",
+        )
+
+        device.onViewWithIdPerformTypeText(
+            viewId = "reminderDescription",
+            text = "Set reminder alert to never forget it again",
+        )
+
+        device.swipeUp()
+        device.swipeUp()
+
+        device.onViewWithTextClick("When I exit")
+
+        device.onViewWithIdPerformClick(
+            viewId = "isGeofenceEnableSwitch",
+            currentAppPackage = locationReminderPackage
+        )
+
+        device.onViewContainsTextClickAndWait(text = "SAVE REMINDER")
+
+        device.assertViewHasText(
+            viewId = "reminderTitle",
+            text = "Get my new umbrella",
+        )
+
+        device.assertViewHasText(
+            viewId = "reminderDescription",
+            text = "Set reminder alert to never forget it again",
+        )
+
+        device.assertViewHasText(
+            viewId = "reminderLocationName",
+            text = "At work",
+        )
+
+        device.assertViewHasText(
+            viewId = "textCurrentCircularRadius",
+            text = "50 meters",
+        )
+
+        device.assertViewHasText(
+            viewId = "textGeofenceStatus",
+            text = "Geofence is enabled",
+        )
+
+        device.pressBack()
+
+        isTextDisplayed("Get my new umbrella")
+        isTextDisplayed("Set reminder alert to never forget it again")
+        isTextDisplayed("At work")
+    }
+
+    @Test
+    fun h_delete_reminder_should_remove_reminder_from_the_list() {
+        device.launchApp()
+
+        device.onViewWithIdClickAndWait(
+            viewId = "imageDeleteReminder",
+            currentAppPackage = locationReminderPackage
+        )
+
+        device.onViewWithTextClick(text = "DELETE")
+
+        isTextNotDisplayed("Get my new umbrella")
+        isTextNotDisplayed("Set reminder alert to never forget it again")
+        isTextNotDisplayed("At work")
+    }
+
+    @Test
+    fun i_no_reminder_content_info_should_show_when_there_is_no_reminders() {
+        device.launchApp()
+        isTextDisplayed("I hope you do not forget anything\nbecause you have no reminder.\n\nWhat about to add some?")
+        isViewDisplayed(R.id.noDataAnimation)
+    }
+
+    @Test
+    fun j_action_menu_copyrights_item_should_display_copyrights_screen() {
+        device.launchApp()
+
         val topAppBar = device.findObject(UiSelector().resourceId("$appPackage:id/topAppBar"))
         device.click(topAppBar.bounds.width() - 20, 100)
 
@@ -195,136 +321,18 @@ class AutomatorFullFlow {
             text = "Lottie Files",
             currentAppPackage = locationReminderPackage
         )
+    }
 
-        device.pressBack()
+    @Test
+    fun k_deleteAccount_should_display_confirmation_dialog_and_show_login_screen() {
+        device.launchApp()
 
-        device.onViewContainsTextClickAndWait(text = "Get my umbrella")
-
-        device.assertViewHasText(
-            viewId = "reminderTitle",
-            text = "Get my umbrella",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "reminderDescription",
-            text = "Set location alert to never forget again",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "reminderLocationName",
-            text = "Work",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "textCurrentCircularRadius",
-            text = "50 meters",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "textGeofenceStatus",
-            text = "Geofence is disabled",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.onViewContainsTextClickAndWait(text = "EDIT")
-
-        device.onViewWithIdPerformTypeText(
-            viewId = "reminderLocationName",
-            text = "At work",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.onViewWithIdPerformTypeText(
-            viewId = "reminderTitle",
-            text = "Get my new umbrella",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.onViewWithIdPerformTypeText(
-            viewId = "reminderDescription",
-            text = "Set reminder alert to never forget it again",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.swipe(
-            device.displayWidth / 2,
-            device.displayHeight / 2,
-            device.displayWidth / 2,
-            device.displayHeight / 4,
-            10
-        )
-
-        device.swipe(
-            device.displayWidth / 2,
-            device.displayHeight / 2,
-            device.displayWidth / 2,
-            device.displayHeight / 4,
-            10
-        )
-
-        device.onViewWithTextClick("When I exit")
-
-        device.onViewWithIdPerformClick(
-            viewId = "isGeofenceEnableSwitch",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.onViewContainsTextClickAndWait(text = "SAVE REMINDER")
-
-        device.assertViewHasText(
-            viewId = "reminderTitle",
-            text = "Get my new umbrella",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "reminderDescription",
-            text = "Set reminder alert to never forget it again",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "reminderLocationName",
-            text = "At work",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "textCurrentCircularRadius",
-            text = "50 meters",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.assertViewHasText(
-            viewId = "textGeofenceStatus",
-            text = "Geofence is enabled",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.pressBack()
-
-        /** Delete reminder from the list */
-
-        device.onViewWithIdClickAndWait(
-            viewId = "imageDeleteReminder",
-            currentAppPackage = locationReminderPackage
-        )
-
-        device.onViewWithTextClick(text = "DELETE")
-
-        /** Delete Account validate login */
-
+        val topAppBar = device.findObject(UiSelector().resourceId("$appPackage:id/topAppBar"))
         device.click(topAppBar.bounds.width() - 20, 100)
 
         device.onViewContainsTextClickAndWait(text = "Delete account")
 
         device.onViewContainsTextClickAndWait(text = "DELETE ACCOUNT")
-
-        /** Validate Login screen after account is deleted */
 
         device.assertViewHasText(
             viewId = "textWelcome",
