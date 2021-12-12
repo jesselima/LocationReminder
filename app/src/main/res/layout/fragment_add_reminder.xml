@@ -168,7 +168,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/sliderCircularRadius"
                     app:layout_constraintEnd_toEndOf="@+id/sliderCircularRadius"
                     app:layout_constraintTop_toTopOf="@+id/sliderCircularRadius"
-                    app:srcCompat="@drawable/ic_gps_fixed" />
+                    app:srcCompat="@drawable/ic_gps_fixed"
+                    android:importantForAccessibility="no"/>
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sliderCircularRadius"

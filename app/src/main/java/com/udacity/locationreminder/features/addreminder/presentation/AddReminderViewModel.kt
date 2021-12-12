@@ -27,6 +27,7 @@ class AddReminderViewModel(
 
     init {
         _state.value = AddReminderState()
+        _action.value = AddReminderAction.ClearErrors
     }
 
     fun setSelectedReminder(reminder: ReminderItemView?) {
@@ -50,7 +51,11 @@ class AddReminderViewModel(
     }
 
     private fun saveReminder(reminder: ReminderItemView) {
-        if (isFormValid.not()) return
+        if (isFormValid) {
+            _action.value = AddReminderAction.ClearErrors
+        } else {
+            return
+        }
         _state.value = state.value?.copy(isLoading = true)
 
         viewModelScope.launch {

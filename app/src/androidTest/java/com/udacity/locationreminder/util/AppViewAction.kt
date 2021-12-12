@@ -27,11 +27,16 @@ object AppViewAction {
         Espresso.onView(ViewMatchers.withText(text)).perform(click())
     }
 
-    fun typeText(@IdRes resId: Int, text: String) {
+    fun performType(@IdRes resId: Int, text: String?) {
         Espresso.onView(ViewMatchers.withId(resId)).perform(ViewActions.typeText(text))
+        Espresso.closeSoftKeyboard()
     }
 
-    fun scrollTo(@IdRes resId: Int) {
+    fun openActionMenu() {
+        Espresso.onIdle {  }
+    }
+
+    fun scrollToViewWithId(@IdRes resId: Int) {
         Espresso.onView(ViewMatchers.withId(resId)).perform(ViewActions.scrollTo())
     }
 
@@ -89,4 +94,5 @@ object AppViewAction {
             }
         }
     }
+
 }

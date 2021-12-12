@@ -9,7 +9,7 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.common.ReminderConstants
 import com.udacity.locationreminder.stubs.reminderItemView
 import com.udacity.locationreminder.util.AppViewAction.performClick
-import com.udacity.locationreminder.util.AppViewAction.scrollTo
+import com.udacity.locationreminder.util.AppViewAction.scrollToViewWithId
 import com.udacity.locationreminder.util.AppViewAssertion.isTextDisplayed
 import com.udacity.locationreminder.util.AppViewAssertion.isViewDisplayed
 import com.udacity.locationreminder.util.shouldNavigateTo
@@ -50,7 +50,7 @@ class ReminderDetailsFragmentTest {
         isTextDisplayed("Circular radius (meters) and\nalert type (enter or exit)")
         isTextDisplayed("Geofence is enabled")
         isViewDisplayed(R.id.isGeofenceEnableAnimation)
-        scrollTo(R.id.buttonDeleteReminderAndGeofence)
+        scrollToViewWithId(R.id.buttonDeleteReminderAndGeofence)
         isTextDisplayed("Edit")
         isTextDisplayed("Delete")
     }
@@ -58,7 +58,7 @@ class ReminderDetailsFragmentTest {
     @Test
     fun onDeleteReminderClicked_should_display_delete_dialog() {
         isTextDisplayed("DELETE")
-        scrollTo(R.id.buttonDeleteReminderAndGeofence)
+        scrollToViewWithId(R.id.buttonDeleteReminderAndGeofence)
         performClick(R.id.buttonDeleteReminderAndGeofence)
         isTextDisplayed("Delete reminder?")
         isTextDisplayed("The local reminder data and geofence trigger will be removed.")
@@ -68,7 +68,7 @@ class ReminderDetailsFragmentTest {
 
     @Test
     fun onEditReminderClicked_should_navigate_to_edit_reminder_screen() {
-        scrollTo(R.id.buttonEditReminderAndGeofence)
+        scrollToViewWithId(R.id.buttonEditReminderAndGeofence)
 
         fragmentScenario?.shouldNavigateTo(
             onClickedViewWithResId = R.id.buttonEditReminderAndGeofence,

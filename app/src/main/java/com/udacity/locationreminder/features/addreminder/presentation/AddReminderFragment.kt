@@ -173,7 +173,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
-                viewModel.setSelectedReminder(_currentReminderData)
+                // TODO Is this really needed? viewModel.setSelectedReminder(_currentReminderData)
                 extractInputValues()
                 if(isBackgroundPermissionGranted()) {
                     viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
@@ -258,10 +258,14 @@ class AddReminderFragment : Fragment() {
         viewModel.action.observe(viewLifecycleOwner) { action ->
             with(binding) {
                 when(action) {
-                    is AddReminderAction.AddReminderError,
-                    is AddReminderAction.UpdateReminderError ->
+                    is AddReminderAction.AddReminderError ->
                         context?.showCustomToast(
                             titleResId = R.string.message_saving_reminder_error,
+                            toastType = ToastType.ERROR
+                        )
+                    is AddReminderAction.UpdateReminderError ->
+                        context?.showCustomToast(
+                            titleResId = R.string.message_update_reminder_error,
                             toastType = ToastType.ERROR
                         )
                     is AddReminderAction.AddReminderSuccess,
@@ -380,7 +384,7 @@ class AddReminderFragment : Fragment() {
                 )
             )
         } else {
-            startActivity(Intent(activity, RemindersActivity::class.java))
+            startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
             activity?.finish()
         }
     }
