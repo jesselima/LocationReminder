@@ -127,15 +127,21 @@ class AddReminderFragment : Fragment() {
         with(binding) {
 
             reminderLocationName.doOnTextChanged { text, _, _, _ ->
-                viewModel.isLocationNameValid(text.toString())
+                if (text?.isNotEmpty() == true) {
+                    viewModel.isLocationNameValid(text.toString())
+                }
             }
 
             reminderTitle.doOnTextChanged { text, _, _, _ ->
-                viewModel.isTitleValid(text.toString())
+                if (text?.isNotEmpty() == true) {
+                    viewModel.isTitleValid(text.toString())
+                }
             }
 
             reminderDescription.doOnTextChanged { text, _, _, _ ->
-                viewModel.isDescriptionValid(text.toString())
+                if (text?.isNotEmpty() == true) {
+                    viewModel.isDescriptionValid(text.toString())
+                }
             }
 
             sliderCircularRadius.addOnChangeListener { _, value, _ ->
@@ -173,7 +179,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
-                // TODO Is this really needed? viewModel.setSelectedReminder(_currentReminderData)
+                //viewModel.setSelectedReminder(_currentReminderData)
                 extractInputValues()
                 if(isBackgroundPermissionGranted()) {
                     viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
