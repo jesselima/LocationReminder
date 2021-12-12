@@ -92,7 +92,7 @@ class AutomatorFullFlow {
         )
 
         device.onViewWithIdClickAndWait(
-            viewId = "onboardingButtonSkip",
+            viewId = "onboardingButtonStart",
             currentAppPackage = locationReminderPackage
         )
 

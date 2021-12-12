@@ -124,7 +124,8 @@ class ReminderListFragment : Fragment() {
                         toastType = ToastType.ERROR
                     )
                 }
-                is RemindersAction.DeleteAllRemindersSuccess -> {
+                is RemindersAction.DeleteAllRemindersSuccess,
+                is RemindersAction.DeleteAllRemindersError -> {
                     deleteAccount()
                 }
                 else -> binding.noDataTextView.isVisible = false
