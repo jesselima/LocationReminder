@@ -70,7 +70,7 @@ class AddReminderViewModelTest {
 
     @Test
     fun viewModel_should_have_active_action_observers_after_init() {
-        Assert.assertEquals(viewModel.action.value, null)
+        Assert.assertEquals(viewModel.action.value, AddReminderAction.ClearErrors)
         Assert.assertTrue(viewModel.action.hasActiveObservers())
     }
 
