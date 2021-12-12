@@ -2,6 +2,7 @@ package com.udacity.locationreminder.e2e
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -39,6 +40,7 @@ class AutomatorFullFlow {
     fun launchApp_signup_permissions_addreminder_editReminder_deleteAccount() {
         // Context of the app under test.
         val appPackage = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+        Log.d("CURRENT APP PACKAGE:", appPackage)
 
         device.pressHome()
 
@@ -52,11 +54,15 @@ class AutomatorFullFlow {
         /** Wait for the app to appear */
         device.wait(Until.hasObject(By.pkg(locationReminderPackage)), 5000)
 
-        // TODO - Check how to properly remove permission before to re-run the flow test
-        //device.executeShellCommand("adb shell pm revoke ${locationReminderPackage}.debug android.permission.ACCESS_FINE_LOCATION")
-        //device.executeShellCommand("adb shell pm revoke ${locationReminderPackage}.debug android.permission.ACCESS_COARSE_LOCATION")
-        //device.executeShellCommand("adb shell pm revoke ${locationReminderPackage}.debug android.permission.ACCESS_BACKGROUND_LOCATION")
-        //device.executeShellCommand("adb shell pm reset-permissions")
+        /**
+         * TODO COMMANDS TO CLEAR APP DATA - NOT WORKING PROPERLY. FURTHER INVESTIGATION IS REQUIRED.
+        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_FINE_LOCATION")
+        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_COARSE_LOCATION")
+        device.executeShellCommand("adb shell pm revoke $appPackage android.permission.ACCESS_BACKGROUND_LOCATION")
+        device.executeShellCommand("adb shell pm reset-permissions")
+        device.executeShellCommand("adb shell pm clear $appPackage")
+        InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand("pm clear $appPackage")
+        */
 
         /** Login for new Users */
         device.onViewContainsTextClickAndWait(text = "LOGIN")
