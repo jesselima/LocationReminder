@@ -67,8 +67,8 @@ fun Context.showOrUpdateNotification(
     shouldAutoCancel: Boolean = true,
     actionLabelText: String? = null,
     contentText: String? = null,
-    @DrawableRes actionDrawableResId: Int = R.drawable.ic_reminder_alert,
-    @DrawableRes resIdSmallIcon: Int = R.drawable.ic_reminder_alert,
+    @DrawableRes actionDrawableResId: Int = R.drawable.ic_location_on,
+    @DrawableRes resIdSmallIcon: Int = R.drawable.ic_location_on,
     progress: Int = 0,
     data: Bundle? = null
 ) {
