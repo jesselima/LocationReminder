@@ -8,34 +8,39 @@ import androidx.core.os.bundleOf
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.locationreminder.R
-import com.udacity.locationreminder.features.ReminderEditorActivity
 import com.udacity.locationreminder.common.ReminderConstants
 import com.udacity.locationreminder.common.extensions.ToastType
 import com.udacity.locationreminder.common.extensions.showCustomToast
 import com.udacity.locationreminder.common.notification.showOrUpdateNotification
 
 private const val EMPTY = ""
+private const val INVALID_REQUEST_ID = -1
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private val tag = GeofenceBroadcastReceiver::class.java.simpleName
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == ReminderEditorActivity.ACTION_GEOFENCE_EVENT) {
-
-            val geofencingEvent = GeofencingEvent.fromIntent(intent)
-
-            if (geofencingEvent.hasError()) {
-                val errorMessage = handleGeofenceError(context, geofencingEvent.errorCode)
+        Log.d("===>>", "GeofenceBroadcastReceiver#onReceive called!")
+        val geofencingEvent: GeofencingEvent? = GeofencingEvent.fromIntent(intent)
+        if (geofencingEvent?.hasError() == true) {
+            Log.e("===>>", "geofencingEvent.hasError ${geofencingEvent.errorCode}")
+            val errorMessage = handleGeofenceError(context, geofencingEvent.errorCode)
                 Log.d(tag,"Geofence error: $errorMessage")
                 context.showCustomToast(
                     titleText = context.resources.getString(R.string.geofence_error_generic_info),
                     toastType = ToastType.WARNING
                 )
-                return
-            }
+            return
+        }
 
-            val transition = when(geofencingEvent.geofenceTransition) {
+        Log.d("===>>", "geofencingEvent requestId ${geofencingEvent?.triggeringGeofences?.first()?.requestId}")
+        Log.d("===>>", "geofencingEvent triggeringLocation.latitude ${geofencingEvent?.triggeringLocation?.latitude}")
+        Log.d("===>>", "geofencingEvent triggeringLocation.longitude ${geofencingEvent?.triggeringLocation?.longitude}")
+        Log.d("===>>", "geofencingEvent geofenceTransition ${geofencingEvent?.geofenceTransition}")
+        Log.d("===>>", "geofencingEvent triggeringLocation ${geofencingEvent?.triggeringLocation}")
+
+        val transition = when(geofencingEvent?.geofenceTransition) {
                 Geofence.GEOFENCE_TRANSITION_ENTER ->
                     context.resources.getString(R.string.notification_text_transition_type_enter)
                 Geofence.GEOFENCE_TRANSITION_EXIT ->
@@ -43,28 +48,25 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 else -> EMPTY
             }
 
-            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-                with(geofencingEvent.triggeringGeofences) {
-                    if (isNotEmpty()) {
-                        forEach {
-                            context.showOrUpdateNotification(
-                                notificationId = it.requestId.toInt(),
-                                title =  context.resources.getString(R.string.notification_title),
-                                text = String.format(
-                                    context.resources.getString(R.string.notification_description),
-                                    transition
-                                ),
-                                channelId = ReminderConstants.channelIdReminders,
-                                data = bundleOf(
-                                    ReminderConstants.argsKeyReminderId to it.requestId.toInt()
-                                )
-                            )
-                        }
-                    } else {
-                        return
-                    }
-                }
+        if (geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
+            geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+
+            val requestId = geofencingEvent.triggeringGeofences.first()?.requestId?.toInt()
+                ?: INVALID_REQUEST_ID
+
+            if (requestId != INVALID_REQUEST_ID) {
+                context.showOrUpdateNotification(
+                    notificationId = requestId,
+                    title =  context.resources.getString(R.string.notification_title),
+                    text = String.format(
+                        context.resources.getString(R.string.notification_description),
+                        transition.uppercase()
+                    ),
+                    channelId = ReminderConstants.channelIdReminders,
+                    data = bundleOf(
+                        ReminderConstants.argsKeyReminderId to requestId
+                    )
+                )
             }
         }
     }

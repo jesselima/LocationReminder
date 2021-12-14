@@ -120,6 +120,7 @@
     <string name="message_update_reminder_success">Reminder updated!</string>
     <string name="message_delete_reminder_success">Reminder deleted!</string>
     <string name="message_delete_reminder_error">Error deleting reminder!</string>
+    <string name="message_get_reminder_error">Error getting reminder info!</string>
 
     <string name="message_reminder_details_error">Error getting reminder details!</string>
 
@@ -171,7 +172,7 @@
     <string name="notification_text_transition_type_enter">enter</string>
     <string name="notification_text_transition_type_exit">exit</string>
     <string name="notification_title">New Location Reminder</string>
-    <string name="notification_description">You have a alert for this location %s</string>
+    <string name="notification_description">You have a %s alert for this location.</string>
     <string name="message_authentication_required">Authentication required!</string>
     <string name="message_location_settings_ok">Location settings OK!</string>
     <string name="notification_channel_main_name">General</string>
