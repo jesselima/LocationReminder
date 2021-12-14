@@ -58,12 +58,22 @@ class ReminderDetailsFragment : Fragment() {
         setupObservers()
         geofenceClient = LocationServices.getGeofencingClient(requireContext())
 
-        if (args.isEditing || args.isFromList) {
-            updateUI(args.lastSelectedLocation)
-        } else {
-            val reminder = activity?.intent?.extras
-                ?.getSerializable(ReminderConstants.argsKeyReminder) as ReminderItemView?
-            updateUI(reminder)
+        val reminderItemView = activity?.intent?.extras
+            ?.getSerializable(ReminderConstants.argsKeyReminder) as ReminderItemView?
+
+        val idFromNotification = activity?.intent?.extras
+            ?.getInt(ReminderConstants.argsKeyReminderId)
+
+        when {
+            args.isEditing || args.isFromList -> {
+                updateUI(args.lastSelectedLocation)
+            }
+            reminderItemView != null -> {
+                updateUI(reminderItemView)
+            }
+            idFromNotification != null -> {
+                viewModel.getReminder(idFromNotification.toString())
+            }
         }
     }
 
@@ -71,6 +81,9 @@ class ReminderDetailsFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.progressBar.isVisible = state.isLoading
             binding.layoutReminderDetails.isVisible = state.isLoading.not()
+            state?.reminderItemView?.let { reminderItemView ->
+                updateUI(reminderItemView)
+            }
         }
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
@@ -87,7 +100,12 @@ class ReminderDetailsFragment : Fragment() {
                         toastType = ToastType.ERROR
                     )
                 }
-                null -> Unit
+                ReminderDetailsAction.GetReminderError -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_get_reminder_error,
+                        toastType = ToastType.ERROR
+                    )
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ class ReminderEditorActivity: AppCompatActivity() {
 
     companion object {
         internal const val ACTION_GEOFENCE_EVENT =
-            "ReminderDescriptionActivity.geofences.action.ACTION_GEOFENCE_EVENT"
+            "ReminderEditorActivity.geofences.action.ACTION_GEOFENCE_EVENT"
 
         fun newIntent(context: Context, reminderItemView: ReminderItemView): Intent {
             return Intent(context, ReminderEditorActivity::class.java).apply {

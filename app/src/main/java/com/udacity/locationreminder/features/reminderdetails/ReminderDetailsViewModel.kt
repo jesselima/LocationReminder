@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
+import com.udacity.locationreminder.shareddata.localdatasource.models.mapToPresentationModel
 import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.locationreminder.sharedpresentation.ReminderItemView
 import com.udacity.locationreminder.sharedpresentation.mapToDataModel
@@ -35,6 +37,27 @@ class ReminderDetailsViewModel(
                 _action.postValue(ReminderDetailsAction.DeleteReminderError)
             }
             _state.postValue(state.value?.copy(isLoading = false))
+        }
+    }
+
+    fun getReminder(reminderId: String) {
+        _state.postValue(state.value?.copy(isLoading = true))
+        viewModelScope.launch {
+            when(val result = remindersLocalRepository.getReminder(reminderId)) {
+                is ResultData.Success -> {
+                    _state.postValue(state.value?.copy(
+                        isLoading = false,
+                        reminderItemView = result.data.mapToPresentationModel())
+                    )
+                }
+                is ResultData.Error -> {
+                    _state.postValue(state.value?.copy(
+                        isLoading = false,
+                        reminderItemView = null)
+                    )
+                    _action.postValue(ReminderDetailsAction.GetReminderError)
+                }
+            }
         }
     }
 }
