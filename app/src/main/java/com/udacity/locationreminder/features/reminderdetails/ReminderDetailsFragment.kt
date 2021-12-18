@@ -29,7 +29,8 @@ private const val FORMAT_LAT_LNG_DECIMALS = "%.4f"
 private const val ROTATION_FLIP_HORIZONTAL = 180f
 
 /**
- * Activity that displays the reminder details after the user clicks on the notification
+ * Fragment that displays the reminder details after the user clicks on the notification or
+ * when click on a reminder on the main screen list.
  */
 class ReminderDetailsFragment : Fragment() {
 

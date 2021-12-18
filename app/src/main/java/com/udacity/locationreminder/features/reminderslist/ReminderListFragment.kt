@@ -236,6 +236,9 @@ class ReminderListFragment : Fragment() {
             id = reminder.id.toString(),
             latitude = reminder.latitude,
             longitude = reminder.longitude,
+            circularRadius = reminder.circularRadius,
+            expiration = reminder.expiration,
+            transitionType = reminder.transitionType,
             onAddGeofenceSuccess = { onAddGeofenceSuccess() },
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )

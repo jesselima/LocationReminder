@@ -17,9 +17,9 @@ data class ReminderItemView(
     var isPoi: Boolean? = null,
     var poiId: String? = null,
     var circularRadius: Float = 50f,
-    var expiration: Long? = null,
+    var expiration: Long = 172800000L,
     var transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
-    var isGeofenceEnable: Boolean = false
+    var isGeofenceEnable: Boolean = true
 ) : Serializable
 
 fun ReminderItemView.mapToDataModel() : ReminderData {

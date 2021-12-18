@@ -61,10 +61,10 @@ class AddReminderViewModel(
         viewModelScope.launch {
             runCatching {
                 remindersLocalRepository.saveReminder(reminder.mapToDataModel())
-            }.onSuccess {
-                if (it > 0) {
+            }.onSuccess { newReminderDatabaseId ->
+                if (newReminderDatabaseId > 0) {
                     _state.value = state.value?.copy(isLoading = false)
-                    _action.value = AddReminderAction.AddReminderSuccess
+                    _action.value = AddReminderAction.AddReminderSuccess(id = newReminderDatabaseId)
                 } else {
                    setErrorActionAndState()
                 }

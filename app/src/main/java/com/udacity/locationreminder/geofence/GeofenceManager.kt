@@ -14,7 +14,7 @@ interface GeofenceManager {
         latitude: Double? = 0.0,
         longitude: Double? = 0.0,
         circularRadius: Float = 100f,
-        expiration: Long = TimeUnit.DAYS.toMillis(20),
+        expiration: Long = TimeUnit.DAYS.toMillis(7),
         transitionType: Int = Geofence.GEOFENCE_TRANSITION_ENTER,
         onAddGeofenceSuccess: (() -> Unit)? = null,
         onAddGeofenceFailure: ((Int) -> Unit)? = null

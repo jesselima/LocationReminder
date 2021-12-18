@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -30,8 +29,6 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentAddReminderBinding
 import com.udacity.locationreminder.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.geofence.GeofenceManager
-import com.udacity.locationreminder.common.extensions.isAndroidOsEqualsOrGreaterThan
-import com.udacity.locationreminder.features.ReminderEditorActivity
 import com.udacity.locationreminder.features.RemindersActivity
 import com.udacity.locationreminder.common.ReminderConstants
 import com.udacity.locationreminder.common.extensions.ToastType
@@ -50,6 +47,7 @@ import java.util.concurrent.TimeUnit
 private const val PENDING_INTENT_REQUEST_CODE = 0
 private const val CIRCULAR_RADIUS_DEFAULT = 50f
 private const val TOAST_POSITION_ELEVATED = 350
+private const val REMINDER_EXPIRATION_NEVER = -1L
 
 class AddReminderFragment : Fragment() {
 
@@ -63,19 +61,8 @@ class AddReminderFragment : Fragment() {
     private lateinit var geofenceClient: GeofencingClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        PendingIntent.getBroadcast(
-            requireContext(),
-            PENDING_INTENT_REQUEST_CODE,
-            Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
-                action = ReminderEditorActivity.ACTION_GEOFENCE_EVENT
-            },
-            when {
-                isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                }
-                else -> PendingIntent.FLAG_UPDATE_CURRENT
-            }
-        )
+        val intent = Intent(activity, GeofenceBroadcastReceiver::class.java)
+        PendingIntent.getBroadcast(activity, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     override fun onCreateView(
@@ -91,9 +78,9 @@ class AddReminderFragment : Fragment() {
         setupNavigationListeners()
         setupObservers()
         setupListeners()
-        geofenceClient = LocationServices.getGeofencingClient(requireActivity())
         checkNavArgsUpdateViewModelData()
         setupAppBarTitle()
+        geofenceClient = LocationServices.getGeofencingClient(requireActivity())
     }
 
     private fun setupAppBarTitle() {
@@ -178,8 +165,6 @@ class AddReminderFragment : Fragment() {
             }
 
             actionButtonSaveReminder.setOnClickListener {
-                _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
-                //viewModel.setSelectedReminder(_currentReminderData)
                 extractInputValues()
                 if(isBackgroundPermissionGranted()) {
                     viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
@@ -191,9 +176,15 @@ class AddReminderFragment : Fragment() {
     private fun setupExpirationUnitInputList(selectedResId: Int = R.string.units_days) {
         with(binding) {
             inputLayoutExpirationDuration.editText?.setText(getString(selectedResId))
-            (inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.setAdapter(
-                ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(
-                    R.array.units_array)))
+            (inputLayoutExpirationDuration.editText as? AutoCompleteTextView)?.apply {
+                setAdapter(
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item,
+                        resources.getStringArray(R.array.units_array)
+                    )
+                )
+            }
             inputLayoutExpirationDuration.editText?.addTextChangedListener {
                 inputLayoutExpirationDurationValue.isEnabled =
                     it.toString() != ExpirationUnits.NEVER.name
@@ -205,9 +196,15 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun extractInputValues() {
-        _currentReminderData.title = binding.inputLayoutTitle.editText?.text.toString()
-        _currentReminderData.locationName = binding.inputLayoutLocationName.editText?.text.toString()
-        _currentReminderData.description = binding.inputLayoutDescription.editText?.text.toString()
+        with(binding) {
+            _currentReminderData.title = inputLayoutTitle.editText?.text.toString()
+            _currentReminderData.locationName = inputLayoutLocationName.editText?.text.toString()
+            _currentReminderData.description = inputLayoutDescription.editText?.text.toString()
+            _currentReminderData.expiration = TimeUnit.DAYS.toMillis(
+                expirationDurationEditText.text.toString().toLong()
+            )
+            _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
+        }
         viewModel.setSelectedReminder(_currentReminderData)
     }
 
@@ -236,15 +233,15 @@ class AddReminderFragment : Fragment() {
 
                 radioGroupTransitionType.check(
                     when(state.selectedReminder?.transitionType) {
-                        Geofence.GEOFENCE_TRANSITION_ENTER -> R.id.radioButtonEnter
-                        else -> R.id.radioButtonExit
+                        Geofence.GEOFENCE_TRANSITION_EXIT -> R.id.radioButtonExit
+                        else -> R.id.radioButtonEnter
                     }
                 )
 
                 isGeofenceEnableSwitch.isChecked = state.selectedReminder?.isGeofenceEnable ?: false
 
                 state.selectedReminder?.expiration?.let {
-                    if (it == -1L) {
+                    if (it == REMINDER_EXPIRATION_NEVER) {
                         setupExpirationUnitInputList(R.string.units_never)
                         inputLayoutExpirationDurationValue.isEnabled = false
                     } else {
@@ -274,18 +271,27 @@ class AddReminderFragment : Fragment() {
                             titleResId = R.string.message_update_reminder_error,
                             toastType = ToastType.ERROR
                         )
-                    is AddReminderAction.AddReminderSuccess,
-                    is AddReminderAction.UpdateReminderSuccess -> {
+                    is AddReminderAction.AddReminderSuccess -> {
+                        if (_currentReminderData.isGeofenceEnable) {
+                            addGeofence(_currentReminderData.copy(id = action.id))
+                        }
                         context?.showCustomToast(
                             titleResId = R.string.message_saving_reminder_success,
                             toastType = ToastType.SUCCESS,
                             offSetY = TOAST_POSITION_ELEVATED
                         )
+                        navigateToReminderList()
+                    }
+                    is AddReminderAction.UpdateReminderSuccess -> {
                         if (_currentReminderData.isGeofenceEnable) {
                             addGeofence(_currentReminderData)
-                        } else {
-                            navigateToReminderList()
                         }
+                        context?.showCustomToast(
+                            titleResId = R.string.message_update_reminder_success,
+                            toastType = ToastType.SUCCESS,
+                            offSetY = TOAST_POSITION_ELEVATED
+                        )
+                        navigateToReminderList()
                     }
                     is AddReminderAction.InputErrorFieldTitle -> {
                         inputLayoutTitle.isErrorEnabled = true
@@ -343,7 +349,10 @@ class AddReminderFragment : Fragment() {
             id = reminder.id.toString(),
             latitude = reminder.latitude,
             longitude = reminder.longitude,
-            onAddGeofenceSuccess = { onAddGeofenceSuccess() },
+            circularRadius = reminder.circularRadius,
+            expiration = reminder.expiration,
+            transitionType = reminder.transitionType,
+            onAddGeofenceSuccess = ::onAddGeofenceSuccess,
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )
     }
@@ -375,9 +384,9 @@ class AddReminderFragment : Fragment() {
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(
             titleResId = R.string.geofence_added,
-            offSetY = TOAST_POSITION_ELEVATED
+            offSetY = TOAST_POSITION_ELEVATED,
+            toastType = ToastType.INFO
         )
-        navigateToReminderList()
     }
 
     private fun navigateToReminderList() {
