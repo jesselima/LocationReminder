@@ -10,6 +10,7 @@
     <dimen name="button_height_default">60dp</dimen>
     <dimen name="button_width_large">250dp</dimen>
 
+    <dimen name="none">0dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
     <dimen name="spacing_sm">8dp</dimen>
     <dimen name="spacing_md">16dp</dimen>
@@ -23,6 +24,8 @@
     <dimen name="spacing_very_large_04">120dp</dimen>
     <dimen name="spacing_very_large_05">150dp</dimen>
     <dimen name="spacing_very_large_06">200dp</dimen>
+
+    <dimen name="slider_width">200dp</dimen>
 
     <dimen name="icon_size_small">40dp</dimen>
     <dimen name="icon_size_medium">50dp</dimen>

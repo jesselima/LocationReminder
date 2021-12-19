@@ -53,6 +53,7 @@
                     android:layout_marginTop="@dimen/spacing_xl"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/reminderLocationCoordinatesLongLabel"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/ic_gps_fixed" />
 
                 <ImageView
@@ -60,6 +61,7 @@
                     android:layout_width="@dimen/icon_size_small"
                     android:layout_height="@dimen/icon_size_small"
                     android:visibility="visible"
+                    android:contentDescription="@string/content_description_alert_enter"
                     app:layout_constraintBottom_toBottomOf="@id/imageGeofenceStatus"
                     app:layout_constraintEnd_toEndOf="@id/imageGeofenceStatus"
                     app:layout_constraintHorizontal_bias="0.9"
@@ -148,7 +150,7 @@
                 <TextView
                     android:id="@+id/textCircularRadius"
                     style="@style/TextAppearance.LocationReminderAppTheme.Label.Discrete"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/none"
                     android:layout_height="wrap_content"
                     android:text="@string/circular_radius_and_alert_type"
                     app:layout_constraintStart_toStartOf="@+id/textCurrentCircularRadius"

@@ -3,23 +3,23 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="@dimen/spacing_sm"
     android:background="@drawable/layout_background">
 
     <ImageView
         android:id="@+id/toastImage"
         android:src="@drawable/ic_success"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="@dimen/icon_size_small"
+        android:layout_height="@dimen/icon_size_small"
+        android:layout_marginEnd="@dimen/spacing_tiny"
         android:contentDescription="@string/label_success" />
 
     <TextView
         android:id="@+id/customText"
+        style="@style/TextAppearance.MaterialComponents.Body2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#4D4D4D"
-        android:textSize="14sp"
+        android:textColor="@color/textColorSecondary"
         android:layout_gravity="center"
-        android:layout_marginEnd="4dp"/>
+        android:layout_marginEnd="@dimen/spacing_tiny"/>
 </LinearLayout>

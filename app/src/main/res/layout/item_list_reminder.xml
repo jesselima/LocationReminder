@@ -28,7 +28,7 @@
             <TextView
                 android:id="@+id/title"
                 style="@style/TextAppearance.LocationReminderAppTheme.List.Title"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/none"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_small"
                 android:layout_marginEnd="@dimen/spacing_sm"
@@ -43,7 +43,7 @@
             <TextView
                 android:id="@+id/description"
                 style="@style/TextAppearance.LocationReminderAppTheme.List.SubTitle"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/none"
                 android:layout_height="wrap_content"
                 android:text="@{item.description}"
                 android:layout_marginEnd="@dimen/spacing_sm"
@@ -56,7 +56,7 @@
 
             <TextView
                 style="@style/TextAppearance.LocationReminderAppTheme.List.Description"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/none"
                 android:layout_height="wrap_content"
                 android:text="@{item.locationName}"
                 android:textColor="@color/colorPrimary"

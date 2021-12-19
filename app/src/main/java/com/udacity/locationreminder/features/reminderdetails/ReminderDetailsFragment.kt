@@ -170,7 +170,12 @@ class ReminderDetailsFragment : Fragment() {
                     String.format(FORMAT_LAT_LNG_DECIMALS, reminder.longitude)
 
                 if (reminder.transitionType ==  Geofence.GEOFENCE_TRANSITION_EXIT) {
+                    imageViewGeofenceTriggerDirection.contentDescription =
+                        getString(R.string.content_description_alert_exit)
                     imageViewGeofenceTriggerDirection.rotation = ROTATION_FLIP_HORIZONTAL
+                } else {
+                    imageViewGeofenceTriggerDirection.contentDescription =
+                        getString(R.string.content_description_alert_enter)
                 }
             }
 

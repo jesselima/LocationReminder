@@ -32,7 +32,7 @@
     <TextView
         android:id="@+id/textAppName"
         style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/none"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
         android:gravity="center"
@@ -48,7 +48,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonLoginWithGoogle"
         style="@style/Widget.LocationReminderAppTheme.Button"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/none"
         android:layout_height="@dimen/button_height_default"
         android:layout_marginStart="@dimen/spacing_very_large_02"
         android:layout_marginEnd="@dimen/spacing_very_large_02"
@@ -62,7 +62,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonLoginWithEmail"
         style="@style/Widget.LocationReminderAppTheme.Button"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/none"
         android:layout_height="@dimen/button_height_default"
         android:layout_marginStart="@dimen/spacing_very_large_02"
         android:layout_marginEnd="@dimen/spacing_very_large_02"
@@ -76,7 +76,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textTermsOfService"
         style="@style/TextAppearance.LocationReminderAppTheme.Body.Medium"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/none"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xxxl"
         android:layout_marginEnd="@dimen/spacing_xxxl"
