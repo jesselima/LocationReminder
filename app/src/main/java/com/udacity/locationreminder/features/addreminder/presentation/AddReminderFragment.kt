@@ -200,9 +200,13 @@ class AddReminderFragment : Fragment() {
             _currentReminderData.title = inputLayoutTitle.editText?.text.toString()
             _currentReminderData.locationName = inputLayoutLocationName.editText?.text.toString()
             _currentReminderData.description = inputLayoutDescription.editText?.text.toString()
-            _currentReminderData.expiration = TimeUnit.DAYS.toMillis(
-                expirationDurationEditText.text.toString().toLong()
-            )
+
+            val isValid = expirationDurationEditText.text?.run { this.isEmpty().not() } ?: false
+            if (isValid) {
+                _currentReminderData.expiration = TimeUnit.DAYS.toMillis(
+                    expirationDurationEditText.text.toString().toLong()
+                )
+            }
             _currentReminderData.isGeofenceEnable = isGeofenceEnableSwitch.isChecked
         }
         viewModel.setSelectedReminder(_currentReminderData)
