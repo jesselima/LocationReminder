@@ -201,7 +201,7 @@ class AutomatorFullFlow {
 
         device.assertViewHasText(
             viewId = "textGeofenceStatus",
-            text = "Geofence is disabled",
+            text = "Geofence is enabled",
         )
     }
 
@@ -232,11 +232,6 @@ class AutomatorFullFlow {
         device.swipeUp()
 
         device.onViewWithTextClick("When I exit")
-
-        device.onViewWithIdPerformClick(
-            viewId = "isGeofenceEnableSwitch",
-            currentAppPackage = locationReminderPackage
-        )
 
         device.onViewContainsTextClickAndWait(text = "SAVE REMINDER")
 
