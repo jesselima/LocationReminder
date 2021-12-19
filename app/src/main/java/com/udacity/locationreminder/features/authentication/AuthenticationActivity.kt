@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes.*
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -12,9 +13,9 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.locationreminder.BuildConfig
 import com.udacity.locationreminder.R
+import com.udacity.locationreminder.common.extensions.launchActivity
 import com.udacity.locationreminder.features.RemindersActivity
 import com.udacity.locationreminder.features.onboarding.OnBoardingActivity
-import com.udacity.locationreminder.common.extensions.launchActivity
 import kotlinx.android.synthetic.main.activity_authentication.*
 
 /**
@@ -46,6 +47,13 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun startSignIn() {
         layoutContentAuthenticationIntro.isVisible = false
+
+        val customLayout = AuthMethodPickerLayout.Builder(R.layout.authentication_methods_background)
+            .setGoogleButtonId(R.id.buttonLoginWithGoogle)
+            .setEmailButtonId(R.id.buttonLoginWithEmail)
+            .setTosAndPrivacyPolicyId(R.id.textTermsOfService)
+            .build()
+
         val signInIntent = AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(
@@ -59,6 +67,7 @@ class AuthenticationActivity : AppCompatActivity() {
                 getString(R.string.url_privacy_policy))
             .setIsSmartLockEnabled(BuildConfig.DEBUG.not(), true)
             .setTheme(R.style.AuthScreenTheme)
+            .setAuthMethodPickerLayout(customLayout)
             .build()
         signInLauncher.launch(signInIntent)
     }

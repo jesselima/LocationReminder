@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.authentication.AuthenticationActivity">
+
+    <ImageView
+        android:id="@+id/imageViewSignMethodsSelectorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="@dimen/spacing_very_large_06"
+        android:src="@drawable/background_image_phone_pin_locations"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/viewSignMethodsSelectorSemiTransparentMask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_background_alpha"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textAppName"
+        style="@style/TextAppearance.LocationReminderAppTheme.Title.Small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_very_large_02"
+        android:layout_marginStart="@dimen/spacing_xl"
+        android:layout_marginEnd="@dimen/spacing_xl"
+        android:text="@string/welcome_to_the_location_reminder_app"
+        android:textColor="@color/solidBlack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonLoginWithGoogle"
+        style="@style/Widget.LocationReminderAppTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height_default"
+        android:layout_marginStart="@dimen/spacing_very_large_02"
+        android:layout_marginEnd="@dimen/spacing_very_large_02"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:text="@string/text_sign_in_with_google"
+        android:drawableEnd="@drawable/ic_google"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLoginWithEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonLoginWithEmail"
+        style="@style/Widget.LocationReminderAppTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height_default"
+        android:layout_marginStart="@dimen/spacing_very_large_02"
+        android:layout_marginEnd="@dimen/spacing_very_large_02"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:drawableEnd="@drawable/ic_email_outline"
+        android:text="@string/text_sign_in_with_email"
+        app:layout_constraintBottom_toTopOf="@+id/textTermsOfService"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textTermsOfService"
+        style="@style/TextAppearance.LocationReminderAppTheme.Body.Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xxxl"
+        android:layout_marginEnd="@dimen/spacing_xxxl"
+        android:layout_marginBottom="@dimen/spacing_md"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
