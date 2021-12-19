@@ -229,7 +229,7 @@ class AddReminderViewModelTest {
         // When
         viewModel.validateFieldsSaveOrUpdateReminder(isEditing = false)
 
-        verify(observerAction).onChanged(AddReminderAction.AddReminderSuccess)
+        verify(observerAction).onChanged(AddReminderAction.AddReminderSuccess(1))
     }
 
     @Test
