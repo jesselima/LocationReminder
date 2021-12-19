@@ -42,18 +42,12 @@ class ReminderListFragment : Fragment() {
     private lateinit var geofenceClient: GeofencingClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(activity, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(
-            requireContext(),
+            activity,
             PENDING_INTENT_REQUEST_CODE,
-            Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
-                action = ReminderEditorActivity.ACTION_GEOFENCE_EVENT
-            },
-            when {
-                isAndroidOsEqualsOrGreaterThan(osVersion = Build.VERSION_CODES.M) -> {
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                }
-                else -> PendingIntent.FLAG_UPDATE_CURRENT
-            }
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 

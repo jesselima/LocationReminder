@@ -12,19 +12,34 @@ import com.udacity.locationreminder.common.ReminderConstants
 import com.udacity.locationreminder.common.extensions.ToastType
 import com.udacity.locationreminder.common.extensions.showCustomToast
 import com.udacity.locationreminder.common.notification.showOrUpdateNotification
+import com.udacity.locationreminder.shareddata.localdatasource.models.ReminderData
+import com.udacity.locationreminder.shareddata.localdatasource.models.ResultData
+import com.udacity.locationreminder.shareddata.localdatasource.repository.RemindersLocalRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 private const val EMPTY = ""
 private const val INVALID_REQUEST_ID = -1
+private const val enterEvent = Geofence.GEOFENCE_TRANSITION_ENTER
+private const val exitEvent = Geofence.GEOFENCE_TRANSITION_EXIT
 
-class GeofenceBroadcastReceiver : BroadcastReceiver() {
+class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
     private val tag = GeofenceBroadcastReceiver::class.java.simpleName
 
+    private val applicationScope = CoroutineScope(Dispatchers.Default)
+    private val remindersLocalRepository by inject<RemindersLocalRepository>()
+
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("===>>", "GeofenceBroadcastReceiver#onReceive called!")
+
         val geofencingEvent: GeofencingEvent? = GeofencingEvent.fromIntent(intent)
+
         if (geofencingEvent?.hasError() == true) {
-            Log.e("===>>", "geofencingEvent.hasError ${geofencingEvent.errorCode}")
+            Log.d("===>>", "geofencingEvent.hasError ${geofencingEvent.errorCode}")
             val errorMessage = handleGeofenceError(context, geofencingEvent.errorCode)
                 Log.d(tag,"Geofence error: $errorMessage")
                 context.showCustomToast(
@@ -33,40 +48,47 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 )
             return
         }
-
         Log.d("===>>", "geofencingEvent requestId ${geofencingEvent?.triggeringGeofences?.first()?.requestId}")
         Log.d("===>>", "geofencingEvent triggeringLocation.latitude ${geofencingEvent?.triggeringLocation?.latitude}")
         Log.d("===>>", "geofencingEvent triggeringLocation.longitude ${geofencingEvent?.triggeringLocation?.longitude}")
         Log.d("===>>", "geofencingEvent geofenceTransition ${geofencingEvent?.geofenceTransition}")
         Log.d("===>>", "geofencingEvent triggeringLocation ${geofencingEvent?.triggeringLocation}")
 
-        val transition = when(geofencingEvent?.geofenceTransition) {
-                Geofence.GEOFENCE_TRANSITION_ENTER ->
-                    context.resources.getString(R.string.notification_text_transition_type_enter)
-                Geofence.GEOFENCE_TRANSITION_EXIT ->
-                    context.resources.getString(R.string.notification_text_transition_type_exit)
+        geofencingEvent?.triggeringGeofences?.first()?.requestId?.let { id ->
+
+            val transitionName = when(geofencingEvent.geofenceTransition) {
+                enterEvent -> context.resources.getString(R.string.label_enter_lowercase)
+                exitEvent -> context.resources.getString(R.string.label_exit_lowercase)
                 else -> EMPTY
             }
 
-        if (geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-            geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            val isExitOrEnter = geofencingEvent.geofenceTransition == enterEvent ||
+                    geofencingEvent.geofenceTransition == exitEvent
 
-            val requestId = geofencingEvent.triggeringGeofences.first()?.requestId?.toInt()
-                ?: INVALID_REQUEST_ID
-
-            if (requestId != INVALID_REQUEST_ID) {
-                context.showOrUpdateNotification(
-                    notificationId = requestId,
-                    title =  context.resources.getString(R.string.notification_title),
-                    text = String.format(
-                        context.resources.getString(R.string.notification_description),
-                        transition.uppercase()
-                    ),
-                    channelId = ReminderConstants.channelIdReminders,
-                    data = bundleOf(
-                        ReminderConstants.argsKeyReminderId to requestId
-                    )
-                )
+            applicationScope.launch {
+                when(val result = remindersLocalRepository.getReminder(id)) {
+                    is ResultData.Success<*> -> {
+                        if (isExitOrEnter) {
+                            val reminder = result.data as ReminderData
+                            if (id.toInt() != INVALID_REQUEST_ID) {
+                                context.showOrUpdateNotification(
+                                    notificationId = id.toInt(),
+                                    title =  context.resources.getString(R.string.notification_title),
+                                    text = String.format(context.resources.getString(R.string.notification_description),
+                                        transitionName.uppercase(), reminder.locationName, reminder.title
+                                    ),
+                                    channelId = ReminderConstants.channelIdReminders,
+                                    data = bundleOf(
+                                        ReminderConstants.argsKeyReminderId to id.toInt()
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    is ResultData.Error -> {
+                        // Do nothing
+                    }
+                }
             }
         }
     }

@@ -124,7 +124,6 @@
 
     <string name="message_reminder_details_error">Error getting reminder details!</string>
 
-    <!-- TODO review all these strings  -->
     <string name="permission_rationale">Location permission needed for core functionality of the game.</string>
 
     <string name="location_setting_off">Please turn on device location in Settings and try again.</string>
@@ -169,10 +168,10 @@
     <string name="geofence_error_too_many_geofence_request">Too frequent geofences requests</string>
     <string name="geofence_error_too_many_geofences">Too many geofences</string>
     <string name="geofence_error_something_went_wrong">Something went wrong with geofence.</string>
-    <string name="notification_text_transition_type_enter">enter</string>
-    <string name="notification_text_transition_type_exit">exit</string>
+    <string name="label_enter_lowercase">enter</string>
+    <string name="label_exit_lowercase">exit</string>
     <string name="notification_title">New Location Reminder</string>
-    <string name="notification_description">You have a %s alert for this location.</string>
+    <string name="notification_description">%1s alert: %2s - %3s.</string>
     <string name="message_authentication_required">Authentication required!</string>
     <string name="message_location_settings_ok">Location settings OK!</string>
     <string name="notification_channel_main_name">General</string>
