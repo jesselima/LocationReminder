@@ -91,17 +91,17 @@ class AuthenticationActivity : AppCompatActivity() {
             PROVIDER_ERROR ->
                 getString(R.string.auth_error_email_does_not_match_provided)
             EMAIL_MISMATCH_ERROR ->
-                getString(R.string.auth_error_email_mismatch);
+                getString(R.string.auth_error_email_mismatch)
             INVALID_EMAIL_LINK_ERROR ->
-                getString(R.string.auth_error_invalid_email_link);
+                getString(R.string.auth_error_invalid_email_link)
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR ->
-                getString(R.string.auth_error_please_enter_email);
+                getString(R.string.auth_error_please_enter_email)
             EMAIL_LINK_WRONG_DEVICE_ERROR ->
-                getString(R.string.auth_error_wrong_device);
+                getString(R.string.auth_error_wrong_device)
             EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR ->
-                getString(R.string.auth_error_define_linking_or_sign_in);
+                getString(R.string.auth_error_define_linking_or_sign_in)
             EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR ->
-                getString(R.string.auth_error_session_expired_or_cleared);
+                getString(R.string.auth_error_session_expired_or_cleared)
             else ->
                 getString(R.string.auth_error_something_went_wrong)
         }

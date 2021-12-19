@@ -41,19 +41,19 @@ object AppViewAction {
     }
 
     fun actionSwipeLeft(@IdRes viewId: Int) {
-        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeLeft());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeLeft())
     }
 
     fun actionSwipeUp(@IdRes viewId: Int) {
-        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeUp());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeUp())
     }
 
     fun actionSwipeDown(@IdRes viewId: Int) {
-        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeDown());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeDown())
     }
 
     fun actionSwipeRight(@IdRes viewId: Int) {
-        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeRight());
+        Espresso.onView(ViewMatchers.withId(viewId)).perform(swipeRight())
     }
 
     fun onItemListPositionClicked(@IdRes recyclerViewResId: Int, position: Int = 2) {
