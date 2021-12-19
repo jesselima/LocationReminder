@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -362,7 +363,9 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun isBackgroundPermissionGranted(): Boolean {
-        return if (isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        ) {
             activity?.showCustomDialog(
                 context = requireContext(),
                 title = getString(R.string.message_request_background_location_title),
@@ -393,6 +396,16 @@ class AddReminderFragment : Fragment() {
         )
     }
 
+    private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {
+        context?.showCustomToast(
+            titleText = String.format(
+                getString(R.string.geofence_error),
+                getString(reasonStringRes)
+            ),
+            toastType = ToastType.WARNING
+        )
+    }
+
     private fun navigateToReminderList() {
         if (args.isEditing) {
             findNavController().navigate(
@@ -406,15 +419,5 @@ class AddReminderFragment : Fragment() {
             startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
             activity?.finish()
         }
-    }
-
-    private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {
-        context?.showCustomToast(
-            titleText = String.format(
-                getString(R.string.geofence_error),
-                getString(reasonStringRes)
-            ),
-            toastType = ToastType.WARNING
-        )
     }
 }
