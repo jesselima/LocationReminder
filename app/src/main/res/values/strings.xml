@@ -1,14 +1,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Reminders in Location</string>
-    <string name="error_happened">Error happened</string>
-    <string name="retry">Retry</string>
     <string name="no_data">I hope you do not forget anything\nbecause you have no reminder.\n\nWhat about to add some?</string>
     <string name="reminder_title">Reminder title</string>
     <string name="reminder_location_name">Location name</string>
     <string name="reminder_desc">Description</string>
-    <string name="reminder_location">Reminder Location</string>
-    <string name="save">Save</string>
-    <string name="reminder_saved">Reminder Saved !</string>
     <string name="logout">Logout</string>
     <string name="logout_confirmation_message">Do you really want to logout?</string>
     <string name="delete_account_title">Delete your account?</string>
@@ -17,46 +12,24 @@
     <string name="delete_reminder_confirmation_message">Do you really want to delete this reminder?</string>
     <string name="welcome_to_the_location_reminder_app">Location Reminder</string>
     <string name="welcome_message_caption">Set your mind free to what matters most and do the things at the right time and place.</string>
-    <string name="login">Login</string>
-    <string name="title_activity_maps">Map</string>
     <string name="normal_map">Normal Map</string>
     <string name="hybrid_map">Hybrid Map</string>
     <string name="satellite_map">Satellite Map</string>
     <string name="terrain_map">Terrain Map</string>
     <string name="lat_long_snippet">Lat: %1$.5f - Long: %2$.5f</string>
-    <string name="poi_lat_long_snippet">%1s - %2s</string>
-    <string name="poi_dropped_pin">Set a reminder for</string>
     <string name="dropped_pin">Set a reminder for this place</string>
-    <string name="poi">poi</string>
-    <string name="location_required_error">Location services must be enabled to use the app</string>
-    <string name="location_permission_allowed">Nice! Location permission allowed.</string>
-    <string name="permission_denied_explanation">You need to grant location permission in order to select the location.</string>
     <string name="settings">Settings</string>
-    <string name="select_poi">Please select a point of interest</string>
-    <string name="geofence_entered">Geofence entered</string>
     <string name="geofence_added">Geofence added</string>
     <string name="geofence_removed">Geofence removed</string>
-    <string name="geofence_removed_error">Ooops! Error removing Geofence.</string>
-    <string name="channel_name">GeofenceStatus</string>
-    <string name="notification_channel_description">Geofence status notification</string>
-    <string name="select_title">Please select title</string>
-    <string name="select_location">Please select location</string>
     <string name="text_button_select_location">Select location</string>
     <string name="action_click_on_the_map">Click on the map</string>
     <string name="text_button_change_location">Change location</string>
     <string name="action_set_location">Get this location</string>
     <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location.</string>
-    <string name="action_selected_location">Selected location</string>
-    <string name="geofences_not_added">Problem in adding geofences.</string>
-    <string name="welcome">Welcome</string>
-    <string name="err_enter_title">Please enter title</string>
-    <string name="err_select_location">Please select location</string>
 
-    <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>
     <string name="geofence_not_available">Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.</string>
     <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
-    <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence\n%s</string>
     <string name="text_login">Login</string>
     <string name="url_terms_of_service">https://jesselima.dev/apps/location-reminder/terms-of-service</string>
     <string name="url_privacy_policy">https://jesselima.dev/apps/location-reminder/privacy-policy</string>
@@ -80,7 +53,6 @@
     <string name="label_copyright">Copyrights</string>
     <string name="label_delete_account">Delete account</string>
     <string name="label_source">Source</string>
-    <string name="label_link">LINK</string>
     <string name="label_author">Author</string>
 
     <string name="label_cancel">Cancel</string>
@@ -90,7 +62,6 @@
 
     <string name="image_or_animation_resource">Image or animation resource</string>
     <string name="label_go_back_to_reminders">Go back to reminders</string>
-    <string name="message_copyright_notes">See below who\nprovided free content used in this App.</string>
     <string name="label_success">Success</string>
     <string name="onboard_step_1_title">Need remember something?</string>
     <string name="onboard_step_1_description">Have you forgot to do something while you was in some place?</string>
@@ -124,45 +95,21 @@
 
     <string name="message_reminder_details_error">Error getting reminder details!</string>
 
-    <string name="permission_rationale">Location permission needed for core functionality of the game.</string>
-
-    <string name="location_setting_off">Please turn on device location in Settings and try again.</string>
-
     <!--    Geofence Status Strings-->
-    <string name="geofences_added">Clue Geofence added.</string>
-    <string name="geofences_removed">Geofences removed.</string>
-    <string name="geofence_over">You have found the treasure! Congratulations!</string>
 
     <!-- Geofence Hints -->
-    <string name="not_started_hint"/>
-    <string name="golden_gate_bridge_hint">Go to a bridge with a name that does not match the color that it is!</string>
-    <string name="ferry_building_hint">Go to a market with an amazing assortment of delicious foods. It is a San Francisco classic!</string>
-    <string name="pier_39_hint">Go to a pier popular for tourist attractions, carnival games, fresh fish, and delicious sourdough bread!</string>
-    <string name="union_square_hint">Go to a square named after Civil War rallies held there, but now known for its amazing shopping!</string>
-    <string name="lombard_street_hint">Go to the most crooked street in the City</string>
 
     <!-- Geofence Locations -->
-    <string name="golden_gate_bridge_location">at the Golden Gate bridge</string>
-    <string name="ferry_building_location">in the Ferry Building</string>
-    <string name="pier_39_location">at Pier 39</string>
-    <string name="union_square_location">in Union Square</string>
-    <string name="lombard_street_location">at Lombard Street</string>
 
     <string name="unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
     <string name="geofence_error">Geofence error: %s</string>
     <string name="geofence_error_generic_info">Geofence error: %s</string>
 
-    <string name="geofences_not_removed">Geofences not removed.</string>
-    <string name="insufficient_permissions">Insufficient permissions.</string>
-
     <!-- Content Description Strings -->
-    <string name="android_map_description">An Android robot with a map</string>
-    <string name="content_text">You found a clue <xliff:g id="geofence_location">%1$s</xliff:g>.</string>
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
     <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
     <string name="agreed_button_label">I agreed</string>
-    <string name="message_request_background_location_deny_button_label">DENY</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
     <string name="geofence_error_geofence_not_available">Geofence not available</string>
     <string name="geofence_error_too_many_geofence_request">Too frequent geofences requests</string>
@@ -173,7 +120,6 @@
     <string name="notification_title">New Location Reminder</string>
     <string name="notification_description">%1s alert: %2s - %3s.</string>
     <string name="message_authentication_required">Authentication required!</string>
-    <string name="message_location_settings_ok">Location settings OK!</string>
     <string name="notification_channel_main_name">General</string>
     <string name="notification_channel_reminders_name">Reminder alerts</string>
     <string name="notification_channel_main_description">General notifications</string>
@@ -185,7 +131,6 @@
     <string name="expiration_duration">Expiration duration</string>
     <string name="expiration_duration_input_helper_text">Reminder life span type</string>
     <string name="expiration_duration_input_helper_quantity">Number</string>
-    <string name="expiration_units">Days/Hours</string>
     <string name="units_days">DAYS</string>
     <string name="units_never">NEVER</string>
     <string name="when_i_enter">When I enter</string>
@@ -194,7 +139,6 @@
     <string name="geofence_is_enabled">Enable/Disable Geofence</string>
     <string name="label_delete">Delete</string>
     <string name="text_button_edit_reminder">Edit</string>
-    <string name="geofence_updated">Geofence updated</string>
     <string name="message_delete_reminder">Delete reminder?</string>
     <string name="message_delete_reminder_description">The local reminder data and geofence trigger will be removed.</string>
     <string name="circular_radius_and_alert_type">Circular radius (meters) and\nalert type (enter or exit)</string>

@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_small">14sp</dimen>
-    <dimen name="text_size_normal">16sp</dimen>
-    <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
 
-    <dimen name="padding_normal">16dp</dimen>
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_medium">8dp</dimen>
-    <dimen name="padding_large">20dp</dimen>
 
     <dimen name="space_screen_default">16dp</dimen>
-    <dimen name="margin_button_default">24dp</dimen>
-    <dimen name="margin_button_medium">32dp</dimen>
     <dimen name="margin_button_large">48dp</dimen>
     <dimen name="button_height_default">60dp</dimen>
-    <dimen name="button_width_tiny">100dp</dimen>
-    <dimen name="button_width_default">150dp</dimen>
-    <dimen name="button_width_medium">200dp</dimen>
     <dimen name="button_width_large">250dp</dimen>
 
-    <dimen name="space_medium">24dp</dimen>
-    <dimen name="default_icon_size">40dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
     <dimen name="spacing_sm">8dp</dimen>
     <dimen name="spacing_md">16dp</dimen>
@@ -32,28 +20,18 @@
     <dimen name="spacing_very_large_01">60dp</dimen>
     <dimen name="spacing_very_large_02">70dp</dimen>
     <dimen name="spacing_very_large_03">100dp</dimen>
-    <dimen name="spacing_very_large_04">120dp</dimen>
-    <dimen name="spacing_very_large_05">150dp</dimen>
-    <dimen name="spacing_very_large_06">200dp</dimen>
-    <dimen name="spacing_very_large_07">250dp</dimen>
 
     <dimen name="icon_size_small">40dp</dimen>
     <dimen name="icon_size_medium">50dp</dimen>
     <dimen name="icon_size_large">70dp</dimen>
-    <dimen name="icon_size_very_large_01">100dp</dimen>
     <dimen name="icon_size_very_large_02">120dp</dimen>
     <dimen name="icon_size_very_large_03">150dp</dimen>
 
     <dimen name="lottie_tiny_height">120dp</dimen>
     <dimen name="lottie_tiny_width">120dp</dimen>
-    <dimen name="lottie_small_width">150dp</dimen>
     <dimen name="lottie_small_height">150dp</dimen>
     <dimen name="lottie_default_width">200dp</dimen>
     <dimen name="lottie_default_height">200dp</dimen>
-    <dimen name="lottie_large_width">250dp</dimen>
-    <dimen name="lottie_large_height">250dp</dimen>
     <dimen name="card_corner_radius_tiny">3dp</dimen>
-    <dimen name="tab_layout_height">70dp</dimen>
-    <dimen name="app_bar_margin_top">70dp</dimen>
     <dimen name="slider_background_image_margin_end">110dp</dimen>
 </resources>

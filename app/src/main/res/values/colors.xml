@@ -2,24 +2,18 @@
 <resources>
 
     <color name="colorPrimary">#00bcd4</color>
-    <color name="colorPrimaryLight">#62efff</color>
     <color name="colorPrimaryDark">#008ba3</color>
     <color name="textColorPrimary">#000000</color>
 
-    <color name="colorSecondary">#e57373</color>
     <color name="colorSecondaryLight">#ffa4a2</color>
-    <color name="colorSecondaryDark">#af4448</color>
     <color name="textColorSecondary">#636363</color>
 
     <color name="colorAccent">#E63838</color>
 
-    <color name="toolbarIconColor">#000000</color>
     <color name="textInputOutlineColor">#B3B3B3</color>
     <color name="defaultBackground">#E6E6E6</color>
 
     <color name="colorStateOn">#FF8282</color>
-    <color name="colorStateOff">#C2C2C2</color>
-    <color name="transparent">#00FFFFFF</color>
     <color name="transparent_background_alpha">#DADFDFDF</color>
     <color name="transparent_background_alpha_stroke">#DA959595</color>
 
