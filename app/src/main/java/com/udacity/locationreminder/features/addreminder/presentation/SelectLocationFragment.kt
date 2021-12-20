@@ -14,6 +14,9 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -90,6 +93,16 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
         selectedReminder = args.lastSelectedLocation
+
+        val googlePlayServicesStatus =  GoogleApiAvailability
+            .getInstance()
+            .isGooglePlayServicesAvailable(requireContext())
+
+        if (googlePlayServicesStatus != ConnectionResult.SUCCESS) {
+            val dialog = GoogleApiAvailability
+                .getInstance().getErrorDialog(this, googlePlayServicesStatus, 10)
+            dialog?.show()
+        }
     }
 
     private fun requestLocationPermissions() {
