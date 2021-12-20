@@ -1,6 +1,7 @@
 package com.udacity.locationreminder.features.addreminder.presentation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
@@ -50,6 +51,7 @@ private const val CIRCULAR_RADIUS_DEFAULT = 50f
 private const val TOAST_POSITION_ELEVATED = 350
 private const val REMINDER_EXPIRATION_NEVER = -1L
 
+@SuppressLint("UnspecifiedImmutableFlag")
 class AddReminderFragment : Fragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
@@ -63,7 +65,10 @@ class AddReminderFragment : Fragment() {
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(activity, GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(activity, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getBroadcast(
+            activity, PENDING_INTENT_REQUEST_CODE,
+            intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     override fun onCreateView(

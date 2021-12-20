@@ -1,8 +1,8 @@
 package com.udacity.locationreminder.features.reminderslist
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +19,6 @@ import com.udacity.locationreminder.R
 import com.udacity.locationreminder.databinding.FragmentReminderListBinding
 import com.udacity.locationreminder.geofence.GeofenceBroadcastReceiver
 import com.udacity.locationreminder.geofence.GeofenceManager
-import com.udacity.locationreminder.common.extensions.isAndroidOsEqualsOrGreaterThan
 import com.udacity.locationreminder.features.ReminderEditorActivity
 import com.udacity.locationreminder.common.extensions.ToastType
 import com.udacity.locationreminder.common.extensions.setup
@@ -32,6 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PENDING_INTENT_REQUEST_CODE = 0
 
+@SuppressLint("UnspecifiedImmutableFlag")
 class ReminderListFragment : Fragment() {
 
     val viewModel: RemindersListViewModel by viewModel()
