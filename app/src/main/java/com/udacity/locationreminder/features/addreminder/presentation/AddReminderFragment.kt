@@ -384,7 +384,8 @@ class AddReminderFragment : Fragment() {
             )
             false
         } else {
-            true
+            (isPermissionNotGranted(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                    isPermissionNotGranted(Manifest.permission.ACCESS_FINE_LOCATION)).not()
         }
     }
 
