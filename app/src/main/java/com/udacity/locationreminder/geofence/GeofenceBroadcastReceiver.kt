@@ -26,12 +26,9 @@ private const val INVALID_REQUEST_ID = -1
 private const val enterEvent = Geofence.GEOFENCE_TRANSITION_ENTER
 private const val exitEvent = Geofence.GEOFENCE_TRANSITION_EXIT
 
-class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
+class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private val tag = GeofenceBroadcastReceiver::class.java.simpleName
-
-    private val applicationScope = CoroutineScope(Dispatchers.Default)
-    private val remindersLocalRepository by inject<RemindersLocalRepository>()
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("===>>", "GeofenceBroadcastReceiver#onReceive called!")
@@ -65,24 +62,31 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
             val isExitOrEnter = geofencingEvent.geofenceTransition == enterEvent ||
                     geofencingEvent.geofenceTransition == exitEvent
 
+            if (isExitOrEnter) NotificationHelper().onReceive(context, id, transitionName)
+        }
+    }
+
+    class NotificationHelper : KoinComponent {
+        private val applicationScope = CoroutineScope(Dispatchers.Default)
+        private val remindersLocalRepository: RemindersLocalRepository by inject()
+
+        fun onReceive(context: Context, id: String, transitionName: String) {
             applicationScope.launch {
                 when(val result = remindersLocalRepository.getReminder(id)) {
                     is ResultData.Success<*> -> {
-                        if (isExitOrEnter) {
-                            val reminder = result.data as ReminderData
-                            if (id.toInt() != INVALID_REQUEST_ID) {
-                                context.showOrUpdateNotification(
-                                    notificationId = id.toInt(),
-                                    title =  context.resources.getString(R.string.notification_title),
-                                    text = String.format(context.resources.getString(R.string.notification_description),
-                                        transitionName.uppercase(), reminder.locationName, reminder.title
-                                    ),
-                                    channelId = ReminderConstants.channelIdReminders,
-                                    data = bundleOf(
-                                        ReminderConstants.argsKeyReminderId to id.toInt()
-                                    )
+                        val reminder = result.data as ReminderData
+                        if (id.toInt() != INVALID_REQUEST_ID) {
+                            context.showOrUpdateNotification(
+                                notificationId = id.toInt(),
+                                title =  context.resources.getString(R.string.notification_title),
+                                text = String.format(context.resources.getString(R.string.notification_description),
+                                    transitionName.uppercase(), reminder.locationName, reminder.title
+                                ),
+                                channelId = ReminderConstants.channelIdReminders,
+                                data = bundleOf(
+                                    ReminderConstants.argsKeyReminderId to id.toInt()
                                 )
-                            }
+                            )
                         }
                     }
                     is ResultData.Error -> {
