@@ -6,6 +6,7 @@ import com.udacity.project4.features.reminderdetails.ReminderDetailsViewModel
 import com.udacity.project4.features.reminderslist.RemindersListViewModel
 import com.udacity.project4.geofence.GeofenceManager
 import com.udacity.project4.geofence.GeofenceManagerImpl
+import com.udacity.project4.geofence.GeofenceHandlerHelper
 import com.udacity.project4.shareddata.localdatasource.database.LocalDatabase
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl
@@ -48,6 +49,7 @@ class MainModule {
 
         val geoFenceModule = module {
             factory<GeofenceManager> { GeofenceManagerImpl() }
+            factory { GeofenceHandlerHelper(context = get()) }
         }
 
         loadKoinModules(listOf(domainModule, presentationModule, dataModule, geoFenceModule))
