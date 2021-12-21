@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/reminderDetailsFragment"
-        android:name="com.udacity.locationreminder.features.reminderdetails.ReminderDetailsFragment"
+        android:name="com.udacity.project4.features.reminderdetails.ReminderDetailsFragment"
         android:label="Reminder Description"
         tools:layout="@layout/fragment_reminder_details">
         <action
@@ -21,7 +21,7 @@
             app:popExitAnim="@anim/fade_out"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
+            app:argType="com.udacity.project4.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
         <argument
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.locationreminder.features.addreminder.presentation.AddReminderFragment"
+        android:name="com.udacity.project4.features.addreminder.presentation.AddReminderFragment"
         android:label="Add Reminder"
         tools:layout="@layout/fragment_add_reminder">
         <action
@@ -60,7 +60,7 @@
             app:popExitAnim="@anim/fade_out"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
+            app:argType="com.udacity.project4.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
         <argument
@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/selectLocationFragment"
-        android:name="com.udacity.locationreminder.features.addreminder.presentation.SelectLocationFragment"
+        android:name="com.udacity.project4.features.addreminder.presentation.SelectLocationFragment"
         android:label="Select Location"
         tools:layout="@layout/fragment_select_location">
         <action
@@ -81,7 +81,7 @@
             app:popUpToInclusive="true"/>
         <argument
             android:name="lastSelectedLocation"
-            app:argType="com.udacity.locationreminder.sharedpresentation.ReminderItemView"
+            app:argType="com.udacity.project4.sharedpresentation.ReminderItemView"
             app:nullable="true"
             android:defaultValue="@null"/>
     </fragment>

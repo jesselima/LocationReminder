@@ -1,0 +1,23 @@
+package com.udacity.project4.common.extensions
+
+import android.app.Activity
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+
+fun Fragment.isPermissionNotGranted(permission: String): Boolean {
+    return  PackageManager.PERMISSION_GRANTED !=
+            ActivityCompat.checkSelfPermission(requireContext(), permission)
+}
+
+fun Activity.requestPermissions(permissions: Array<String>, requestCode: Int) {
+    ActivityCompat.requestPermissions(this, permissions, requestCode)
+}
+
+fun isResultDenied(grantedResult: Int) : Boolean {
+    return grantedResult == PackageManager.PERMISSION_DENIED
+}
+
+fun isResultGranted(grantedResult: Int) : Boolean {
+    return grantedResult == PackageManager.PERMISSION_GRANTED
+}

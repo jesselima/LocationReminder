@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:fitsSystemWindows="true"
-    tools:context="com.udacity.locationreminder.features.RemindersActivity">
+    tools:context="com.udacity.project4.features.RemindersActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/favoritePicturesAppBarLayout"

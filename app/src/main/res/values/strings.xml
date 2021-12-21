@@ -27,7 +27,7 @@
     <string name="action_set_location">Get this location</string>
     <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location.</string>
 
-    <string name="geofence_not_available">Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.</string>
+    <string name="geofence_not_available">Geofence service is not available now. Go to Settings > Location > Mode and choose High accuracy.</string>
     <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
     <string name="text_login">Login</string>
@@ -100,17 +100,10 @@
 
     <string name="message_reminder_details_error">Error getting reminder details!</string>
 
-    <!--    Geofence Status Strings-->
-
-    <!-- Geofence Hints -->
-
-    <!-- Geofence Locations -->
-
     <string name="unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
     <string name="geofence_error">Geofence error: %s</string>
     <string name="geofence_error_generic_info">Geofence error: %s</string>
 
-    <!-- Content Description Strings -->
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
     <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>

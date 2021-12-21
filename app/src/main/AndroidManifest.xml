@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.udacity.locationreminder">
+    package="com.udacity.project4">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".core.LocationReminderApp"
+        android:name="com.udacity.project4.core.LocationReminderApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,11 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/LocationReminderAppTheme">
         <activity
-            android:name=".features.onboarding.OnBoardingActivity"
+            android:name="com.udacity.project4.features.onboarding.OnBoardingActivity"
             android:exported="false"
             android:label="@string/title_activity_on_boarding"
             android:theme="@style/LocationReminderAppTheme.NoActionBar" />
-        <activity android:name=".features.ReminderEditorActivity" />
+        <activity android:name="com.udacity.project4.features.ReminderEditorActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -37,11 +37,11 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <activity
-            android:name=".features.RemindersActivity"
+            android:name="com.udacity.project4.features.RemindersActivity"
             android:exported="true" />
 
         <activity
-            android:name=".features.authentication.AuthenticationActivity"
+            android:name="com.udacity.project4.features.authentication.AuthenticationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,12 +54,12 @@
             android:value="${MAPS_API_KEY}" />
 
         <receiver
-            android:name=".geofence.GeofenceBroadcastReceiver"
+            android:name="com.udacity.project4.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <service
-            android:name=".geofence.GeofenceTransitionsJobIntentService"
+            android:name="com.udacity.project4.geofence.GeofenceTransitionsJobIntentService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>

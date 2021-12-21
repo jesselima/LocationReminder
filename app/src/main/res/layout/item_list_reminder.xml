@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.udacity.locationreminder.sharedpresentation.ReminderItemView" />
+            type="com.udacity.project4.sharedpresentation.ReminderItemView" />
     </data>
 
     <androidx.cardview.widget.CardView
