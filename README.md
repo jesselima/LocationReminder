@@ -2,9 +2,17 @@
 
 A Todo list app with location reminders that remind the user to do something when he reaches a specific location. The app will require the user to create an account and login to set and access reminders.
 
-## Video Demo With UiAutomator
+## Video Demo With UiAutomator (The UiAutomator tests was remove as requested by the reviewer)
 
 https://user-images.githubusercontent.com/17894156/145382366-ab6e1f8d-4e04-4098-aa7c-745d9e94ab4b.mov
+
+## Instrumented tests
+
+![Instrumented_tests](https://user-images.githubusercontent.com/17894156/146924412-06acc50c-653e-4422-8e12-b096abccac89.png)
+
+## Unit tests
+
+![Unit_tests](https://user-images.githubusercontent.com/17894156/146924437-d769bc69-1e09-4c61-87d3-81dc2bec7581.png)
 
 
 ## Getting Started
@@ -48,7 +56,7 @@ Explain what each test does and why
 ```
 1.androidTest
         - Espresso
-        - UiAutomator
+        - UiAutomator (UI Automator was removed as requested by Reviewer)
 2. test
         //TODO: Students explain their testing here.
 ```
