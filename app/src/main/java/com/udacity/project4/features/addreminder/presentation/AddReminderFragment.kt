@@ -1,7 +1,6 @@
 package com.udacity.project4.features.addreminder.presentation
 
-import android.Manifest
-import android.annotation.SuppressLint
+import android.Manifest.permission.*
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
@@ -35,7 +34,7 @@ import com.udacity.project4.features.RemindersActivity
 import com.udacity.project4.common.ReminderConstants
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hideKeyboard
-import com.udacity.project4.common.extensions.isPermissionNotGranted
+import com.udacity.project4.common.extensions.isPermissionGranted
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.common.extensions.showCustomToast
 import com.udacity.project4.features.addreminder.mappers.ExpirationUnits
@@ -51,7 +50,6 @@ private const val CIRCULAR_RADIUS_DEFAULT = 50f
 private const val TOAST_POSITION_ELEVATED = 350
 private const val REMINDER_EXPIRATION_NEVER = -1L
 
-@SuppressLint("UnspecifiedImmutableFlag")
 class AddReminderFragment : Fragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
@@ -64,10 +62,11 @@ class AddReminderFragment : Fragment() {
     private lateinit var geofenceClient: GeofencingClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(activity, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(
-            activity, PENDING_INTENT_REQUEST_CODE,
-            intent, PendingIntent.FLAG_UPDATE_CURRENT
+            activity,
+            PENDING_INTENT_REQUEST_CODE,
+            Intent(activity, GeofenceBroadcastReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 
@@ -172,9 +171,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 extractInputValues()
-                if(isBackgroundPermissionGranted()) {
-                    viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
-                }
+                viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
             }
         }
     }
@@ -282,15 +279,29 @@ class AddReminderFragment : Fragment() {
                             toastType = ToastType.ERROR
                         )
                     is AddReminderAction.AddReminderSuccess -> {
-                        if (_currentReminderData.isGeofenceEnable) {
-                            addGeofence(_currentReminderData.copy(id = action.id))
-                        }
                         context?.showCustomToast(
                             titleResId = R.string.message_saving_reminder_success,
                             toastType = ToastType.SUCCESS,
                             offSetY = TOAST_POSITION_ELEVATED
                         )
-                        navigateToReminderList()
+
+                        if (_currentReminderData.isGeofenceEnable) {
+                            if (hasRequiredPermissions()) {
+                                addGeofence(_currentReminderData.copy(id = action.id))
+                            } else {
+                                activity?.showCustomDialog(
+                                    context = requireContext(),
+                                    title = getString(R.string.message_request_background_location_title),
+                                    message = getString(R.string.message_request_background_location_description),
+                                    negativeButtonText = getString(R.string.label_do_it_later),
+                                    negativeButtonAction = {  navigateToReminderList() },
+                                    positiveButtonText = getString(R.string.settings),
+                                    positiveButtonAction = { openAppSettings() },
+                                )
+                            }
+                        } else {
+                            navigateToReminderList()
+                        }
                     }
                     is AddReminderAction.UpdateReminderSuccess -> {
                         if (_currentReminderData.isGeofenceEnable) {
@@ -367,31 +378,23 @@ class AddReminderFragment : Fragment() {
         )
     }
 
-    private fun isBackgroundPermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            isPermissionNotGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        ) {
-            activity?.showCustomDialog(
-                context = requireContext(),
-                title = getString(R.string.message_request_background_location_title),
-                message = getString(R.string.message_request_background_location_description),
-                positiveButtonText = getString(R.string.settings),
-                positiveButtonAction = {
-                    startActivity(Intent().apply {
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        data = Uri.fromParts(
-                            "package",
-                            BuildConfig.APPLICATION_ID, null
-                        )
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    })
-                },
+    private fun hasRequiredPermissions(): Boolean {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                isPermissionGranted(ACCESS_BACKGROUND_LOCATION)
+            } else {
+                (isPermissionGranted(ACCESS_COARSE_LOCATION) || isPermissionGranted(ACCESS_FINE_LOCATION))
+            }
+    }
+
+    private fun openAppSettings() {
+        startActivity(Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts(
+                "package",
+                BuildConfig.APPLICATION_ID, null
             )
-            false
-        } else {
-            (isPermissionNotGranted(Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                    isPermissionNotGranted(Manifest.permission.ACCESS_FINE_LOCATION)).not()
-        }
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 
     private fun onAddGeofenceSuccess() {
@@ -400,6 +403,7 @@ class AddReminderFragment : Fragment() {
             offSetY = TOAST_POSITION_ELEVATED,
             toastType = ToastType.INFO
         )
+        navigateToReminderList()
     }
 
     private fun onAddGeofenceFailure(@StringRes reasonStringRes: Int) {

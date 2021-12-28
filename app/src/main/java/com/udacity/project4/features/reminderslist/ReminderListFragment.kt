@@ -1,13 +1,21 @@
 package com.udacity.project4.features.reminderslist
 
+import android.Manifest
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -15,8 +23,10 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
+import com.udacity.project4.common.extensions.isPermissionGranted
 import com.udacity.project4.common.extensions.setup
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.common.extensions.showCustomToast
@@ -42,11 +52,10 @@ class ReminderListFragment : Fragment() {
     private lateinit var geofenceClient: GeofencingClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(activity, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(
             activity,
             PENDING_INTENT_REQUEST_CODE,
-            intent,
+            Intent(activity, GeofenceBroadcastReceiver::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
@@ -68,6 +77,54 @@ class ReminderListFragment : Fragment() {
         setupActionListeners()
         setupObservers()
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getReminders()
+        binding.noDataAnimation.playAnimation()
+        checkLocationDeviceStatus()
+        checkPermissionsAndLocationEnabled()
+    }
+
+    private fun checkLocationDeviceStatus() {
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        val isProviderEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+        binding.cardDeviceLocationStatus.isGone = isProviderEnabled
+    }
+
+    private fun checkPermissionsAndLocationEnabled() {
+        if(hasRequiredPermissions().not()) {
+            showLocationBackgroundPermissionRequiredSnackBar()
+        }
+    }
+
+    private fun showLocationBackgroundPermissionRequiredSnackBar() {
+        Snackbar.make(
+            binding.reminderListMainLayout,
+            R.string.message_geofence_requires_location_permission,
+            Snackbar.LENGTH_LONG
+        )
+        .setAction(getString(R.string.enable_now)) { openAppSettings() }
+        .setAnchorView(R.id.actionButtonAddReminder)
+        .show()
+    }
+
+    private fun hasRequiredPermissions(): Boolean {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            isPermissionGranted(ACCESS_BACKGROUND_LOCATION)
+        } else {
+            (isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                    isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION))
+        }
+    }
+
+    private fun openAppSettings() {
+        startActivity(Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 
     private fun setupObservers() {
@@ -126,7 +183,11 @@ class ReminderListFragment : Fragment() {
             }
         }
     }
+
     private fun setupActionListeners() {
+        binding.buttonActivateDeviceLocation.setOnClickListener {
+            context?.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        }
         binding.actionButtonAddReminder.setOnClickListener {
             findNavController().navigate(ReminderListFragmentDirections.navigateToSaveReminder())
         }
@@ -178,12 +239,6 @@ class ReminderListFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getReminders()
-        binding.noDataAnimation.playAnimation()
-    }
-
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter(
                 onReminderItemClick = {
@@ -198,14 +253,18 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
-        viewModel.updateGeofenceStatus(
-            reminderId = reminder.id ?: 0L,
-            isGeofenceEnable = reminder.isGeofenceEnable.not()
-        )
-        if (reminder.isGeofenceEnable) {
-            removeGeofence(reminder)
+        if(hasRequiredPermissions().not()) {
+            showLocationBackgroundPermissionRequiredSnackBar()
         } else {
-            addGeofence(reminder)
+            viewModel.updateGeofenceStatus(
+                reminderId = reminder.id ?: 0L,
+                isGeofenceEnable = reminder.isGeofenceEnable.not()
+            )
+            if (reminder.isGeofenceEnable) {
+                removeGeofence(reminder)
+            } else {
+                addGeofence(reminder)
+            }
         }
     }
 
