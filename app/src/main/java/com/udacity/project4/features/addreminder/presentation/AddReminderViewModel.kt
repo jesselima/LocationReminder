@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.udacity.project4.features.addreminder.usecase.InputValidatorsUseCase
+import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import com.udacity.project4.sharedpresentation.mapToDataModel

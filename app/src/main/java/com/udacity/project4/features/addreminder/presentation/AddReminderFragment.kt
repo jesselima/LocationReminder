@@ -1,12 +1,8 @@
 package com.udacity.project4.features.addreminder.presentation
 
-import android.Manifest.permission.*
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,19 +22,19 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
-import com.udacity.project4.BuildConfig
-import com.udacity.project4.databinding.FragmentAddReminderBinding
-import com.udacity.project4.geofence.GeofenceBroadcastReceiver
-import com.udacity.project4.geofence.GeofenceManager
-import com.udacity.project4.features.RemindersActivity
 import com.udacity.project4.common.ReminderConstants
 import com.udacity.project4.common.extensions.ToastType
+import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.hideKeyboard
-import com.udacity.project4.common.extensions.isPermissionGranted
+import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.common.extensions.showCustomToast
+import com.udacity.project4.databinding.FragmentAddReminderBinding
+import com.udacity.project4.features.RemindersActivity
 import com.udacity.project4.features.addreminder.mappers.ExpirationUnits
 import com.udacity.project4.features.addreminder.mappers.mapInputUnitsExpirationValue
+import com.udacity.project4.geofence.GeofenceBroadcastReceiver
+import com.udacity.project4.geofence.GeofenceManager
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -286,7 +282,7 @@ class AddReminderFragment : Fragment() {
                         )
 
                         if (_currentReminderData.isGeofenceEnable) {
-                            if (hasRequiredPermissions()) {
+                            if (hasRequiredLocationPermissions()) {
                                 addGeofence(_currentReminderData.copy(id = action.id))
                             } else {
                                 activity?.showCustomDialog(
@@ -376,25 +372,6 @@ class AddReminderFragment : Fragment() {
             onAddGeofenceSuccess = ::onAddGeofenceSuccess,
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )
-    }
-
-    private fun hasRequiredPermissions(): Boolean {
-        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                isPermissionGranted(ACCESS_BACKGROUND_LOCATION)
-            } else {
-                (isPermissionGranted(ACCESS_COARSE_LOCATION) || isPermissionGranted(ACCESS_FINE_LOCATION))
-            }
-    }
-
-    private fun openAppSettings() {
-        startActivity(Intent().apply {
-            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            data = Uri.fromParts(
-                "package",
-                BuildConfig.APPLICATION_ID, null
-            )
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        })
     }
 
     private fun onAddGeofenceSuccess() {

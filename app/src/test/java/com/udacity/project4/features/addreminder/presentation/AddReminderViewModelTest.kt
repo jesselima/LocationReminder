@@ -3,7 +3,7 @@ package com.udacity.project4.features.addreminder.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.features.addreminder.usecase.InputValidatorsUseCase
+import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.shareddata.stub.ReminderStub
 import com.udacity.project4.sharedpresentation.mapToDataModel

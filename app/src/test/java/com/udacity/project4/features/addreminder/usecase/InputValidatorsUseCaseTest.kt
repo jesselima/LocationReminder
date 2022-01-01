@@ -1,5 +1,6 @@
 package com.udacity.project4.features.addreminder.usecase
 
+import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test

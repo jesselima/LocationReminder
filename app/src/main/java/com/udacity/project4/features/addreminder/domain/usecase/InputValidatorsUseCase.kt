@@ -1,4 +1,4 @@
-package com.udacity.project4.features.addreminder.usecase
+package com.udacity.project4.features.addreminder.domain.usecase
 
 class InputValidatorsUseCase {
 

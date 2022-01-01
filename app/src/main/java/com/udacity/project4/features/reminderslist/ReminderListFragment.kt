@@ -1,16 +1,11 @@
 package com.udacity.project4.features.reminderslist
 
-import android.Manifest
-import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +18,11 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
-import com.udacity.project4.common.extensions.isPermissionGranted
+import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
+import com.udacity.project4.common.extensions.openDeviceLocationsSettings
+import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.setup
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.common.extensions.showCustomToast
@@ -83,20 +79,14 @@ class ReminderListFragment : Fragment() {
         super.onResume()
         viewModel.getReminders()
         binding.noDataAnimation.playAnimation()
-        checkLocationDeviceStatus()
-        checkPermissionsAndLocationEnabled()
+        checkLocationDeviceAndPermissionStatus()
     }
 
-    private fun checkLocationDeviceStatus() {
+    private fun checkLocationDeviceAndPermissionStatus() {
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
         val isProviderEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
         binding.cardDeviceLocationStatus.isGone = isProviderEnabled
-    }
-
-    private fun checkPermissionsAndLocationEnabled() {
-        if(hasRequiredPermissions().not()) {
-            showLocationBackgroundPermissionRequiredSnackBar()
-        }
+        binding.cardPermissionLocationStatus.isGone = hasRequiredLocationPermissions()
     }
 
     private fun showLocationBackgroundPermissionRequiredSnackBar() {
@@ -108,23 +98,6 @@ class ReminderListFragment : Fragment() {
         .setAction(getString(R.string.enable_now)) { openAppSettings() }
         .setAnchorView(R.id.actionButtonAddReminder)
         .show()
-    }
-
-    private fun hasRequiredPermissions(): Boolean {
-        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            isPermissionGranted(ACCESS_BACKGROUND_LOCATION)
-        } else {
-            (isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                    isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION))
-        }
-    }
-
-    private fun openAppSettings() {
-        startActivity(Intent().apply {
-            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        })
     }
 
     private fun setupObservers() {
@@ -157,7 +130,6 @@ class ReminderListFragment : Fragment() {
                     )
                     viewModel.getReminders()
                 }
-
                 RemindersAction.UpdateRemindersError ->
                     context?.showCustomToast(
                         titleResId = R.string.message_update_reminder_error,
@@ -185,8 +157,11 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun setupActionListeners() {
-        binding.buttonActivateDeviceLocation.setOnClickListener {
-            context?.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        binding.buttonDeviceLocation.setOnClickListener {
+            openDeviceLocationsSettings()
+        }
+        binding.buttonLocationPermission.setOnClickListener {
+            openAppSettings()
         }
         binding.actionButtonAddReminder.setOnClickListener {
             findNavController().navigate(ReminderListFragmentDirections.navigateToSaveReminder())
@@ -253,7 +228,7 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
-        if(hasRequiredPermissions().not()) {
+        if(hasRequiredLocationPermissions().not()) {
             showLocationBackgroundPermissionRequiredSnackBar()
         } else {
             viewModel.updateGeofenceStatus(

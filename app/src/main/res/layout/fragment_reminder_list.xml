@@ -56,7 +56,7 @@
                     android:padding="@dimen/padding_medium">
 
                     <TextView
-                        android:id="@+id/title"
+                        android:id="@+id/cardDeviceLocationStatusTitle"
                         style="@style/TextAppearance.LocationReminderAppTheme.Body.Medium"
                         android:layout_width="@dimen/none"
                         android:layout_height="wrap_content"
@@ -64,34 +64,92 @@
                         android:layout_marginEnd="@dimen/spacing_sm"
                         android:textColor="@color/solidBlack"
                         android:text="@string/device_location_is_disabled_title"
-                        app:layout_constraintEnd_toStartOf="@+id/buttonActivateDeviceLocation"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonDeviceLocation"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/cardDeviceLocationStatusDescription"
                         style="@style/TextAppearance.LocationReminderAppTheme.Body.Small"
                         android:layout_width="@dimen/none"
                         android:layout_height="wrap_content"
                         android:textColor="@color/textColorSecondary"
                         android:layout_marginEnd="@dimen/spacing_sm"
                         android:text="@string/device_location_is_disabled_description"
-                        app:layout_constraintEnd_toStartOf="@+id/buttonActivateDeviceLocation"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonDeviceLocation"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@id/title"
-                        app:layout_constraintTop_toBottomOf="@id/title" />
+                        app:layout_constraintStart_toStartOf="@id/cardDeviceLocationStatusTitle"
+                        app:layout_constraintTop_toBottomOf="@id/cardDeviceLocationStatusTitle" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonActivateDeviceLocation"
+                        android:id="@+id/buttonDeviceLocation"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/enable_now"
                         android:textColor="@color/colorAccent"
-                        app:layout_constraintBottom_toBottomOf="@+id/description"
+                        app:layout_constraintBottom_toBottomOf="@+id/cardDeviceLocationStatusDescription"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/title" />
+                        app:layout_constraintTop_toTopOf="@+id/cardDeviceLocationStatusTitle" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardPermissionLocationStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_md"
+                android:fadeVisible="@{true}"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardDeviceLocationStatus">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_medium">
+
+                    <TextView
+                        android:id="@+id/cardLocationPermissionStatusTitle"
+                        style="@style/TextAppearance.LocationReminderAppTheme.Body.Medium"
+                        android:layout_width="@dimen/none"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_small"
+                        android:layout_marginEnd="@dimen/spacing_sm"
+                        android:text="@string/location_permission_is_disabled_title"
+                        android:textColor="@color/solidBlack"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonLocationPermission"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/cardLocationPermissionStatusDescription"
+                        style="@style/TextAppearance.LocationReminderAppTheme.Body.Small"
+                        android:layout_width="@dimen/none"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_sm"
+                        android:text="@string/message_geofence_requires_location_permission"
+                        android:textColor="@color/textColorSecondary"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonLocationPermission"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@id/cardLocationPermissionStatusTitle"
+                        app:layout_constraintTop_toBottomOf="@id/cardLocationPermissionStatusTitle" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonLocationPermission"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/allow_now"
+                        android:textColor="@color/colorAccent"
+                        app:layout_constraintBottom_toBottomOf="@+id/cardLocationPermissionStatusDescription"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/cardLocationPermissionStatusTitle" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -106,7 +164,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardDeviceLocationStatus" />
+                app:layout_constraintTop_toBottomOf="@+id/cardPermissionLocationStatus" />
 
             <TextView
                 android:id="@+id/noDataTextView"
@@ -126,18 +184,17 @@
                 android:id="@+id/noDataAnimation"
                 android:layout_width="@dimen/lottie_default_width"
                 android:layout_height="@dimen/lottie_default_width"
-                android:layout_marginTop="@dimen/spacing_xl"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.3"
+                app:layout_constraintTop_toBottomOf="@+id/cardPermissionLocationStatus"
+                app:layout_constraintVertical_bias="0.1"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/animation_location_pin"
-                tools:background="@color/colorStateOn" />
+                tools:background="@color/colorStateOn"
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/progressBar"

@@ -3,7 +3,9 @@ package com.udacity.project4.features.addreminder.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,6 +35,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.udacity.project4.R
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.common.extensions.isPermissionNotGranted
+import com.udacity.project4.common.extensions.openDeviceLocationsSettings
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.sharedpresentation.ReminderItemView
@@ -102,6 +106,15 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 .getInstance().getErrorDialog(this, googlePlayServicesStatus, 10)
             dialog?.show()
         }
+
+        binding.mapButtonDeviceLocation.setOnClickListener { openDeviceLocationsSettings() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        val isProviderEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+        binding.mapDeviceLocationStatus.isGone = isProviderEnabled
     }
 
     private fun requestLocationPermissions() {
@@ -110,8 +123,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 
-    @SuppressLint("MissingPermission")
-    fun onPermissionAccepted() {
+    private fun onPermissionAccepted() {
         locationPermissionGranted = true
         getDeviceLocation()
         setupMapUI()
@@ -191,6 +203,9 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
+    /**
+     * This method is called only when permission is granted.
+     */
     @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
         val lat = selectedReminder?.latitude
@@ -219,7 +234,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                             }
                         } else {
                             Log.d(currentClassName, "Current location is null. Using defaults.")
-                            Log.e(currentClassName, "Exception: %s", task.exception)
+                            Log.d(currentClassName, "Exception: %s", task.exception)
                             map?.moveCamera(
                                 CameraUpdateFactory.newLatLngZoom(
                                     DEFAULT_LOCATION,

@@ -147,8 +147,13 @@
     <string name="label_geofence_is_enable">Geofence is enabled</string>
     <string name="dismiss">Dismiss</string>
     <string name="enable_now">Enable now</string>
+    <string name="allow_now">Allow now</string>
+    <string name="enable_it">Enable it</string>
     <string name="device_location_is_disabled_title">Device location is disabled.</string>
     <string name="device_location_is_disabled_description">To receive location alerts enable your device location.</string>
+    <string name="device_location_is_disabled_description_map_view">If you need the App to get your current location you nee to enable device location.</string>
+    <string name="location_permission_is_disabled_title">Location permission needed.</string>
+    <string name="location_permission_is_disabled_description">The App needs Location permission enable</string>
     <string name="message_geofence_requires_location_permission">Geofences alerts requires Background Location permission.</string>
     <string name="label_do_it_later">Do it later</string>
 

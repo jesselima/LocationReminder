@@ -1,7 +1,7 @@
 package com.udacity.project4.core.di
 
 import com.udacity.project4.features.addreminder.presentation.AddReminderViewModel
-import com.udacity.project4.features.addreminder.usecase.InputValidatorsUseCase
+import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import com.udacity.project4.features.reminderdetails.ReminderDetailsViewModel
 import com.udacity.project4.features.reminderslist.RemindersListViewModel
 import com.udacity.project4.geofence.GeofenceManager

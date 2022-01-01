@@ -26,7 +26,7 @@
             android:padding="@dimen/padding_medium">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/cardDeviceLocationStatusTitle"
                 style="@style/TextAppearance.LocationReminderAppTheme.List.Title"
                 android:layout_width="@dimen/none"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 tools:text="Title" />
 
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/cardDeviceLocationStatusDescription"
                 style="@style/TextAppearance.LocationReminderAppTheme.List.SubTitle"
                 android:layout_width="@dimen/none"
                 android:layout_height="wrap_content"
@@ -50,8 +50,8 @@
                 android:maxLines="1"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintEnd_toStartOf="@+id/imageDeleteReminder"
-                app:layout_constraintStart_toStartOf="@id/title"
-                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintStart_toStartOf="@id/cardDeviceLocationStatusTitle"
+                app:layout_constraintTop_toBottomOf="@id/cardDeviceLocationStatusTitle"
                 tools:text="Description" />
 
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_marginEnd="@dimen/spacing_sm"
                 app:layout_constraintBottom_toBottomOf="@+id/imageReminderStatus"
                 app:layout_constraintEnd_toStartOf="@+id/imageReminderStatus"
-                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintStart_toStartOf="@+id/cardDeviceLocationStatusDescription"
                 app:layout_constraintTop_toTopOf="@+id/imageReminderStatus"
                 app:layout_constraintHorizontal_bias="0.0"
                 tools:text="Location" />

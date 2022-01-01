@@ -9,9 +9,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.udacity.project4.MainCoroutineRule
 import com.udacity.project4.R
 import com.udacity.project4.core.di.MainModule
+import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import com.udacity.project4.features.addreminder.presentation.AddReminderFragment
 import com.udacity.project4.features.addreminder.presentation.AddReminderViewModel
-import com.udacity.project4.features.addreminder.usecase.InputValidatorsUseCase
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import com.udacity.project4.sharedpresentation.mapToDataModel
