@@ -56,8 +56,9 @@ class ReminderListFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         setupRecyclerView()
-        setupActionListeners()
-        setupObservers()
+        setupListeners()
+        setupStateObservers()
+        setupActionObservers()
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
     }
 
@@ -86,13 +87,15 @@ class ReminderListFragment : Fragment() {
         .show()
     }
 
-    private fun setupObservers() {
+    private fun setupStateObservers() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.noDataAnimation.isVisible = state?.reminders?.isEmpty() ?: false
             binding.noDataTextView.isVisible = state?.reminders?.isEmpty() ?: false
             binding.refreshLayout.isRefreshing = false
         }
+    }
 
+    private fun setupActionObservers() {
         viewModel.action.observe(viewLifecycleOwner) { action ->
             when (action) {
                 RemindersAction.LoadRemindersError -> {
@@ -101,9 +104,9 @@ class ReminderListFragment : Fragment() {
                         R.string.message_loading_reminder_error,
                         Snackbar.LENGTH_LONG
                     )
-                    .setAction(getString(R.string.dismiss)) { }
-                    .setAnchorView(R.id.actionButtonAddReminder)
-                    .show()
+                        .setAction(getString(R.string.dismiss)) { }
+                        .setAnchorView(R.id.actionButtonAddReminder)
+                        .show()
                     binding.noDataTextView.text = getText(R.string.message_no_reminders_found)
                     binding.noDataTextView.isVisible = true
                 }
@@ -142,7 +145,7 @@ class ReminderListFragment : Fragment() {
         }
     }
 
-    private fun setupActionListeners() {
+    private fun setupListeners() {
         binding.buttonDeviceLocation.setOnClickListener {
             openDeviceLocationsSettings()
         }
