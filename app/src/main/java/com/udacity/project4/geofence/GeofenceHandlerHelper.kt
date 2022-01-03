@@ -16,8 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
 private const val INVALID_REQUEST_ID = -1
@@ -34,8 +34,8 @@ class GeofenceHandlerHelper(private val context: Context) : KoinComponent, Corou
 
     private val remindersLocalRepository: RemindersLocalRepository by inject()
 
-    fun onWorkReceived(geofencingEvent: GeofencingEvent) {
-        if (geofencingEvent.hasError()) {
+    fun onWorkReceived(geofencingEvent: GeofencingEvent?) {
+        if (geofencingEvent?.hasError() == true) {
             val errorMessage = handleGeofenceError(context, geofencingEvent.errorCode)
             context.showCustomToast(
                 titleText = String.format(
@@ -47,7 +47,7 @@ class GeofenceHandlerHelper(private val context: Context) : KoinComponent, Corou
             return
         }
 
-        geofencingEvent.triggeringGeofences.first()?.requestId?.let { id ->
+        geofencingEvent?.triggeringGeofences?.first()?.requestId?.let { id ->
             val transitionName = when (geofencingEvent.geofenceTransition) {
                 enterEvent -> context.resources.getString(R.string.label_enter_lowercase)
                 exitEvent -> context.resources.getString(R.string.label_exit_lowercase)
@@ -63,15 +63,18 @@ class GeofenceHandlerHelper(private val context: Context) : KoinComponent, Corou
                         is ResultData.Success<*> -> {
                             val reminder = result.data as ReminderData
                             if (id.toInt() != INVALID_REQUEST_ID) {
+
+                                val notificationMessage = String.format(
+                                    context.resources.getString(R.string.notification_description),
+                                    transitionName.uppercase(),
+                                    reminder.locationName,
+                                    reminder.title
+                                )
+
                                 context.showOrUpdateNotification(
                                     notificationId = id.toInt(),
                                     title = context.resources.getString(R.string.notification_title),
-                                    text = String.format(
-                                        context.resources.getString(R.string.notification_description),
-                                        transitionName.uppercase(),
-                                        reminder.locationName,
-                                        reminder.title
-                                    ),
+                                    text = notificationMessage,
                                     channelId = ReminderConstants.channelIdReminders,
                                     data = bundleOf(
                                         ReminderConstants.argsKeyReminderId to id.toInt()

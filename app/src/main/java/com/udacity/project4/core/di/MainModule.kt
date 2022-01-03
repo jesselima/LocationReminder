@@ -48,7 +48,7 @@ class MainModule {
         }
 
         val geoFenceModule = module {
-            factory<GeofenceManager> { GeofenceManagerImpl() }
+            factory<GeofenceManager> { GeofenceManagerImpl(context = get()) }
             factory { GeofenceHandlerHelper(context = get()) }
         }
 

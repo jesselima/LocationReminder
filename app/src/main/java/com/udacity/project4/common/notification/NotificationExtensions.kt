@@ -1,11 +1,11 @@
 package com.udacity.project4.common.notification
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
@@ -55,7 +55,6 @@ fun Context.setupNotificationChannel(
     }
 }
 
-@SuppressLint("UnspecifiedImmutableFlag")
 fun Context.showOrUpdateNotification(
     notificationId: Int,
     title: String,
@@ -88,11 +87,17 @@ fun Context.showOrUpdateNotification(
             notificationIntent.putExtras(it)
         }
 
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             applicationContext,
             REQUEST_CODE,
             notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            flags
         )
 
         val notification = buildNotificationManager(

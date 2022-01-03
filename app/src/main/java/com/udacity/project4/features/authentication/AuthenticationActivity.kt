@@ -14,15 +14,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.common.extensions.launchActivity
+import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.features.RemindersActivity
 import com.udacity.project4.features.onboarding.OnBoardingActivity
-import kotlinx.android.synthetic.main.activity_authentication.*
 
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
  * signed in users to the RemindersActivity.
  */
 class AuthenticationActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityAuthenticationBinding
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
@@ -32,9 +34,9 @@ class AuthenticationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authentication)
-
-        buttonLogin.setOnClickListener {
+        binding = ActivityAuthenticationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.buttonLogin.setOnClickListener {
             startSignIn()
         }
 
@@ -46,7 +48,7 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     private fun startSignIn() {
-        layoutContentAuthenticationIntro.isVisible = false
+        binding.layoutContentAuthenticationIntro.isVisible = false
 
         val customLayout = AuthMethodPickerLayout.Builder(R.layout.authentication_methods_background)
             .setGoogleButtonId(R.id.buttonLoginWithGoogle)
@@ -56,12 +58,10 @@ class AuthenticationActivity : AppCompatActivity() {
 
         val signInIntent = AuthUI.getInstance()
             .createSignInIntentBuilder()
-            .setAvailableProviders(
-                listOf(
-                    AuthUI.IdpConfig.GoogleBuilder().build(),
-                    AuthUI.IdpConfig.EmailBuilder().build()
-                )
-            )
+            .setAvailableProviders(listOf(
+                AuthUI.IdpConfig.GoogleBuilder().build(),
+                AuthUI.IdpConfig.EmailBuilder().build()
+            ))
             .setTosAndPrivacyPolicyUrls(
                 getString(R.string.url_terms_of_service),
                 getString(R.string.url_privacy_policy))
@@ -74,7 +74,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult?) {
-        layoutContentAuthenticationIntro.isVisible = true
+        binding.layoutContentAuthenticationIntro.isVisible = true
         val isSuccess = result?.idpResponse?.isSuccessful ?: false
         val isNewUser = result?.idpResponse?.isNewUser ?: false
 

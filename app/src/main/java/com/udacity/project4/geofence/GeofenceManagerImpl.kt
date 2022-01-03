@@ -2,6 +2,9 @@ package com.udacity.project4.geofence
 
 import android.Manifest
 import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.Geofence
@@ -9,13 +12,30 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.udacity.project4.R
+import com.udacity.project4.features.reminderslist.PENDING_INTENT_REQUEST_CODE
 
-class GeofenceManagerImpl: GeofenceManager {
+class GeofenceManagerImpl(context: Context): GeofenceManager {
 
+    private val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+    } else {
+        PendingIntent.FLAG_UPDATE_CURRENT
+    }
+
+    private val geofencePendingIntent = PendingIntent.getBroadcast(
+        context,
+        PENDING_INTENT_REQUEST_CODE,
+        Intent(context, GeofenceBroadcastReceiver::class.java),
+        flags
+    )
+
+    /**
+     * This method must be called only when permission ACCESS_FINE_LOCATION or ACCESS_COARSE_LOCATION
+     * have been allowed by the user.
+     */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun addGeofence(
         geofenceClient: GeofencingClient,
-        geofencePendingIntent: PendingIntent,
         id: String,
         latitude: Double?,
         longitude: Double?,

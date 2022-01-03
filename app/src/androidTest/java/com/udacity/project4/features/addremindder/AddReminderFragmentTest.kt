@@ -21,6 +21,7 @@ import com.udacity.project4.util.AppViewAction.actionSwipeUp
 import com.udacity.project4.util.AppViewAction.performClick
 import com.udacity.project4.util.AppViewAction.performType
 import com.udacity.project4.util.AppViewAssertion.assertSlider
+import com.udacity.project4.util.AppViewAssertion.isTextDisplayed
 import com.udacity.project4.util.AppViewAssertion.isViewIdWithTextDisplayed
 import com.udacity.project4.util.AppViewAssertion.setSliderToValue
 import com.udacity.project4.util.shouldNavigateTo
@@ -68,7 +69,7 @@ class AddReminderFragmentTest {
             }
 
             val module = module {
-                viewModel(override = true) {
+                viewModel {
                     AddReminderViewModel(
                         remindersLocalRepository = repository,
                         inputValidatorsUseCase = inputValidatorsUseCase
@@ -113,6 +114,38 @@ class AddReminderFragmentTest {
             destinationResId = R.id.reminderListFragment,
             navGraph = navGraphOfMain
         )
+    }
+
+    @Test
+    fun add_reminder_with_error_should_display_error_content() = mainCoroutineRule.runBlockingTest {
+        whenever(repository.saveReminder(reminderData1)).thenReturn(0)
+
+        launchFragmentInContainer<AddReminderFragment>(
+            fragmentArgs = bundleOf(
+                "lastSelectedLocation" to ReminderItemView(
+                    latitude = -90.0,
+                    longitude = -210.0,
+                ),
+                "isFromList" to false
+            ),
+            themeResId = R.style.LocationReminderAppTheme
+        )
+
+        performType(R.id.reminderLocationName, reminderData1.locationName)
+        performType(R.id.reminderTitle, reminderData1.title)
+        performType(R.id.reminderDescription, reminderData1.description)
+
+        actionSwipeUp(R.id.scrollContentLayout)
+
+        performClick(R.id.radioButtonExit)
+        performType(R.id.expirationDurationEditText, reminderData1.expiration.toString())
+        performClick(R.id.isGeofenceEnableSwitch)
+
+        reminderData1.circularRadius?.let { setSliderToValue(R.id.sliderCircularRadius, it) }
+
+        performClick(R.id.actionButtonSaveReminder)
+
+        isTextDisplayed("Ooops! Error saving reminder.")
     }
 
     @Test

@@ -1,11 +1,13 @@
 package com.udacity.project4.features.copyright
 
 import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.inflate
 import com.udacity.project4.common.extensions.showWithFadeIn
+import com.udacity.project4.databinding.LayoutItemListCopyrightBinding
 
 class CopyrightAdapter(
 	private var copyrights: MutableList<Copyright> = mutableListOf()
@@ -19,9 +21,14 @@ class CopyrightAdapter(
 	}
 
 	override fun onCreateViewHolder(rootViewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+		val binding = LayoutItemListCopyrightBinding.inflate(
+			LayoutInflater.from(rootViewGroup.context),
+			rootViewGroup,
+			false
+		)
 		return rootViewGroup.inflate(R.layout.layout_item_list_copyright).run {
 			showWithFadeIn()
-			AuthorViewHolder(this)
+			AuthorViewHolder(binding)
 		}
 	}
 

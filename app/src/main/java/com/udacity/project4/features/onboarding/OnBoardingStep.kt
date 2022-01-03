@@ -3,7 +3,7 @@ package com.udacity.project4.features.onboarding
 import android.os.Parcelable
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OnBoardingStep(

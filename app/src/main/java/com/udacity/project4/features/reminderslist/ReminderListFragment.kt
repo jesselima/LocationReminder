@@ -1,9 +1,6 @@
 package com.udacity.project4.features.reminderslist
 
-import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,15 +18,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
-import com.udacity.project4.common.extensions.openDeviceLocationsSettings
 import com.udacity.project4.common.extensions.openAppSettings
+import com.udacity.project4.common.extensions.openDeviceLocationsSettings
 import com.udacity.project4.common.extensions.setup
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.common.extensions.showCustomToast
 import com.udacity.project4.common.extensions.signOut
 import com.udacity.project4.databinding.FragmentReminderListBinding
 import com.udacity.project4.features.ReminderEditorActivity
-import com.udacity.project4.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.geofence.GeofenceManager
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import org.koin.android.ext.android.inject
@@ -37,7 +33,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PENDING_INTENT_REQUEST_CODE = 0
 
-@SuppressLint("UnspecifiedImmutableFlag")
 class ReminderListFragment : Fragment() {
 
     val viewModel: RemindersListViewModel by viewModel()
@@ -46,15 +41,6 @@ class ReminderListFragment : Fragment() {
     private lateinit var binding: FragmentReminderListBinding
 
     private lateinit var geofenceClient: GeofencingClient
-
-    private val geofencePendingIntent: PendingIntent by lazy {
-        PendingIntent.getBroadcast(
-            activity,
-            PENDING_INTENT_REQUEST_CODE,
-            Intent(activity, GeofenceBroadcastReceiver::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -224,7 +210,7 @@ class ReminderListFragment : Fragment() {
                     Pair(R.id.imageDeleteReminder) { deleteReminder(it) }
                 )
             )
-        binding.reminderssRecyclerView.setup(adapter)
+        binding.remindersRecyclerView.setup(adapter)
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
@@ -260,7 +246,6 @@ class ReminderListFragment : Fragment() {
     private fun addGeofence(reminder: ReminderItemView) {
         geofenceManager.addGeofence(
             geofenceClient = geofenceClient,
-            geofencePendingIntent = geofencePendingIntent,
             id = reminder.id.toString(),
             latitude = reminder.latitude,
             longitude = reminder.longitude,

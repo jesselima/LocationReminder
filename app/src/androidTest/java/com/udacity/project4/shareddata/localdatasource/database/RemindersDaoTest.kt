@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -64,6 +65,15 @@ class RemindersDaoTest {
         assertThat(result.expiration,  `is`(-1))
         assertThat(result.transitionType,  `is`(Geofence.GEOFENCE_TRANSITION_EXIT))
         assertThat(result.isGeofenceEnable,  `is`(true))
+    }
+
+    @Test
+    fun getReminderById_should_return_null_when_reminder_does_not_exists() = runBlockingTest {
+        // When
+        val result = database.reminderDao().getReminderById("9999999")
+
+        // Then
+        assertThat(result, CoreMatchers.nullValue())
     }
 
     @Test
@@ -143,6 +153,15 @@ class RemindersDaoTest {
     }
 
     @Test
+    fun updateReminder_should_return_no_update_result_when_reminder_does_not_exists() = runBlockingTest {
+        // When
+        val result = database.reminderDao().updateReminder(reminderId = 9999999, isGeofenceEnable = false)
+
+        // Then
+        assertThat(result,  `is`(0))
+    }
+
+    @Test
     fun getAllReminders_should_return_all_reminders() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData1)
@@ -157,7 +176,16 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun deleteAllReminders_shouls_delete_all_reminders() = runBlockingTest {
+    fun getAllReminders_should_return_no_data_when_database_has_no_reminders() = runBlockingTest {
+        // When
+        val result = database.reminderDao().getReminders()
+
+        // Then
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun deleteAllReminders_should_delete_all_reminders() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData1)
         database.reminderDao().saveReminder(reminderData2)
@@ -177,6 +205,12 @@ class RemindersDaoTest {
     }
 
     @Test
+    fun deleteAllReminders_should_return_no_result_when_there_is_no_reminders() = runBlockingTest {
+        val resultDeleted = database.reminderDao().deleteAllReminders()
+        assertThat(resultDeleted,  `is`(0))
+    }
+
+    @Test
     fun deleteReminder_should_delete_reminder() = runBlockingTest {
         // Given
         database.reminderDao().saveReminder(reminderData1)
@@ -191,5 +225,11 @@ class RemindersDaoTest {
         assertThat(deletedResult,  `is`(1))
         assert(getReminderResult == null)
         assertThat(remainingReminderResult.size,  `is`(1))
+    }
+
+    @Test
+    fun deleteReminder_should_should_return_no_result_when_reminder_does_not_exists() = runBlockingTest {
+        val resultDeleted = database.reminderDao().deleteReminder(reminderData1)
+        assertThat(resultDeleted,  `is`(0))
     }
 }

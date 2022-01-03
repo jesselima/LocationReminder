@@ -61,7 +61,7 @@ class ReminderListFragmentTest {
             }
 
             val module = module {
-                viewModel(override = true) {
+                viewModel {
                     RemindersListViewModel(
                         remindersLocalRepository = repository
                     )
@@ -86,6 +86,7 @@ class ReminderListFragmentTest {
     fun when_screenOpened_should_display_snack_error() = mainCoroutineRule.runBlockingTest {
         whenever(repository.getReminders()).thenReturn(ResultData.Error("Ooops!"))
         launchFragmentInContainer<ReminderListFragment>(themeResId = R.style.LocationReminderAppTheme)
+        isViewDisplayed(R.id.noDataAnimation)
         isTextDisplayed("Ooops! Error loading reminders!")
         isTextDisplayed("Dismiss")
     }
@@ -105,7 +106,7 @@ class ReminderListFragmentTest {
 
             isTextDisplayed("Reminders")
             isTextDisplayed("LOGOUT")
-            isViewDisplayed(R.id.reminderssRecyclerView)
+            isViewDisplayed(R.id.remindersRecyclerView)
             isViewDisplayed(R.id.actionButtonAddReminder)
 
             isTextDisplayed("Grow tomatoes")

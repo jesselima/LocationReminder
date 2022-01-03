@@ -17,6 +17,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,6 +65,16 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
+    fun getReminders_should_return_no_reminders() = runBlocking {
+        // When
+        val result = repository.getReminders() as ResultData.Success<*>
+        val reminders = result.data as List<*>
+
+        // Then
+        assertTrue(reminders.isEmpty())
+    }
+
+    @Test
     fun saveReminder_should_insert_new_reminder() = runBlocking {
         // Given
         val resultInserted = repository.saveReminder(reminderData1)
@@ -76,7 +87,6 @@ class RemindersLocalRepositoryTest {
         assertThat(resultInserted,  `is`(reminderData1.id))
         assertThat(result?.id,  `is`(reminderData1.id))
     }
-
 
     @Test
     fun getReminderById_should_insert_new_reminder() = runBlocking {
@@ -123,6 +133,14 @@ class RemindersLocalRepositoryTest {
         assertThat(deletedRemindersResult.size,  `is`(0))
     }
 
+    @Test
+    fun deleteAllReminders_should_delete_no_reminders_when_database_is_empty() = runBlocking {
+        // When
+        val numberOfDeletedReminders = repository.deleteAllReminders()
+
+        // Then
+        assertThat(numberOfDeletedReminders,  `is`(0))
+    }
 
     @Test
     fun deleteReminder_should_delete_reminder() = runBlocking {
@@ -139,6 +157,30 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
+    fun deleteReminder_should_delete_not_reminder_when_id_does_not_exists() = runBlocking {
+        // When
+        val resultDeleted = repository.deleteReminder(
+            ReminderData(
+                id = null,
+                title = null,
+                description = null,
+                locationName = null,
+                latitude = null,
+                longitude = null,
+                isPoi = null,
+                poiId = null,
+                circularRadius = null,
+                expiration = null,
+                transitionType = null,
+                isGeofenceEnable = null
+            )
+        )
+
+        // Then
+        assertThat(resultDeleted,  `is`(0))
+    }
+
+    @Test
     fun updateReminderGeofenceStatus_should_update_geofence_status_to_disabled() = runBlocking {
         // Given
         database.reminderDao().saveReminder(reminderData1)
@@ -151,6 +193,15 @@ class RemindersLocalRepositoryTest {
         assertThat(result, CoreMatchers.notNullValue())
         assertThat(result.title,  `is`(reminderData1.title))
         assertThat(result.isGeofenceEnable,  `is`(false))
+    }
+
+    @Test
+    fun updateReminderGeofenceStatus_should_update_nothing_when_id_does_not_exists() = runBlocking {
+        // When
+        val result = repository.updateGeofenceStatus(reminderId = 99999, isGeofenceEnable = false)
+
+        // Then
+        assertThat(result,  `is`(0))
     }
 
     @Test
@@ -197,5 +248,29 @@ class RemindersLocalRepositoryTest {
         assertThat(updatedReminder.expiration,  `is`(5))
         assertThat(updatedReminder.transitionType,  `is`(Geofence.GEOFENCE_TRANSITION_ENTER))
         assertThat(updatedReminder.isGeofenceEnable,  `is`(false))
+    }
+
+    @Test
+    fun updateReminder_should_update_nothing_when_reminder_does_not_exists() = runBlocking {
+        // When
+        val result = repository.updateReminder(
+            ReminderData(
+                id = null,
+                title = null,
+                description = null,
+                locationName = null,
+                latitude = null,
+                longitude = null,
+                isPoi = null,
+                poiId = null,
+                circularRadius = null,
+                expiration = null,
+                transitionType = null,
+                isGeofenceEnable = null
+            )
+        )
+
+        // Then
+        assertThat(result,  `is`(0))
     }
 }

@@ -155,7 +155,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reminderssRecyclerView"
+                android:id="@+id/remindersRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/none"
                 android:layout_marginBottom="@dimen/spacing_very_large_02"
@@ -216,7 +216,7 @@
                 android:layout_margin="@dimen/space_screen_default"
                 android:src="@drawable/ic_add"
                 app:fabSize="normal"
-                app:layout_anchor="@id/reminderssRecyclerView"
+                app:layout_anchor="@id/remindersRecyclerView"
                 app:layout_anchorGravity="bottom|right|end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

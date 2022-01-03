@@ -62,7 +62,7 @@ object AppViewAction {
     }
 
     fun clickOnItemAtPosition(position: Int = 0) {
-        Espresso.onView(ViewMatchers.withId(R.id.reminderssRecyclerView))
+        Espresso.onView(ViewMatchers.withId(R.id.remindersRecyclerView))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     position,

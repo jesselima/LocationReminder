@@ -50,5 +50,5 @@ interface RemindersDao {
     fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateReminder(reminder: ReminderData): Int
+    fun updateReminder(reminder: ReminderData): Int
 }

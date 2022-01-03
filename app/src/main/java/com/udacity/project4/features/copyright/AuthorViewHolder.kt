@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.layout_item_list_copyright.view.*
+import com.udacity.project4.databinding.LayoutItemListCopyrightBinding
 
-class AuthorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class AuthorViewHolder(
+	private val binding: LayoutItemListCopyrightBinding
+) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
 	private var view: View = itemView
 	private var copyright: Copyright? = null
@@ -17,23 +19,19 @@ class AuthorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View
 
 	override fun onClick(v: View?) {
 		view.context.startActivity(
-			Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(copyright?.link)
-			)
+			Intent(Intent.ACTION_VIEW, Uri.parse(copyright?.link))
 		)
 	}
 
 	fun bindDataToView(copyrightData: Copyright) {
 		this.copyright = copyrightData
-		view.copyrightSource.text = copyrightData.sourceName
-		view.copyrightAuthorName.text = copyrightData.authorName
+		binding.copyrightSource.text = copyrightData.sourceName
+		binding.copyrightAuthorName.text = copyrightData.authorName
 
-		val isAnimation = copyright?.isAnimation ?: false
-		if (isAnimation) {
-			view.copyrightImage.setAnimation(copyrightData.imageResId)
+		if (copyright?.isAnimation == true) {
+			binding.copyrightImage.setAnimation(copyrightData.imageResId)
 		} else {
-			view.copyrightImage.setImageResource(copyrightData.imageResId)
+			binding.copyrightImage.setImageResource(copyrightData.imageResId)
 		}
 	}
 }

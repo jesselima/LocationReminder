@@ -61,7 +61,7 @@ class ReminderDetailsFragmentTest {
             }
 
             val module = module {
-                factory (override = true) { repository }
+                factory { repository }
             }
 
             loadKoinModules(module)

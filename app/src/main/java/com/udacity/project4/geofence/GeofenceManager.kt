@@ -1,6 +1,5 @@
 package com.udacity.project4.geofence
 
-import android.app.PendingIntent
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import java.util.concurrent.TimeUnit
@@ -9,7 +8,6 @@ interface GeofenceManager {
 
     fun addGeofence(
         geofenceClient: GeofencingClient,
-        geofencePendingIntent: PendingIntent,
         id: String,
         latitude: Double? = 0.0,
         longitude: Double? = 0.0,

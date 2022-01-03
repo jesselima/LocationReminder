@@ -1,6 +1,5 @@
 package com.udacity.project4.features.addreminder.presentation
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +20,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.common.ReminderConstants
 import com.udacity.project4.common.extensions.ToastType
@@ -33,15 +33,13 @@ import com.udacity.project4.databinding.FragmentAddReminderBinding
 import com.udacity.project4.features.RemindersActivity
 import com.udacity.project4.features.addreminder.mappers.ExpirationUnits
 import com.udacity.project4.features.addreminder.mappers.mapInputUnitsExpirationValue
-import com.udacity.project4.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.geofence.GeofenceManager
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.TimeUnit
 
-private const val PENDING_INTENT_REQUEST_CODE = 0
 private const val CIRCULAR_RADIUS_DEFAULT = 50f
 private const val TOAST_POSITION_ELEVATED = 350
 private const val REMINDER_EXPIRATION_NEVER = -1L
@@ -57,15 +55,6 @@ class AddReminderFragment : Fragment() {
 
     private lateinit var geofenceClient: GeofencingClient
 
-    private val geofencePendingIntent: PendingIntent by lazy {
-        PendingIntent.getBroadcast(
-            activity,
-            PENDING_INTENT_REQUEST_CODE,
-            Intent(activity, GeofenceBroadcastReceiver::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,7 +66,8 @@ class AddReminderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupNavigationListeners()
-        setupObservers()
+        setupStateObservers()
+        setupActionObservers()
         setupListeners()
         checkNavArgsUpdateViewModelData()
         setupAppBarTitle()
@@ -211,7 +201,7 @@ class AddReminderFragment : Fragment() {
         viewModel.setSelectedReminder(_currentReminderData)
     }
 
-    private fun setupObservers() {
+    private fun setupStateObservers() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             with(binding) {
                 state.selectedReminder?.latitude?.let { lat ->
@@ -253,22 +243,26 @@ class AddReminderFragment : Fragment() {
                         )
                     }
                 }
+
+                progressBar.isVisible = state.isLoading
+                actionButtonSaveReminder.isVisible = state.isLoading.not()
             }
         }
-
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            binding.progressBar.isVisible = state.isLoading
-            binding.actionButtonSaveReminder.isVisible = state.isLoading.not()
-        }
-
+    }
+    private fun setupActionObservers() {
         viewModel.action.observe(viewLifecycleOwner) { action ->
             with(binding) {
                 when(action) {
-                    is AddReminderAction.AddReminderError ->
-                        context?.showCustomToast(
-                            titleResId = R.string.message_saving_reminder_error,
-                            toastType = ToastType.ERROR
-                        )
+                    is AddReminderAction.AddReminderError -> {
+                        Snackbar.make(
+                                binding.root,
+                                R.string.message_saving_reminder_error,
+                                Snackbar.LENGTH_LONG
+                            )
+                            .setAction(getString(R.string.dismiss)) { }
+                            .setAnchorView(R.id.actionButtonSaveReminder)
+                            .show()
+                        }
                     is AddReminderAction.UpdateReminderError ->
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_error,
@@ -362,7 +356,6 @@ class AddReminderFragment : Fragment() {
     private fun addGeofence(reminder: ReminderItemView) {
         geofenceManager.addGeofence(
             geofenceClient = geofenceClient,
-            geofencePendingIntent = geofencePendingIntent,
             id = reminder.id.toString(),
             latitude = reminder.latitude,
             longitude = reminder.longitude,
