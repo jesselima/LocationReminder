@@ -387,17 +387,7 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun navigateToReminderList() {
-        if (args.isEditing) {
-            findNavController().navigate(
-                R.id.navigateToReminderDetails,
-                bundleOf(
-                    ReminderConstants.argsKeyLastSelectedLocation to _currentReminderData,
-                    ReminderConstants.argsKeyIsEditing to true,
-                )
-            )
-        } else {
-            startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
-            activity?.finish()
-        }
+        startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
+        activity?.finish()
     }
 }
