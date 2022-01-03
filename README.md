@@ -6,13 +6,16 @@ A Todo list app with location reminders that remind the user to do something whe
 
 https://user-images.githubusercontent.com/17894156/145382366-ab6e1f8d-4e04-4098-aa7c-745d9e94ab4b.mov
 
-## Instrumented tests
+## Unit and Instrumented Tests
 
-![Instrumented_tests](https://user-images.githubusercontent.com/17894156/146924412-06acc50c-653e-4422-8e12-b096abccac89.png)
+![Instrumented_tests](https://user-images.githubusercontent.com/17894156/147934724-8552f728-f701-4cf3-bba0-ca79717dc78d.png)
 
-## Unit tests
 
-![Unit_tests](https://user-images.githubusercontent.com/17894156/146924437-d769bc69-1e09-4c61-87d3-81dc2bec7581.png)
+![Unit_tests](https://user-images.githubusercontent.com/17894156/147934534-f5e96d47-67d3-46b6-9d8c-087d4b2f9d21.png)
+
+
+![DAO Unit tests](https://user-images.githubusercontent.com/17894156/147934598-f53eec62-3968-46c9-8f90-dfdf1d25a368.png)
+
 
 
 ## Getting Started
