@@ -47,43 +47,47 @@ class GeofenceHandlerHelper(private val context: Context) : KoinComponent, Corou
             return
         }
 
-        geofencingEvent?.triggeringGeofences?.first()?.requestId?.let { id ->
-            val transitionName = when (geofencingEvent.geofenceTransition) {
-                enterEvent -> context.resources.getString(R.string.label_enter_lowercase)
-                exitEvent -> context.resources.getString(R.string.label_exit_lowercase)
-                else -> EMPTY
-            }
+        val transitionName = when (geofencingEvent?.geofenceTransition) {
+            enterEvent -> context.resources.getString(R.string.label_enter_lowercase)
+            exitEvent -> context.resources.getString(R.string.label_exit_lowercase)
+            else -> EMPTY
+        }
 
-            val isExitOrEnter = geofencingEvent.geofenceTransition == enterEvent ||
-                    geofencingEvent.geofenceTransition == exitEvent
+        val isExitOrEnter = geofencingEvent?.geofenceTransition == enterEvent ||
+                geofencingEvent?.geofenceTransition == exitEvent
 
-            if (isExitOrEnter) {
-                CoroutineScope(coroutineContext).launch {
-                    when (val result = remindersLocalRepository.getReminder(id)) {
-                        is ResultData.Success<*> -> {
-                            val reminder = result.data as ReminderData
-                            if (id.toInt() != INVALID_REQUEST_ID) {
+        geofencingEvent?.triggeringGeofences?.let { geofences ->
+            for (geofence in geofences) {
+                geofence?.requestId?.let { id ->
+                    if (isExitOrEnter) {
+                        CoroutineScope(coroutineContext).launch {
+                            when (val result = remindersLocalRepository.getReminder(id)) {
+                                is ResultData.Success<*> -> {
+                                    val reminder = result.data as ReminderData
+                                    if (id.toInt() != INVALID_REQUEST_ID) {
 
-                                val notificationMessage = String.format(
-                                    context.resources.getString(R.string.notification_description),
-                                    transitionName.uppercase(),
-                                    reminder.locationName,
-                                    reminder.title
-                                )
+                                        val notificationMessage = String.format(
+                                            context.resources.getString(R.string.notification_description),
+                                            transitionName.uppercase(),
+                                            reminder.locationName,
+                                            reminder.title
+                                        )
 
-                                context.showOrUpdateNotification(
-                                    notificationId = id.toInt(),
-                                    title = context.resources.getString(R.string.notification_title),
-                                    text = notificationMessage,
-                                    channelId = ReminderConstants.channelIdReminders,
-                                    data = bundleOf(
-                                        ReminderConstants.argsKeyReminderId to id.toInt()
-                                    )
-                                )
+                                        context.showOrUpdateNotification(
+                                            notificationId = id.toInt(),
+                                            title = context.resources.getString(R.string.notification_title),
+                                            text = notificationMessage,
+                                            channelId = ReminderConstants.channelIdReminders,
+                                            data = bundleOf(
+                                                ReminderConstants.argsKeyReminderId to id.toInt()
+                                            )
+                                        )
+                                    }
+                                }
+                                is ResultData.Error -> {
+                                    // Do nothing
+                                }
                             }
-                        }
-                        is ResultData.Error -> {
-                            // Do nothing
                         }
                     }
                 }
