@@ -106,15 +106,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 .getInstance().getErrorDialog(this, googlePlayServicesStatus, 10)
             dialog?.show()
         }
-
-        binding.mapButtonDeviceLocation.setOnClickListener { openDeviceLocationsSettings() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-        val isProviderEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        binding.mapDeviceLocationStatus.isGone = isProviderEnabled
     }
 
     private fun requestLocationPermissions() {
