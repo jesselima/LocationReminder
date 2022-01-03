@@ -10,7 +10,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -22,7 +21,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
-import com.udacity.project4.common.ReminderConstants
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.hideKeyboard
@@ -249,6 +247,7 @@ class AddReminderFragment : Fragment() {
             }
         }
     }
+
     private fun setupActionObservers() {
         viewModel.action.observe(viewLifecycleOwner) { action ->
             with(binding) {
@@ -263,11 +262,12 @@ class AddReminderFragment : Fragment() {
                             .setAnchorView(R.id.actionButtonSaveReminder)
                             .show()
                         }
-                    is AddReminderAction.UpdateReminderError ->
+                    is AddReminderAction.UpdateReminderError -> {
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_error,
                             toastType = ToastType.ERROR
                         )
+                    }
                     is AddReminderAction.AddReminderSuccess -> {
                         context?.showCustomToast(
                             titleResId = R.string.message_saving_reminder_success,
@@ -296,13 +296,14 @@ class AddReminderFragment : Fragment() {
                     is AddReminderAction.UpdateReminderSuccess -> {
                         if (_currentReminderData.isGeofenceEnable) {
                             addGeofence(_currentReminderData)
+                        } else {
+                            removeGeofence(_currentReminderData)
                         }
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_success,
                             toastType = ToastType.SUCCESS,
                             offSetY = TOAST_POSITION_ELEVATED
                         )
-                        navigateToReminderList()
                     }
                     is AddReminderAction.InputErrorFieldTitle -> {
                         inputLayoutTitle.isErrorEnabled = true
@@ -367,6 +368,34 @@ class AddReminderFragment : Fragment() {
         )
     }
 
+    private fun removeGeofence(reminder: ReminderItemView) {
+        geofenceManager.removeGeofence(
+            geofenceClient,
+            reminder.id.toString(),
+            onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
+            onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
+        )
+    }
+
+    private fun onRemoveGeofenceSuccess() {
+        context?.showCustomToast(
+            titleResId = R.string.geofence_removed,
+            toastType = ToastType.INFO
+        )
+        navigateToReminderList()
+    }
+
+    private fun geofenceFailure(@StringRes reasonStringRes: Int) {
+        context?.showCustomToast(
+            titleText = String.format(
+                getString(R.string.geofence_error),
+                getString(reasonStringRes)
+            ),
+            toastType = ToastType.WARNING
+        )
+        navigateToReminderList()
+    }
+
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(
             titleResId = R.string.geofence_added,
@@ -384,6 +413,7 @@ class AddReminderFragment : Fragment() {
             ),
             toastType = ToastType.WARNING
         )
+        navigateToReminderList()
     }
 
     private fun navigateToReminderList() {
