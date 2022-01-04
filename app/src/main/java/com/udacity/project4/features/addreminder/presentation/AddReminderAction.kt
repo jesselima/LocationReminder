@@ -14,4 +14,6 @@ sealed class AddReminderAction {
     object InputErrorMissingLatLong: AddReminderAction()
     object InputClearErrorMissingLatLong: AddReminderAction()
     object ClearErrors: AddReminderAction()
+    object StatusUpdatedSuccess : AddReminderAction()
+    object StatusUpdateError : AddReminderAction()
 }

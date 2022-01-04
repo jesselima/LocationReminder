@@ -24,8 +24,7 @@ import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.hideKeyboard
-import com.udacity.project4.common.extensions.openAppSettings
-import com.udacity.project4.common.extensions.showCustomDialog
+import com.udacity.project4.common.extensions.isDeviceLocationActivated
 import com.udacity.project4.common.extensions.showCustomToast
 import com.udacity.project4.databinding.FragmentAddReminderBinding
 import com.udacity.project4.features.RemindersActivity
@@ -276,19 +275,7 @@ class AddReminderFragment : Fragment() {
                         )
 
                         if (_currentReminderData.isGeofenceEnable) {
-                            if (hasRequiredLocationPermissions()) {
-                                addGeofence(_currentReminderData.copy(id = action.id))
-                            } else {
-                                activity?.showCustomDialog(
-                                    context = requireContext(),
-                                    title = getString(R.string.message_request_background_location_title),
-                                    message = getString(R.string.message_request_background_location_description),
-                                    negativeButtonText = getString(R.string.label_do_it_later),
-                                    negativeButtonAction = {  navigateToReminderList() },
-                                    positiveButtonText = getString(R.string.settings),
-                                    positiveButtonAction = { openAppSettings() },
-                                )
-                            }
+                            addGeofence(_currentReminderData.copy(id = action.id))
                         } else {
                             navigateToReminderList()
                         }
@@ -348,24 +335,52 @@ class AddReminderFragment : Fragment() {
                         inputLayoutLocationName.error = null
                         inputLayoutDescription.error = null
                     }
-                    null -> Unit
+                    AddReminderAction.StatusUpdatedSuccess -> {
+                        context?.showCustomToast(
+                            titleResId = R.string.message_geofence_not_added_need_enable_later,
+                            toastType = ToastType.INFO,
+                            durationToast = Toast.LENGTH_LONG
+                        )
+                        navigateToReminderList()
+                    }
+                    AddReminderAction.StatusUpdateError -> {
+                        context?.showCustomToast(
+                            titleResId = R.string.message_update_reminder_status_error,
+                            toastType = ToastType.INFO,
+                            durationToast = Toast.LENGTH_LONG
+                        )
+                        navigateToReminderList()
+                    }
                 }
             }
         }
     }
 
     private fun addGeofence(reminder: ReminderItemView) {
-        geofenceManager.addGeofence(
-            geofenceClient = geofenceClient,
-            id = reminder.id.toString(),
-            latitude = reminder.latitude,
-            longitude = reminder.longitude,
-            circularRadius = reminder.circularRadius,
-            expiration = reminder.expiration,
-            transitionType = reminder.transitionType,
-            onAddGeofenceSuccess = ::onAddGeofenceSuccess,
-            onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
-        )
+        reminder.id?.let { id ->
+            if(hasRequiredLocationPermissions().not() || context?.isDeviceLocationActivated() == false) {
+                context?.showCustomToast(
+                    titleResId = R.string.message_geofence_not_added_check_device_location_permission,
+                    toastType = ToastType.WARNING
+                )
+                viewModel.updateGeofenceStatusOnDatabase(
+                    reminderId = id,
+                    isGeofenceEnable = false
+                )
+            } else {
+                geofenceManager.addGeofence(
+                    geofenceClient = geofenceClient,
+                    id = reminder.id.toString(),
+                    latitude = reminder.latitude,
+                    longitude = reminder.longitude,
+                    circularRadius = reminder.circularRadius,
+                    expiration = reminder.expiration,
+                    transitionType = reminder.transitionType,
+                    onAddGeofenceSuccess = ::onAddGeofenceSuccess,
+                    onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
+                )
+            }
+        }
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {

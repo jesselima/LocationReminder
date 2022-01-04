@@ -96,6 +96,17 @@ class AddReminderViewModel(
         }
     }
 
+    fun updateGeofenceStatusOnDatabase(reminderId: Long, isGeofenceEnable: Boolean) {
+        viewModelScope.launch {
+            val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
+            if (result == UPDATE_SUCCESS) {
+                _action.value = AddReminderAction.StatusUpdatedSuccess
+            } else {
+                _action.value = AddReminderAction.StatusUpdateError
+            }
+        }
+    }
+
     fun isLocationNameValid(locationName: String?): Boolean {
         _state.value?.selectedReminder?.locationName = locationName
         inputValidatorsUseCase.isLocationNameValid(locationName).run {

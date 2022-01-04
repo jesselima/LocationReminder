@@ -93,7 +93,11 @@
     <string name="message_no_reminders_found">Ooops! No reminders have been found.</string>
 
     <string name="message_update_reminder_error">Ooops! Error updating reminder!</string>
+    <string name="message_update_reminder_status_error">Ooops! Error updating reminder status.</string>
     <string name="message_update_reminder_success">Reminder updated!</string>
+    <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location or permission.</string>
+    <string name="message_geofence_not_added_check_device_location_permission">Geofence not added. Please, Check device location or permission.</string>
+    <string name="message_geofence_not_added_need_enable_later">Geofence not added. You need to manually enable it.</string>
     <string name="message_delete_reminder_success">Reminder deleted!</string>
     <string name="message_delete_reminder_error">Error deleting reminder!</string>
     <string name="message_get_reminder_error">Error getting reminder info!</string>
@@ -106,8 +110,9 @@
 
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
+    <string name="message_location_permission">Location permission</string>
     <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
-    <string name="agreed_button_label">I agreed</string>
+    <string name="message_show_map_location">To show your location on the map you need to allow location permission. You can select you position manually if you wish.</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
     <string name="geofence_error_geofence_not_available">Geofence not available</string>
     <string name="geofence_error_too_many_geofence_request">Too frequent geofences requests</string>
@@ -156,7 +161,10 @@
     <string name="location_permission_is_disabled_description">The App needs Location permission enable</string>
     <string name="message_geofence_requires_location_permission">Geofences alerts requires Background Location permission.</string>
     <string name="label_do_it_later">Do it later</string>
-
+    <string name="label_select_manually">Select manually</string>
+    <string name="label_allow_now">Allow now</string>
+    <string name="agreed_button_label">I agreed</string>
+    <string name="agreed_ok">OK, got it.</string>
     <string-array name="units_array">
         <item>DAYS</item>
         <item>NEVER</item>

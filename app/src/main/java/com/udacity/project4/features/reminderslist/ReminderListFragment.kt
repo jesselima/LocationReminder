@@ -1,11 +1,10 @@
 package com.udacity.project4.features.reminderslist
 
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -18,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
+import com.udacity.project4.common.extensions.isDeviceLocationActivated
 import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.openDeviceLocationsSettings
 import com.udacity.project4.common.extensions.setup
@@ -66,13 +66,7 @@ class ReminderListFragment : Fragment() {
         super.onResume()
         viewModel.getReminders()
         binding.noDataAnimation.playAnimation()
-        checkLocationDeviceAndPermissionStatus()
-    }
-
-    private fun checkLocationDeviceAndPermissionStatus() {
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-        val isProviderEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        binding.cardDeviceLocationStatus.isGone = isProviderEnabled
+        binding.cardDeviceLocationStatus.isGone = context?.isDeviceLocationActivated() ?: false
         binding.cardPermissionLocationStatus.isGone = hasRequiredLocationPermissions()
     }
 
@@ -83,6 +77,17 @@ class ReminderListFragment : Fragment() {
             Snackbar.LENGTH_LONG
         )
         .setAction(getString(R.string.enable_now)) { openAppSettings() }
+        .setAnchorView(R.id.actionButtonAddReminder)
+        .show()
+    }
+
+    private fun showDeviceLocationActiveRequiredSnackbar() {
+        Snackbar.make(
+            binding.reminderListMainLayout,
+            R.string.device_location_is_disabled_title,
+            Snackbar.LENGTH_LONG
+        )
+        .setAction(getString(R.string.enable_it)) { openDeviceLocationsSettings() }
         .setAnchorView(R.id.actionButtonAddReminder)
         .show()
     }
@@ -104,9 +109,9 @@ class ReminderListFragment : Fragment() {
                         R.string.message_loading_reminder_error,
                         Snackbar.LENGTH_LONG
                     )
-                        .setAction(getString(R.string.dismiss)) { }
-                        .setAnchorView(R.id.actionButtonAddReminder)
-                        .show()
+                    .setAction(getString(R.string.dismiss)) { }
+                    .setAnchorView(R.id.actionButtonAddReminder)
+                    .show()
                     binding.noDataTextView.text = getText(R.string.message_no_reminders_found)
                     binding.noDataTextView.isVisible = true
                 }
@@ -118,6 +123,12 @@ class ReminderListFragment : Fragment() {
                         toastType = ToastType.SUCCESS
                     )
                     viewModel.getReminders()
+                }
+                RemindersAction.ReviewLocationDeviceAndPermission -> {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_update_reminder_error_review,
+                        toastType = ToastType.SUCCESS
+                    )
                 }
                 RemindersAction.UpdateRemindersError ->
                     context?.showCustomToast(
@@ -217,17 +228,23 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
-        if(hasRequiredLocationPermissions().not()) {
-            showLocationBackgroundPermissionRequiredSnackBar()
-        } else {
-            viewModel.updateGeofenceStatus(
-                reminderId = reminder.id ?: 0L,
-                isGeofenceEnable = reminder.isGeofenceEnable.not()
+        if(hasRequiredLocationPermissions().not() || context?.isDeviceLocationActivated() == false) {
+            context?.showCustomToast(
+                titleResId = R.string.message_update_reminder_error_review,
+                toastType = ToastType.WARNING,
+                durationToast = Toast.LENGTH_LONG
             )
-            if (reminder.isGeofenceEnable) {
-                removeGeofence(reminder)
-            } else {
-                addGeofence(reminder)
+        } else {
+            reminder.id?.let {
+                viewModel.updateGeofenceStatusOnDatabase(
+                    reminderId = it,
+                    isGeofenceEnable = reminder.isGeofenceEnable.not()
+                )
+                if (reminder.isGeofenceEnable) {
+                    removeGeofence(reminder)
+                } else {
+                    addGeofence(reminder)
+                }
             }
         }
     }
@@ -247,6 +264,18 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun addGeofence(reminder: ReminderItemView) {
+        if (context?.isDeviceLocationActivated() == false) {
+            showDeviceLocationActiveRequiredSnackbar()
+            updateReminderGeofenceStatusOnDatabase(reminder.id)
+            return
+        }
+
+        if (hasRequiredLocationPermissions().not()) {
+            showLocationBackgroundPermissionRequiredSnackBar()
+            updateReminderGeofenceStatusOnDatabase(reminder.id)
+            return
+        }
+
         geofenceManager.addGeofence(
             geofenceClient = geofenceClient,
             id = reminder.id.toString(),
@@ -258,6 +287,12 @@ class ReminderListFragment : Fragment() {
             onAddGeofenceSuccess = { onAddGeofenceSuccess() },
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )
+    }
+
+    private fun updateReminderGeofenceStatusOnDatabase(id: Long?, isEnable: Boolean = false) {
+        id?.let { reminderId ->
+            viewModel.updateGeofenceStatusOnDatabase(reminderId, isEnable)
+        }
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {

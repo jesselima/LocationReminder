@@ -139,7 +139,7 @@ class RemindersListViewModelTest {
             .thenReturn(1)
 
         // When
-        viewModel.updateGeofenceStatus(202112060802, true)
+        viewModel.updateGeofenceStatusOnDatabase(202112060802, true)
 
         // Then
         verify(observerAction).onChanged(RemindersAction.UpdateRemindersSuccess)
@@ -152,7 +152,7 @@ class RemindersListViewModelTest {
             .thenReturn(0)
 
         // When
-        viewModel.updateGeofenceStatus(202112060802, true)
+        viewModel.updateGeofenceStatusOnDatabase(202112060802, true)
 
         // Then
         verify(observerAction).onChanged(RemindersAction.UpdateRemindersError)

@@ -9,6 +9,7 @@
     <color name="textColorSecondary">#636363</color>
 
     <color name="colorAccent">#E63838</color>
+    <color name="colorWarning">#FFC107</color>
 
     <color name="textInputOutlineColor">#B3B3B3</color>
     <color name="defaultBackground">#E6E6E6</color>

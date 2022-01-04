@@ -54,21 +54,6 @@
             app:layout_constraintTop_toBottomOf="@+id/selectLocationAppBarLayout"
             tools:context=".features.RemindersActivity" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonGetSelectedLocation"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_default"
-            android:layout_marginStart="@dimen/margin_button_large"
-            android:layout_marginEnd="@dimen/margin_button_large"
-            android:layout_marginBottom="@dimen/spacing_xl"
-            tools:enabled="true"
-            android:enabled="false"
-            android:text="@string/action_click_on_the_map"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/textViewHowToSetLocation"
             style="@style/TextAppearance.LocationReminderAppTheme.Body.Default"
@@ -83,6 +68,21 @@
             app:layout_constraintHorizontal_bias="0.24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/selectLocationAppBarLayout" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonGetSelectedLocation"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height_default"
+            android:layout_marginStart="@dimen/margin_button_large"
+            android:layout_marginEnd="@dimen/margin_button_large"
+            android:layout_marginBottom="@dimen/spacing_xl"
+            tools:enabled="true"
+            android:enabled="false"
+            android:text="@string/action_click_on_the_map"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

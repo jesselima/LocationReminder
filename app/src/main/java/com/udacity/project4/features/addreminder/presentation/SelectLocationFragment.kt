@@ -3,9 +3,7 @@ package com.udacity.project4.features.addreminder.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,10 +29,9 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.udacity.project4.R
 import com.udacity.project4.BuildConfig
+import com.udacity.project4.R
 import com.udacity.project4.common.extensions.isPermissionNotGranted
-import com.udacity.project4.common.extensions.openDeviceLocationsSettings
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.sharedpresentation.ReminderItemView
@@ -114,8 +110,13 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 
+    /**
+     * This method is called only when permission is granted.
+     */
+    @SuppressLint("MissingPermission")
     private fun onPermissionAccepted() {
         locationPermissionGranted = true
+        map?.isMyLocationEnabled = true
         getDeviceLocation()
         setupMapUI()
     }
@@ -123,16 +124,11 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
     private fun showBackgroundPermissionDialogError() {
         activity?.showCustomDialog(
             context = requireContext(),
-            title = getString(R.string.message_request_background_location_title),
-            message = getString(R.string.message_request_background_location_description),
-            positiveButtonText = getString(R.string.agreed_button_label),
-            positiveButtonAction = {
-                requestLocationPermissions()
-            },
-            negativeButtonText = resources.getString(R.string.label_cancel),
-            negativeButtonAction = {
-                findNavController().navigate(SelectLocationFragmentDirections.navigateToSaveReminderFragment())
-            }
+            title = getString(R.string.message_location_permission),
+            message = getString(R.string.message_show_map_location),
+            positiveButtonText = getString(R.string.label_allow_now),
+            positiveButtonAction = { requestLocationPermissions() },
+            negativeButtonText = resources.getString(R.string.label_select_manually)
         )
     }
 
@@ -241,36 +237,35 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    /** At this the permission is already allowed by the user. Otherwise this method
+     * would not be called .
+     * */
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         initLocationService()
         binding.loadingMap.isGone = true
         map = googleMap
+        map?.let { onClickSetMarker(it) }
+        map?.let { setPoiClick(it) }
+        setupMapUI()
 
         if (isPermissionNotGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
             isPermissionNotGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             requestLocationPermissions()
         } else {
             locationPermissionGranted = true
+            map?.isMyLocationEnabled = true
             getDeviceLocation()
-            setupMapUI()
         }
     }
 
-    /** At this the permission is already allowed by the user. Otherwise this method
-     * would not be called .
-     * */
-    @SuppressLint("MissingPermission")
     private fun setupMapUI() {
-        map?.isMyLocationEnabled = true
         map?.uiSettings?.isCompassEnabled = true
         map?.uiSettings?.isIndoorLevelPickerEnabled = true
         map?.uiSettings?.isMapToolbarEnabled = true
         map?.uiSettings?.isZoomControlsEnabled = true
         map?.uiSettings?.isMyLocationButtonEnabled = true
         map?.uiSettings?.setAllGesturesEnabled(true)
-        map?.let { onClickSetMarker(it) }
-        map?.let { setPoiClick(it) }
     }
 
     private fun onClickSetMarker(mapWithMarker: GoogleMap) {

@@ -53,11 +53,15 @@ class RemindersListViewModel(
         }
     }
 
-    fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean) {
+    fun updateGeofenceStatusOnDatabase(reminderId: Long, isGeofenceEnable: Boolean, isCancelling: Boolean = false) {
         viewModelScope.launch {
             val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
             if (result == RESULT_DATA_AFFECTED) {
-                _action.value = RemindersAction.UpdateRemindersSuccess
+                if (isCancelling) {
+                    _action.value = RemindersAction.ReviewLocationDeviceAndPermission
+                } else {
+                    _action.value = RemindersAction.UpdateRemindersSuccess
+                }
             } else {
                 _action.value = RemindersAction.UpdateRemindersError
             }

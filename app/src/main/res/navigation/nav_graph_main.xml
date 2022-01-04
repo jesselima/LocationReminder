@@ -85,6 +85,7 @@
         <action
             android:id="@+id/navigateToSaveReminderFragment"
             app:destination="@id/saveReminderFragment"
+            app:popUpTo="@+id/saveReminderFragment"
             app:popUpToInclusive="true"/>
         <argument
             android:name="lastSelectedLocation"

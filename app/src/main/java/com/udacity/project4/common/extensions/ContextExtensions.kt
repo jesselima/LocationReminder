@@ -1,6 +1,7 @@
 package com.udacity.project4.common.extensions
 
 import android.content.Context
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
@@ -17,4 +18,10 @@ fun Context.isConnected(): Boolean {
         isConnectingOrConnected -> true
         else -> false
     }
+}
+
+
+fun Context.isDeviceLocationActivated(): Boolean {
+    val locationManager = getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
 }
