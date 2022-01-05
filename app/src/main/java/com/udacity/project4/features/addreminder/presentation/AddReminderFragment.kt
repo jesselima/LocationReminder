@@ -1,7 +1,9 @@
 package com.udacity.project4.features.addreminder.presentation
 
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,15 +18,17 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.hideKeyboard
-import com.udacity.project4.common.extensions.isDeviceLocationActivated
 import com.udacity.project4.common.extensions.showCustomToast
 import com.udacity.project4.databinding.FragmentAddReminderBinding
 import com.udacity.project4.features.RemindersActivity
@@ -275,14 +279,15 @@ class AddReminderFragment : Fragment() {
                         )
 
                         if (_currentReminderData.isGeofenceEnable) {
-                            addGeofence(_currentReminderData.copy(id = action.id))
+                            _currentReminderData.id = action.id
+                            checkDeviceLocationSettings()
                         } else {
                             navigateToReminderList()
                         }
                     }
                     is AddReminderAction.UpdateReminderSuccess -> {
                         if (_currentReminderData.isGeofenceEnable) {
-                            addGeofence(_currentReminderData)
+                            checkDeviceLocationSettings()
                         } else {
                             removeGeofence(_currentReminderData)
                         }
@@ -337,7 +342,7 @@ class AddReminderFragment : Fragment() {
                     }
                     AddReminderAction.StatusUpdatedSuccess -> {
                         context?.showCustomToast(
-                            titleResId = R.string.message_geofence_not_added_need_enable_later,
+                            titleResId = R.string.message_geofence_not_added_it_need_enable_manually,
                             toastType = ToastType.INFO,
                             durationToast = Toast.LENGTH_LONG
                         )
@@ -356,13 +361,21 @@ class AddReminderFragment : Fragment() {
         }
     }
 
-    private fun addGeofence(reminder: ReminderItemView) {
+    private fun checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
+        reminder: ReminderItemView,
+        isDeviceLocationEnabled: Boolean
+    ) {
         reminder.id?.let { id ->
-            if(hasRequiredLocationPermissions().not() || context?.isDeviceLocationActivated() == false) {
+            if(hasRequiredLocationPermissions().not() || isDeviceLocationEnabled.not()) {
                 context?.showCustomToast(
                     titleResId = R.string.message_geofence_not_added_check_device_location_permission,
                     toastType = ToastType.WARNING
                 )
+                /**
+                 * At this point the user has not enabled Device location. For this reason
+                 * The geofence flag must be set to false on the data base to represent the
+                 * real geofence status
+                 * */
                 viewModel.updateGeofenceStatusOnDatabase(
                     reminderId = id,
                     isGeofenceEnable = false
@@ -434,5 +447,53 @@ class AddReminderFragment : Fragment() {
     private fun navigateToReminderList() {
         startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
         activity?.finish()
+    }
+
+    private fun checkDeviceLocationSettings(resolve: Boolean = true) {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_LOW_POWER
+        }
+
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val settingsClient = LocationServices.getSettingsClient(requireActivity())
+        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
+
+        locationSettingsResponseTask.addOnCompleteListener {
+            if (it.isSuccessful ) checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(_currentReminderData, true)
+        }
+
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException && resolve){
+                try {
+                    exception.startResolutionForResult(
+                        requireActivity(),
+                        REQUEST_TURN_DEVICE_LOCATION_ON
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.d(SelectLocationFragment::class.java.simpleName,
+                        "Error getting location settings resolution: " + sendEx.message)
+                }
+            } else {
+                /** The add geofence method will decide if geofence will be added or not. And if
+                 * the Reminder geofence status need to be updated on database.
+                 * */
+                checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
+                    _currentReminderData,
+                    false
+                )
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
+            // We don't rely on the result code, but just check the location setting again
+            checkDeviceLocationSettings(false)
+        }
+    }
+
+    companion object {
+        const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
     }
 }

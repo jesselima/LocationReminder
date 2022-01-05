@@ -95,9 +95,9 @@
     <string name="message_update_reminder_error">Ooops! Error updating reminder!</string>
     <string name="message_update_reminder_status_error">Ooops! Error updating reminder status.</string>
     <string name="message_update_reminder_success">Reminder updated!</string>
-    <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location or permission.</string>
+    <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location and permission.</string>
     <string name="message_geofence_not_added_check_device_location_permission">Geofence not added. Please, Check device location or permission.</string>
-    <string name="message_geofence_not_added_need_enable_later">Geofence not added. You need to manually enable it.</string>
+    <string name="message_geofence_not_added_it_need_enable_manually">Geofence not added. You need to manually enable it.</string>
     <string name="message_delete_reminder_success">Reminder deleted!</string>
     <string name="message_delete_reminder_error">Error deleting reminder!</string>
     <string name="message_get_reminder_error">Error getting reminder info!</string>
@@ -160,6 +160,7 @@
     <string name="location_permission_is_disabled_title">Location permission needed.</string>
     <string name="location_permission_is_disabled_description">The App needs Location permission enable</string>
     <string name="message_geofence_requires_location_permission">Geofences alerts requires Background Location permission.</string>
+    <string name="location_required_error">Geofences alerts requires Background Location permission.</string>
     <string name="label_do_it_later">Do it later</string>
     <string name="label_select_manually">Select manually</string>
     <string name="label_allow_now">Allow now</string>
