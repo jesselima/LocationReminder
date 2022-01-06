@@ -31,8 +31,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.common.extensions.isPermissionNotGranted
-import com.udacity.project4.common.extensions.showCustomDialog
+import com.udacity.project4.common.extensions.isPermissionGranted
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import java.util.Locale
@@ -73,7 +72,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             }
             else -> {
                 // No location access granted.
-                showBackgroundPermissionDialogError()
             }
         }
     }
@@ -118,18 +116,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         locationPermissionGranted = true
         map?.isMyLocationEnabled = true
         getDeviceLocation()
-        setupMapUI()
-    }
-
-    private fun showBackgroundPermissionDialogError() {
-        activity?.showCustomDialog(
-            context = requireContext(),
-            title = getString(R.string.message_location_permission),
-            message = getString(R.string.message_show_map_location),
-            positiveButtonText = getString(R.string.label_allow_now),
-            positiveButtonAction = { requestLocationPermissions() },
-            negativeButtonText = resources.getString(R.string.label_select_manually)
-        )
     }
 
     private fun setupListeners() {
@@ -242,20 +228,20 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
      * */
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
+        setupMapUI()
         initLocationService()
         binding.loadingMap.isGone = true
         map = googleMap
         map?.let { onClickSetMarker(it) }
         map?.let { setPoiClick(it) }
-        setupMapUI()
 
-        if (isPermissionNotGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
-            isPermissionNotGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            requestLocationPermissions()
-        } else {
+        if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             locationPermissionGranted = true
             map?.isMyLocationEnabled = true
             getDeviceLocation()
+        } else {
+            requestLocationPermissions()
         }
     }
 
