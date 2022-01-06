@@ -25,7 +25,7 @@
     <string name="action_click_on_the_map">Click on the map</string>
     <string name="text_button_change_location">Change location</string>
     <string name="action_set_location">Get this location</string>
-    <string name="message_click_on_the_map">Click anywhere on the map or any point\nof interest to select a location.</string>
+    <string name="message_click_on_the_map">Click anywhere on the map or any point of interest to select a location.</string>
 
     <string name="geofence_not_available">Geofence service is not available now. Go to Settings > Location > Mode and choose High accuracy.</string>
     <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
@@ -112,7 +112,7 @@
     <string name="message_request_background_location_title">Background location permission needed</string>
     <string name="message_location_permission">Location permission</string>
     <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
-    <string name="message_show_map_location">To show your location on the map you need to allow location permission. You can select you position manually if you wish.</string>
+    <string name="message_show_map_location">To show your location on the map you need to allow location permission. You can select your position on the map manually if you wish.</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
     <string name="geofence_error_geofence_not_available">Geofence not available</string>
     <string name="geofence_error_too_many_geofence_request">Too frequent geofences requests</string>
