@@ -40,4 +40,6 @@
     <dimen name="lottie_default_height">200dp</dimen>
     <dimen name="card_corner_radius_tiny">3dp</dimen>
     <dimen name="slider_background_image_margin_end">110dp</dimen>
+    <dimen name="map_text_balloon_width">340dp</dimen>
+
 </resources>

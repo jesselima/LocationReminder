@@ -1,10 +1,14 @@
 package com.udacity.project4.features.reminderslist
 
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -35,12 +39,51 @@ const val PENDING_INTENT_REQUEST_CODE = 0
 
 class ReminderListFragment : Fragment() {
 
-    val viewModel: RemindersListViewModel by viewModel()
+    private val viewModel: RemindersListViewModel by viewModel()
     private val geofenceManager: GeofenceManager by inject()
 
     private lateinit var binding: FragmentReminderListBinding
 
     private lateinit var geofenceClient: GeofencingClient
+
+    private val backgroundLocationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        when {
+            granted -> {
+                // Precise location access granted.
+                // To nothing
+            }
+            !shouldShowRequestPermissionRationale(ACCESS_BACKGROUND_LOCATION) -> {
+                // access to the location was denied, the user has checked the Don't ask again.
+                openAppSettings()
+            }
+            else -> {
+                // No location access granted.
+                openAppSettings()
+            }
+        }
+    }
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) ||
+                    permissions.getOrDefault(ACCESS_FINE_LOCATION, false) -> {
+                // Precise location access granted.
+                // To nothing
+            }
+            !shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION) -> {
+                // access to the location was denied, the user has checked the Don't ask again.
+                openAppSettings()
+            }
+            else -> {
+                // No location access granted.
+                openAppSettings()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -161,7 +204,7 @@ class ReminderListFragment : Fragment() {
             openDeviceLocationsSettings()
         }
         binding.buttonLocationPermission.setOnClickListener {
-            openAppSettings()
+            requestPerMissions()
         }
         binding.actionButtonAddReminder.setOnClickListener {
             findNavController().navigate(ReminderListFragmentDirections.navigateToSaveReminder())
@@ -202,6 +245,19 @@ class ReminderListFragment : Fragment() {
         }
     }
 
+    private fun requestPerMissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            backgroundLocationPermissionRequest.launch(ACCESS_BACKGROUND_LOCATION)
+        } else {
+            locationPermissionRequest.launch(
+                arrayOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
     private fun deleteAccount() {
         FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -228,22 +284,24 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun updateGeofenceStatus(reminder: ReminderItemView) {
-        if(hasRequiredLocationPermissions().not() || context?.isDeviceLocationActivated() == false) {
-            context?.showCustomToast(
-                titleResId = R.string.message_update_reminder_error_review,
-                toastType = ToastType.WARNING,
-                durationToast = Toast.LENGTH_LONG
-            )
-        } else {
-            reminder.id?.let {
-                viewModel.updateGeofenceStatusOnDatabase(
-                    reminderId = it,
-                    isGeofenceEnable = reminder.isGeofenceEnable.not()
-                )
-                if (reminder.isGeofenceEnable) {
-                    removeGeofence(reminder)
-                } else {
-                    addGeofence(reminder)
+        when {
+            hasRequiredLocationPermissions().not() -> {
+                showLocationBackgroundPermissionRequiredSnackBar()
+            }
+            context?.isDeviceLocationActivated() == false -> {
+                showDeviceLocationActiveRequiredSnackbar()
+            }
+            else -> {
+                reminder.id?.let {
+                    viewModel.updateGeofenceStatusOnDatabase(
+                        reminderId = it,
+                        isGeofenceEnable = reminder.isGeofenceEnable.not()
+                    )
+                    if (reminder.isGeofenceEnable) {
+                        removeGeofence(reminder)
+                    } else {
+                        addGeofence(reminder)
+                    }
                 }
             }
         }
@@ -264,18 +322,6 @@ class ReminderListFragment : Fragment() {
     }
 
     private fun addGeofence(reminder: ReminderItemView) {
-        if (context?.isDeviceLocationActivated() == false) {
-            showDeviceLocationActiveRequiredSnackbar()
-            updateReminderGeofenceStatusOnDatabase(reminder.id)
-            return
-        }
-
-        if (hasRequiredLocationPermissions().not()) {
-            showLocationBackgroundPermissionRequiredSnackBar()
-            updateReminderGeofenceStatusOnDatabase(reminder.id)
-            return
-        }
-
         geofenceManager.addGeofence(
             geofenceClient = geofenceClient,
             id = reminder.id.toString(),
@@ -287,12 +333,6 @@ class ReminderListFragment : Fragment() {
             onAddGeofenceSuccess = { onAddGeofenceSuccess() },
             onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
         )
-    }
-
-    private fun updateReminderGeofenceStatusOnDatabase(id: Long?, isEnable: Boolean = false) {
-        id?.let { reminderId ->
-            viewModel.updateGeofenceStatusOnDatabase(reminderId, isEnable)
-        }
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {

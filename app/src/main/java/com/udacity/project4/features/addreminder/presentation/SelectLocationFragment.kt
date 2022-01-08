@@ -31,6 +31,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
+import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.isPermissionGranted
 import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.showCustomDialog
@@ -74,7 +75,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
             }
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                // access to the camera is denied, the user has checked the Don't ask again.
+                // access to the location was denied, the user has checked the Don't ask again.
                 Log.d(currentClassName,"Called: shouldShowRequestPermissionRationale")
                 showLocationPermissionDialog()
             }
@@ -97,10 +98,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
-            isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            onPermissionAccepted()
-        }
+        if (hasRequiredLocationPermissions()) onPermissionAccepted()
     }
 
     override fun onCreateView(

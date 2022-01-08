@@ -95,7 +95,7 @@
     <string name="message_update_reminder_error">Ooops! Error updating reminder!</string>
     <string name="message_update_reminder_status_error">Ooops! Error updating reminder status.</string>
     <string name="message_update_reminder_success">Reminder updated!</string>
-    <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location and permission.</string>
+    <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location and location permission.</string>
     <string name="message_geofence_not_added_check_device_location_permission">Geofence not added. Please, Check device location or permission.</string>
     <string name="message_geofence_not_added_it_need_enable_manually">Geofence not added. You need to manually enable it.</string>
     <string name="message_delete_reminder_success">Reminder deleted!</string>

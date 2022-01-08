@@ -1,7 +1,11 @@
 package com.udacity.project4.features.addreminder.presentation
 
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.TargetApi
 import android.content.Intent
-import android.content.IntentSender
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -18,15 +23,13 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.common.extensions.ToastType
+import com.udacity.project4.common.extensions.checkDeviceLocationSettings
 import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.hideKeyboard
 import com.udacity.project4.common.extensions.showCustomToast
@@ -47,6 +50,8 @@ private const val REMINDER_EXPIRATION_NEVER = -1L
 
 class AddReminderFragment : Fragment() {
 
+    private val currentClassName = AddReminderFragment::class.java.simpleName
+
     private lateinit var binding: FragmentAddReminderBinding
     private val viewModel: AddReminderViewModel by sharedViewModel()
     private val geofenceManager: GeofenceManager by inject()
@@ -55,6 +60,60 @@ class AddReminderFragment : Fragment() {
     private val args: AddReminderFragmentArgs by navArgs()
 
     private lateinit var geofenceClient: GeofencingClient
+
+    private val isRunningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+    private val backgroundLocationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(ACCESS_BACKGROUND_LOCATION, false) -> {
+                // Precise location access granted.
+                resolveLocationSettings(true)
+            }
+            !shouldShowRequestPermissionRationale(ACCESS_BACKGROUND_LOCATION) -> {
+                // access to the location was denied, the user has checked the Don't ask again.
+                Log.d(currentClassName,"Called: shouldShowRequestPermissionRationale")
+            }
+            else -> {
+                // No location access granted.
+                _currentReminderData.id?.let {id ->
+                    updateGeofenceStatus(id, false)
+                }
+            }
+        }
+    }
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) -> {
+                // Precise location access granted.
+                resolveLocationSettings(true)
+            }
+            permissions.getOrDefault(ACCESS_FINE_LOCATION, false) -> {
+                // Precise location access granted.
+                resolveLocationSettings(true)
+            }
+            !shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION) -> {
+                // access to the location was denied, the user has checked the Don't ask again.
+                Log.d(currentClassName,
+                    "Called: shouldShowRequestPermissionRationale ACCESS_COARSE_LOCATION")
+            }
+            !shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION) -> {
+                // access to the location was denied, the user has checked the Don't ask again.
+                Log.d(currentClassName,
+                    "Called: shouldShowRequestPermissionRationale ACCESS_FINE_LOCATION")
+            }
+            else -> {
+                // No location access granted.
+                _currentReminderData.id?.let { id ->
+                    updateGeofenceStatus(id, false)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -280,14 +339,14 @@ class AddReminderFragment : Fragment() {
 
                         if (_currentReminderData.isGeofenceEnable) {
                             _currentReminderData.id = action.id
-                            checkDeviceLocationSettings()
+                            checkGeofenceRequirementsBeforeAddGeofence()
                         } else {
                             navigateToReminderList()
                         }
                     }
                     is AddReminderAction.UpdateReminderSuccess -> {
                         if (_currentReminderData.isGeofenceEnable) {
-                            checkDeviceLocationSettings()
+                            checkGeofenceRequirementsBeforeAddGeofence()
                         } else {
                             removeGeofence(_currentReminderData)
                         }
@@ -366,34 +425,46 @@ class AddReminderFragment : Fragment() {
         isDeviceLocationEnabled: Boolean
     ) {
         reminder.id?.let { id ->
-            if(hasRequiredLocationPermissions().not() || isDeviceLocationEnabled.not()) {
-                context?.showCustomToast(
-                    titleResId = R.string.message_geofence_not_added_check_device_location_permission,
-                    toastType = ToastType.WARNING
-                )
-                /**
-                 * At this point the user has not enabled Device location. For this reason
-                 * The geofence flag must be set to false on the data base to represent the
-                 * real geofence status
-                 * */
-                viewModel.updateGeofenceStatusOnDatabase(
-                    reminderId = id,
-                    isGeofenceEnable = false
-                )
+            if (reminder.isGeofenceEnable.not()) {
+                updateGeofenceStatus(id, false)
             } else {
-                geofenceManager.addGeofence(
-                    geofenceClient = geofenceClient,
-                    id = reminder.id.toString(),
-                    latitude = reminder.latitude,
-                    longitude = reminder.longitude,
-                    circularRadius = reminder.circularRadius,
-                    expiration = reminder.expiration,
-                    transitionType = reminder.transitionType,
-                    onAddGeofenceSuccess = ::onAddGeofenceSuccess,
-                    onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
-                )
+                if(hasRequiredLocationPermissions().not() || isDeviceLocationEnabled.not()) {
+                    context?.showCustomToast(
+                        titleResId = R.string.message_geofence_not_added_check_device_location_permission,
+                        toastType = ToastType.WARNING
+                    )
+                    /**
+                     * At this point the user has not enabled Device location. For this reason
+                     * The geofence flag must be set to false on the data base to represent the
+                     * real geofence status
+                     * */
+                    updateGeofenceStatus(id, false)
+                } else {
+                    addGeofence(reminder)
+                }
             }
         }
+    }
+
+    private fun updateGeofenceStatus(reminderId: Long, setGeofenceStatusOnDatabase: Boolean) {
+        viewModel.updateGeofenceStatusOnDatabase(
+            reminderId = reminderId,
+            isGeofenceEnable = false
+        )
+    }
+
+    private fun addGeofence(reminder: ReminderItemView) {
+        geofenceManager.addGeofence(
+            geofenceClient = geofenceClient,
+            id = reminder.id.toString(),
+            latitude = reminder.latitude,
+            longitude = reminder.longitude,
+            circularRadius = reminder.circularRadius,
+            expiration = reminder.expiration,
+            transitionType = reminder.transitionType,
+            onAddGeofenceSuccess = ::onAddGeofenceSuccess,
+            onAddGeofenceFailure = { reasonStringRes -> onAddGeofenceFailure(reasonStringRes)  }
+        )
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {
@@ -449,47 +520,67 @@ class AddReminderFragment : Fragment() {
         activity?.finish()
     }
 
-    private fun checkDeviceLocationSettings(resolve: Boolean = true) {
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_LOW_POWER
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
+            // We don't rely on the result code, but just check the location setting again
+            resolveLocationSettings(false)
         }
+    }
 
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val settingsClient = LocationServices.getSettingsClient(requireActivity())
-        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
-
-        locationSettingsResponseTask.addOnCompleteListener {
-            if (it.isSuccessful ) checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(_currentReminderData, true)
-        }
-
-        locationSettingsResponseTask.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException && resolve){
-                try {
-                    exception.startResolutionForResult(
-                        requireActivity(),
-                        REQUEST_TURN_DEVICE_LOCATION_ON
-                    )
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.d(SelectLocationFragment::class.java.simpleName,
-                        "Error getting location settings resolution: " + sendEx.message)
-                }
-            } else {
-                /** The add geofence method will decide if geofence will be added or not. And if
-                 * the Reminder geofence status need to be updated on database.
-                 * */
+    private fun resolveLocationSettings(resolve: Boolean) {
+        checkDeviceLocationSettings(
+            resolve = resolve,
+            requestCode = REQUEST_TURN_DEVICE_LOCATION_ON,
+            onLocationSettingsSuccess = {
+                checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
+                    _currentReminderData, true
+                )
+            },
+            onLocationSettingsFailure = {
                 checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
                     _currentReminderData,
                     false
                 )
             }
+        )
+    }
+
+    /**
+     * Starts the permission check and Geofence process only if the Geofence associated with the
+     * current hint isn't yet active.
+     */
+    @TargetApi(29)
+    private fun checkGeofenceRequirementsBeforeAddGeofence() {
+        if (hasRequiredLocationPermissions()) {
+            resolveLocationSettings(true)
+        } else {
+            val isBackgroundLocDenied = !shouldShowRequestPermissionRationale(ACCESS_BACKGROUND_LOCATION)
+            val isFineLocDenied = !shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)
+            val isCoarseLocDenied = !shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION)
+
+            val isAndroidQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+            if((isAndroidQOrLater && isBackgroundLocDenied) || isAndroidQOrLater.not() && (isFineLocDenied || isCoarseLocDenied)) {
+                // access to the camera is denied, the user has checked the Don't ask again.
+                // Show Dialog With OpenSettings
+                checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
+                    _currentReminderData, false
+                )
+            } else {
+                requestPerMissions()
+            }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
-            // We don't rely on the result code, but just check the location setting again
-            checkDeviceLocationSettings(false)
+    @TargetApi(29)
+    private fun requestPerMissions() {
+        if (isRunningQOrLater) {
+            backgroundLocationPermissionRequest.launch(arrayOf(ACCESS_BACKGROUND_LOCATION))
+        } else {
+            locationPermissionRequest.launch(
+                arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+            )
         }
     }
 

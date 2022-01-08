@@ -65,6 +65,7 @@ class AddReminderViewModel(
                 if (newReminderDatabaseId > 0) {
                     _state.value = state.value?.copy(isLoading = false)
                     _action.value = AddReminderAction.AddReminderSuccess(id = newReminderDatabaseId)
+                    _action.value = AddReminderAction.ClearErrors
                 } else {
                    setErrorActionAndState()
                 }
