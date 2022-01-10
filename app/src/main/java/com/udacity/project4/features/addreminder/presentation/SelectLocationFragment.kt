@@ -1,7 +1,7 @@
 package com.udacity.project4.features.addreminder.presentation
 
 
-import android.Manifest
+import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
@@ -37,7 +37,7 @@ import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.showCustomDialog
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.sharedpresentation.ReminderItemView
-import java.util.Locale
+import java.util.*
 
 private const val MAP_START_ZOOM = 15.0F
 private val DEFAULT_LOCATION = LatLng(-23.5822877,-46.6530567)
@@ -63,24 +63,25 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         when {
-            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+            permissions.getOrDefault(permission.ACCESS_FINE_LOCATION, false) -> {
                 // Precise location access granted.
                 locationPermissionGranted = true
                 onPermissionAccepted()
             }
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+            permissions.getOrDefault(permission.ACCESS_COARSE_LOCATION, false) -> {
                 // Precise location access granted.
                 locationPermissionGranted = true
                 onPermissionAccepted()
             }
-            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+            !shouldShowRequestPermissionRationale(permission.ACCESS_COARSE_LOCATION) ||
+            !shouldShowRequestPermissionRationale(permission.ACCESS_FINE_LOCATION) -> {
                 // access to the location was denied, the user has checked the Don't ask again.
                 Log.d(currentClassName,"Called: shouldShowRequestPermissionRationale")
                 showLocationPermissionDialog()
             }
             else -> {
                 // No location access granted.
+                showLocationPermissionDialog()
             }
         }
     }
@@ -129,8 +130,8 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
 
     private fun requestLocationPermissions() {
         locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION))
+            permission.ACCESS_FINE_LOCATION,
+            permission.ACCESS_COARSE_LOCATION))
     }
 
     /**
@@ -260,8 +261,8 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         map?.let { onClickSetMarker(it) }
         map?.let { setPoiClick(it) }
 
-        if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
-            isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (isPermissionGranted(permission.ACCESS_FINE_LOCATION) &&
+            isPermissionGranted(permission.ACCESS_COARSE_LOCATION)) {
             locationPermissionGranted = true
             map?.isMyLocationEnabled = true
             getDeviceLocation()
