@@ -5,12 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
+import com.udacity.project4.shareddata.localdatasource.models.ResultData
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import com.udacity.project4.sharedpresentation.mapToDataModel
 import kotlinx.coroutines.launch
 
 private const val UPDATE_SUCCESS = 1
+private const val INVALID_ID = 0
 
 class AddReminderViewModel(
     private val remindersLocalRepository: RemindersLocalRepository,
@@ -59,51 +61,49 @@ class AddReminderViewModel(
         _state.value = state.value?.copy(isLoading = true)
 
         viewModelScope.launch {
-            runCatching {
-                remindersLocalRepository.saveReminder(reminder.mapToDataModel())
-            }.onSuccess { newReminderDatabaseId ->
-                if (newReminderDatabaseId > 0) {
+            when (val result = remindersLocalRepository.saveReminder(reminder.mapToDataModel())) {
+                is ResultData.Success<*> -> {
                     _state.value = state.value?.copy(isLoading = false)
-                    _action.value = AddReminderAction.AddReminderSuccess(id = newReminderDatabaseId)
-                    _action.value = AddReminderAction.ClearErrors
-                } else {
-                   setErrorActionAndState()
+                    if (result.data as Long > INVALID_ID) {
+                        _action.value = AddReminderAction.AddReminderSuccess(id = (result.data))
+                        _action.value = AddReminderAction.ClearErrors
+                    }
                 }
-            }.onFailure {
-                setErrorActionAndState()
+                else ->  {
+                    _state.value = state.value?.copy(isLoading = false)
+                    _action.value = AddReminderAction.AddReminderError
+                }
             }
         }
-    }
-
-    private fun setErrorActionAndState() {
-        _state.value = state.value?.copy(isLoading = false)
-        _action.value = AddReminderAction.AddReminderError
     }
 
     private fun updateReminder(reminder: ReminderItemView) {
         if (isFormValid.not()) return
         viewModelScope.launch {
-            runCatching {
-                remindersLocalRepository.updateReminder(reminder.mapToDataModel())
-            }.onSuccess { result ->
-                if (result >= UPDATE_SUCCESS ) {
-                    _action.value = AddReminderAction.UpdateReminderSuccess
-                } else {
+            when (val result = remindersLocalRepository.updateReminder(reminder.mapToDataModel())) {
+                is ResultData.Success<*> -> {
+                    if (result.data as Int == UPDATE_SUCCESS) {
+                        _action.value = AddReminderAction.UpdateReminderSuccess
+                    }
+                }
+                else -> {
                     _action.value = AddReminderAction.UpdateReminderError
                 }
-            }.onFailure {
-                _action.value = AddReminderAction.UpdateReminderError
             }
         }
     }
 
     fun updateGeofenceStatusOnDatabase(reminderId: Long, isGeofenceEnable: Boolean) {
         viewModelScope.launch {
-            val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)
-            if (result == UPDATE_SUCCESS) {
-                _action.value = AddReminderAction.StatusUpdatedSuccess
-            } else {
-                _action.value = AddReminderAction.StatusUpdateError
+            when (val result = remindersLocalRepository.updateGeofenceStatus(reminderId, isGeofenceEnable)) {
+                is ResultData.Success<*> -> {
+                    if (result.data as Int == UPDATE_SUCCESS) {
+                        _action.value = AddReminderAction.StatusUpdatedSuccess
+                    }
+                }
+                is ResultData.Error -> {
+                    _action.value = AddReminderAction.StatusUpdateError
+                }
             }
         }
     }

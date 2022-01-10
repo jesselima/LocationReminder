@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.features.reminderslist.RemindersState
+import com.udacity.project4.shareddata.localdatasource.models.ResultData
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.shareddata.stub.ReminderStub
 import com.udacity.project4.sharedpresentation.mapToDataModel
@@ -79,7 +80,7 @@ class ReminderDetailsViewModelTest {
     fun deleteReminder_should_set_DeleteReminderSuccess_when_delete_is_success() = mainCoroutineRule.runBlockingTest {
         // Given
         whenever(repository.deleteReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(1)
+            .thenReturn(ResultData.Success(1))
 
         val initialState = ReminderDetailsState()
         val loadingState = initialState.copy(isLoading = true)
@@ -99,7 +100,7 @@ class ReminderDetailsViewModelTest {
     fun deleteReminder_should_set_DeleteReminderError_when_delete_is_error() = mainCoroutineRule.runBlockingTest {
         // Given
         whenever(repository.deleteReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(0)
+            .thenReturn(ResultData.Error(message = "Delete Reminder Error!", statusCode = -1))
 
         val initialState = ReminderDetailsState()
         val loadingState = initialState.copy(isLoading = true)

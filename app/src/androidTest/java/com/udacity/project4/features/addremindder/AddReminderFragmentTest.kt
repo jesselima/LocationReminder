@@ -12,6 +12,7 @@ import com.udacity.project4.core.di.MainModule
 import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
 import com.udacity.project4.features.addreminder.presentation.AddReminderFragment
 import com.udacity.project4.features.addreminder.presentation.AddReminderViewModel
+import com.udacity.project4.shareddata.localdatasource.models.ResultData
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.sharedpresentation.ReminderItemView
 import com.udacity.project4.sharedpresentation.mapToDataModel
@@ -54,8 +55,7 @@ class AddReminderFragmentTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     private val navGraphOfMain = R.navigation.nav_graph_main
-    private val navGraphOfEditor = R.navigation.nav_graph_reminder_editor
-    private val repository: RemindersLocalRepository = mock()
+    private val remindersLocalRepository: RemindersLocalRepository = mock()
     private val inputValidatorsUseCase = InputValidatorsUseCase()
 
     @Before
@@ -71,7 +71,7 @@ class AddReminderFragmentTest {
             val module = module {
                 viewModel {
                     AddReminderViewModel(
-                        remindersLocalRepository = repository,
+                        remindersLocalRepository = remindersLocalRepository,
                         inputValidatorsUseCase = inputValidatorsUseCase
                     )
                 }
@@ -82,7 +82,7 @@ class AddReminderFragmentTest {
 
     @Test
     fun add_reminder_with_success_should_navigate_to_reminders_list() = mainCoroutineRule.runBlockingTest {
-        whenever(repository.saveReminder(reminderData1)).thenReturn(999)
+        whenever(remindersLocalRepository.saveReminder(reminderData1)).thenReturn(ResultData.Success(999))
 
         val fragmentScenario = launchFragmentInContainer<AddReminderFragment>(
             fragmentArgs = bundleOf(
@@ -107,8 +107,6 @@ class AddReminderFragmentTest {
 
         reminderData1.circularRadius?.let { setSliderToValue(R.id.sliderCircularRadius, it) }
 
-        performClick(R.id.actionButtonSaveReminder)
-
         fragmentScenario.shouldNavigateTo(
             onClickedViewWithResId = R.id.actionButtonSaveReminder,
             destinationResId = R.id.reminderListFragment,
@@ -118,7 +116,7 @@ class AddReminderFragmentTest {
 
     @Test
     fun add_reminder_with_error_should_display_error_content() = mainCoroutineRule.runBlockingTest {
-        whenever(repository.saveReminder(reminderData1)).thenReturn(0)
+        whenever(remindersLocalRepository.saveReminder(reminderData1)).thenReturn(ResultData.Error(""))
 
         launchFragmentInContainer<AddReminderFragment>(
             fragmentArgs = bundleOf(
@@ -146,13 +144,18 @@ class AddReminderFragmentTest {
         performClick(R.id.actionButtonSaveReminder)
 
         isTextDisplayed("Ooops! Error saving reminder.")
+        isTextDisplayed("Dismiss")
     }
 
     @Test
-    fun edit_reminder_should_autofill_inputs_when_editing_and_navigate_to_details() = mainCoroutineRule.runBlockingTest {
-        whenever(repository.updateReminder(reminderData1)).thenReturn(1)
+    fun edit_reminder_should_updateReminder_when_inputs_are_valid() = mainCoroutineRule.runBlockingTest {
+        val updateResultSuccess = 1
+        whenever(remindersLocalRepository.updateReminder(
+            reminderItemView.copy(circularRadius = 450.0f).mapToDataModel())
+        ).thenReturn(ResultData.Success(updateResultSuccess))
 
-        val fragmentScenario = launchFragmentInContainer<AddReminderFragment>(
+
+        launchFragmentInContainer<AddReminderFragment>(
             fragmentArgs = bundleOf(
                 "lastSelectedLocation" to reminderItemView,
                 "isFromList" to true,
@@ -171,18 +174,10 @@ class AddReminderFragmentTest {
         performClick(R.id.radioButtonExit)
         performClick(R.id.isGeofenceEnableSwitch)
 
-        fragmentScenario.shouldNavigateTo(
-            onClickedViewWithResId = R.id.actionButtonSaveReminder,
-            destinationResId = R.id.reminderDetailsFragment,
-            navGraph = navGraphOfEditor
-        )
+        performClick(R.id.actionButtonSaveReminder)
 
-        val updatedReminderItemView = reminderItemView.copy(
-            circularRadius = 450.0f,
-            transitionType = 2
+        verify(remindersLocalRepository).updateReminder(
+            reminderItemView.copy(circularRadius = 450.0f, isGeofenceEnable = false).mapToDataModel()
         )
-
-        verify(repository).updateReminder(updatedReminderItemView.mapToDataModel())
     }
-
 }

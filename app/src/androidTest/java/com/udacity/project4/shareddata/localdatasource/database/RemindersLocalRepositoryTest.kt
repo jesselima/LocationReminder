@@ -65,40 +65,39 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun getReminders_should_return_no_reminders() = runBlocking {
+    fun getReminders_should_return_data_not_found_error() = runBlocking {
         // When
-        val result = repository.getReminders() as ResultData.Success<*>
-        val reminders = result.data as List<*>
+        val result = repository.getReminders() as ResultData.Error
 
         // Then
-        assertTrue(reminders.isEmpty())
+        assertThat(result, `is`(ResultData.Error(message = "Reminder not found!", statusCode = 0)))
     }
 
     @Test
     fun saveReminder_should_insert_new_reminder() = runBlocking {
         // Given
-        val resultInserted = repository.saveReminder(reminderData1)
+        val resultInserted = repository.saveReminder(reminderData1) as ResultData.Success<*>
 
         // When
         val result = database.reminderDao().getReminderById(reminderData1.id.toString())
 
         // Then
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(resultInserted,  `is`(reminderData1.id))
+        assertThat((resultInserted.data as? Long),  `is`(reminderData1.id))
         assertThat(result?.id,  `is`(reminderData1.id))
     }
 
     @Test
     fun getReminderById_should_insert_new_reminder() = runBlocking {
         // Given
-        val resultInserted = repository.saveReminder(reminderData1)
+        val resultInserted = repository.saveReminder(reminderData1) as ResultData.Success<*>
 
         // When
         val result = database.reminderDao().getReminderById(reminderData1.id.toString())
 
         // Then
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(resultInserted,  `is`(reminderData1.id))
+        assertThat(resultInserted.data,  `is`(reminderData1.id))
         assertThat(result?.id,  `is`(reminderData1.id))
         assertThat(result?.title, `is`("Grow tomatoes"))
         assertThat(result?.description, `is`("Do not forget the fertilizer"))
@@ -123,23 +122,27 @@ class RemindersLocalRepositoryTest {
         val savedReminders = result.data as List<*>
 
         // When
-        val numberOfDeletedReminders = repository.deleteAllReminders()
-        assertThat(numberOfDeletedReminders,  `is`(2))
+        val numberOfDeletedReminders = repository.deleteAllReminders()  as ResultData.Success<*>
+        assertThat((numberOfDeletedReminders.data as Int),  `is`(2))
 
         // Then
-        val resultEmpty = repository.getReminders() as ResultData.Success<*>
-        val deletedRemindersResult = resultEmpty.data as List<*>
+        val resultEmpty = repository.getReminders() as ResultData.Error
+        /** Assert that reminders have been save before to delete them*/
         assertThat(savedReminders.size,  `is`(2))
-        assertThat(deletedRemindersResult.size,  `is`(0))
+        /** Assert that reminders have been deleted */
+        assertThat(resultEmpty, `is`(ResultData.Error(message = "Reminder not found!", statusCode = 0)))
     }
 
     @Test
     fun deleteAllReminders_should_delete_no_reminders_when_database_is_empty() = runBlocking {
         // When
-        val numberOfDeletedReminders = repository.deleteAllReminders()
+        val result = repository.deleteAllReminders() as ResultData.Error
 
         // Then
-        assertThat(numberOfDeletedReminders,  `is`(0))
+        assertThat(result, `is`(ResultData.Error(
+            message = "No Reminders have been deleted. Database is empty!",
+            statusCode = 0))
+        )
     }
 
     @Test
@@ -149,10 +152,10 @@ class RemindersLocalRepositoryTest {
         val result = repository.getReminder(reminderData1.id.toString()) as ResultData.Success<ReminderData>
 
         // When
-        val resultDeleted = repository.deleteReminder(result.data)
+        val resultDeleted = repository.deleteReminder(result.data) as ResultData.Success<*>
 
         // Then
-        assertThat(resultDeleted,  `is`(1))
+        assertThat((resultDeleted.data as Int),  `is`(1))
         assertThat(result.data.id,  `is`(reminderData1.id))
     }
 
@@ -174,10 +177,10 @@ class RemindersLocalRepositoryTest {
                 transitionType = null,
                 isGeofenceEnable = null
             )
-        )
+        ) as ResultData.Success<*>
 
         // Then
-        assertThat(resultDeleted,  `is`(0))
+        assertThat((resultDeleted.data as Int),  `is`(0))
     }
 
     @Test
@@ -186,8 +189,8 @@ class RemindersLocalRepositoryTest {
         database.reminderDao().saveReminder(reminderData1)
 
         // When
-        val updateResult = repository.updateGeofenceStatus(reminderId = reminderData1.id ?: 0, isGeofenceEnable = false)
-        assertThat(updateResult,  `is`(1))
+        val updateResult = repository.updateGeofenceStatus(reminderId = reminderData1.id ?: 0, isGeofenceEnable = false) as ResultData.Success<*>
+        assertThat((updateResult.data as Int),  `is`(1))
 
         val result = database.reminderDao().getReminderById(reminderData1.id.toString()) as ReminderData
         assertThat(result, CoreMatchers.notNullValue())
@@ -198,10 +201,10 @@ class RemindersLocalRepositoryTest {
     @Test
     fun updateReminderGeofenceStatus_should_update_nothing_when_id_does_not_exists() = runBlocking {
         // When
-        val result = repository.updateGeofenceStatus(reminderId = 99999, isGeofenceEnable = false)
+        val result = repository.updateGeofenceStatus(reminderId = 99999, isGeofenceEnable = false) as ResultData.Success<*>
 
         // Then
-        assertThat(result,  `is`(0))
+        assertThat((result.data as Int),  `is`(0))
     }
 
     @Test
@@ -228,8 +231,9 @@ class RemindersLocalRepositoryTest {
             isGeofenceEnable = false
         )
 
-        val updateResult = repository.updateReminder(updatedReminderData)
-        assertThat(updateResult,  `is`(1))
+        val updateResult = repository.updateReminder(updatedReminderData) as ResultData.Success<*>
+        assertThat((updateResult.data as Int),  `is`(1))
+
 
         val updatedReminder = database.reminderDao()
             .getReminderById(reminderData1.id.toString()) as ReminderData
@@ -268,9 +272,9 @@ class RemindersLocalRepositoryTest {
                 transitionType = null,
                 isGeofenceEnable = null
             )
-        )
+        ) as ResultData.Error
 
         // Then
-        assertThat(result,  `is`(0))
+        assertThat((result),  `is`(ResultData.Error("UpdateReminder Error!", -1)))
     }
 }

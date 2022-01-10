@@ -17,7 +17,7 @@ interface RemindersDao {
      * @return all reminders.
      */
     @Query("SELECT * FROM reminders")
-    fun getReminders(): List<ReminderData>
+    fun getReminders(): List<ReminderData>?
 
     /**
      * @param reminderId the id of the reminder
@@ -32,23 +32,23 @@ interface RemindersDao {
      * @param reminder the reminder to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveReminder(reminder: ReminderData): Long
+    fun saveReminder(reminder: ReminderData): Long?
 
     /**
      * Delete all reminders.
      */
     @Query("DELETE FROM reminders")
-    fun deleteAllReminders(): Int
+    fun deleteAllReminders(): Int?
 
     /**
      * Delete all reminders.
      */
     @Delete
-    fun deleteReminder(reminder: ReminderData): Int
+    fun deleteReminder(reminder: ReminderData): Int?
 
     @Query("UPDATE reminders SET is_geofence_enable = :isGeofenceEnable WHERE id = :reminderId")
-    fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int
+    fun updateReminder(reminderId: Long, isGeofenceEnable: Boolean): Int?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateReminder(reminder: ReminderData): Int
+    fun updateReminder(reminder: ReminderData): Int?
 }

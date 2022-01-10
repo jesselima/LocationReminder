@@ -10,6 +10,7 @@ import com.udacity.project4.MainCoroutineRule
 import com.udacity.project4.R
 import com.udacity.project4.common.ReminderConstants
 import com.udacity.project4.core.di.MainModule
+import com.udacity.project4.shareddata.localdatasource.models.ResultData
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.stubs.reminderItemView
 import com.udacity.project4.util.AppViewAction.performClick
@@ -101,7 +102,7 @@ class ReminderDetailsFragmentTest {
 
     @Test
     fun onDeleteReminderClicked_should_display_delete_dialog() = mainCoroutineRule.runBlockingTest {
-        whenever(repository.deleteReminder(any())).thenReturn(1)
+        whenever(repository.deleteReminder(any())).thenReturn(ResultData.Success(1))
 
         launchFragmentInContainer<ReminderDetailsFragment>(
             bundleOf(

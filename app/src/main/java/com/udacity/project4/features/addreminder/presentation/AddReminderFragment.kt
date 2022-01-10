@@ -74,6 +74,9 @@ class AddReminderFragment : Fragment() {
             !shouldShowRequestPermissionRationale(ACCESS_BACKGROUND_LOCATION) -> {
                 // access to the location was denied, the user has checked the Don't ask again.
                 Log.d(currentClassName,"Called: shouldShowRequestPermissionRationale")
+                _currentReminderData.id?.let {id ->
+                    updateGeofenceStatus(id, false)
+                }
             }
             else -> {
                 // No location access granted.

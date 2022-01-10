@@ -30,11 +30,15 @@ class ReminderDetailsViewModel(
     fun deleteReminder(reminderItemView: ReminderItemView) {
         _state.postValue(state.value?.copy(isLoading = true))
         viewModelScope.launch {
-            val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())
-            if (result == RESULT_DATA_AFFECTED) {
-                _action.postValue(ReminderDetailsAction.DeleteReminderSuccess)
-            } else {
-                _action.postValue(ReminderDetailsAction.DeleteReminderError)
+            when (val result = remindersLocalRepository.deleteReminder(reminderItemView.mapToDataModel())) {
+                is ResultData.Success<*> -> {
+                    if (result.data as Int == RESULT_DATA_AFFECTED) {
+                        _action.postValue(ReminderDetailsAction.DeleteReminderSuccess)
+                    }
+                }
+                is ResultData.Error -> {
+                    _action.postValue(ReminderDetailsAction.DeleteReminderError)
+                }
             }
             _state.postValue(state.value?.copy(isLoading = false))
         }

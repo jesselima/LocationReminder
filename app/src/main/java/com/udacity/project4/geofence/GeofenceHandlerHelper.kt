@@ -53,13 +53,13 @@ class GeofenceHandlerHelper(private val context: Context) : KoinComponent, Corou
             else -> EMPTY
         }
 
-        val isExitOrEnter = geofencingEvent?.geofenceTransition == enterEvent ||
+        val isGeofenceEventExitOrEnter = geofencingEvent?.geofenceTransition == enterEvent ||
                 geofencingEvent?.geofenceTransition == exitEvent
 
         geofencingEvent?.triggeringGeofences?.let { geofences ->
             for (geofence in geofences) {
                 geofence?.requestId?.let { id ->
-                    if (isExitOrEnter) {
+                    if (isGeofenceEventExitOrEnter) {
                         CoroutineScope(coroutineContext).launch {
                             when (val result = remindersLocalRepository.getReminder(id)) {
                                 is ResultData.Success<*> -> {

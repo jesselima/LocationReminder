@@ -172,7 +172,7 @@ class RemindersDaoTest {
 
         // Then
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(result.size,  `is`(2))
+        assertThat(result?.size,  `is`(2))
     }
 
     @Test
@@ -181,7 +181,7 @@ class RemindersDaoTest {
         val result = database.reminderDao().getReminders()
 
         // Then
-        assertTrue(result.isEmpty())
+        assertTrue(result?.isEmpty() ?: false)
     }
 
     @Test
@@ -195,7 +195,7 @@ class RemindersDaoTest {
 
         // Then
         assertThat(result, CoreMatchers.notNullValue())
-        assertThat(result.size,  `is`(2))
+        assertThat(result?.size,  `is`(2))
 
         val resultDeleted = database.reminderDao().deleteAllReminders()
         assertThat(resultDeleted,  `is`(2))
@@ -224,7 +224,7 @@ class RemindersDaoTest {
         // Then
         assertThat(deletedResult,  `is`(1))
         assert(getReminderResult == null)
-        assertThat(remainingReminderResult.size,  `is`(1))
+        assertThat(remainingReminderResult?.size,  `is`(1))
     }
 
     @Test

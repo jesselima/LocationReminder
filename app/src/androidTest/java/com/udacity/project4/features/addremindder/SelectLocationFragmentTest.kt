@@ -27,7 +27,7 @@ class SelectLocationFragmentTest {
         AppViewAssertion.isTextDisplayed("Select location")
         AppViewAssertion.isViewIdWithTextDisplayed(
             R.id.textViewHowToSetLocation,
-            "Click anywhere on the map or any point\nof interest to select a location."
+            "Click anywhere on the map or any point of interest to select a location."
         )
         AppViewAssertion.isViewIdWithTextDisplayed(
             R.id.buttonGetSelectedLocation, "GET THIS LOCATION"

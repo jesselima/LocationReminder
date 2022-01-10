@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.features.addreminder.domain.usecase.InputValidatorsUseCase
+import com.udacity.project4.shareddata.localdatasource.models.ResultData
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepository
 import com.udacity.project4.shareddata.stub.ReminderStub
 import com.udacity.project4.sharedpresentation.mapToDataModel
@@ -221,7 +222,7 @@ class AddReminderViewModelTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
         whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(1)
+            .thenReturn(ResultData.Success(1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
         whenever(useCase.isLocationNameValid(any())).thenReturn(true)
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
@@ -237,7 +238,7 @@ class AddReminderViewModelTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
         whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(0)
+            .thenReturn(ResultData.Error(message = "Error saving reminder", statusCode = -1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
         whenever(useCase.isLocationNameValid(any())).thenReturn(true)
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
@@ -253,7 +254,7 @@ class AddReminderViewModelTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
         whenever(repository.updateReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(1)
+            .thenReturn(ResultData.Success(1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
         whenever(useCase.isLocationNameValid(any())).thenReturn(true)
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
@@ -269,7 +270,7 @@ class AddReminderViewModelTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
         whenever(repository.updateReminder(ReminderStub().reminderItemView.mapToDataModel()))
-            .thenReturn(0)
+            .thenReturn(ResultData.Error("UpdateReminder Error!", -1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
         whenever(useCase.isLocationNameValid(any())).thenReturn(true)
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)

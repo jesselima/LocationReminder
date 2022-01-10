@@ -98,9 +98,13 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun getReminders_should_set_NoRemindersFound_action_when_no_reminders_was_found() = mainCoroutineRule.runBlockingTest {
+    fun getReminders_should_set_NoRemindersFound_action_when_no_reminders_was_found()
+    = mainCoroutineRule.runBlockingTest {
         // Given
-        whenever(repository.getReminders()).thenReturn(ResultData.Success(emptyList()))
+        whenever(repository.getReminders()).thenReturn(ResultData.Error(
+            message = "Reminder not found!",
+            statusCode = 0)
+        )
         val initialState = RemindersState()
         val loadingState = initialState.copy(isLoading = true)
 
@@ -114,7 +118,8 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun getReminders_should_set_LoadRemindersError_action_when_no_reminders_was_found() = mainCoroutineRule.runBlockingTest {
+    fun getReminders_should_set_LoadRemindersError_action_when_no_reminders_was_found()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         whenever(repository.getReminders()).thenReturn(ResultData.Error("Ooops!"))
         val initialState = RemindersState()
@@ -132,11 +137,12 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun updateGeofenceStatus_should_set_UpdateRemindersSuccess_action_when_update_is_success() = mainCoroutineRule.runBlockingTest {
+    fun updateGeofenceStatus_should_set_UpdateRemindersSuccess_action_when_update_is_success()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         /** The return value is stands for the number of row update on the database */
         whenever(repository.updateGeofenceStatus(202112060802, true))
-            .thenReturn(1)
+            .thenReturn(ResultData.Success(1))
 
         // When
         viewModel.updateGeofenceStatusOnDatabase(202112060802, true)
@@ -146,10 +152,11 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun updateGeofenceStatus_should_set_UpdateRemindersError_action_when_update_is_error() = mainCoroutineRule.runBlockingTest {
+    fun updateGeofenceStatus_should_set_UpdateRemindersError_action_when_update_is_error()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         whenever(repository.updateGeofenceStatus(202112060802, true))
-            .thenReturn(0)
+            .thenReturn(ResultData.Error(message = "Delete Reminder Error!", statusCode = -1))
 
         // When
         viewModel.updateGeofenceStatusOnDatabase(202112060802, true)
@@ -159,11 +166,12 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun deleteAllReminders_should_set_UpdateRemindersSuccess_action_when_delete_is_success() = mainCoroutineRule.runBlockingTest {
+    fun deleteAllReminders_should_set_UpdateRemindersSuccess_action_when_delete_is_success()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         /** The return value is stands for the number of row deleted from the database */
         whenever(repository.deleteAllReminders())
-            .thenReturn(3)
+            .thenReturn(ResultData.Success(3))
 
         // When
         viewModel.deleteAllReminders()
@@ -173,11 +181,14 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun deleteAllReminders_should_set_UpdateRemindersError_action_when_delete_is_error() = mainCoroutineRule.runBlockingTest {
+    fun deleteAllReminders_should_set_UpdateRemindersError_action_when_delete_is_error()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         /** The return value is stands for the number of row deleted from the database */
         whenever(repository.deleteAllReminders())
-            .thenReturn(0)
+            .thenReturn(ResultData.Error(
+                message = "No Reminders have been deleted. Database is empty!", statusCode = 0)
+            )
 
         // When
         viewModel.deleteAllReminders()

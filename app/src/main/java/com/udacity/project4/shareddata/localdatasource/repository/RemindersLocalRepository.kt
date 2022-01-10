@@ -8,10 +8,10 @@ import com.udacity.project4.shareddata.localdatasource.models.ResultData
  */
 interface RemindersLocalRepository {
     suspend fun getReminders(): ResultData<List<ReminderData>>
-    suspend fun saveReminder(reminder: ReminderData): Long
+    suspend fun saveReminder(reminder: ReminderData): ResultData<Long>
     suspend fun getReminder(id: String): ResultData<ReminderData>
-    suspend fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean): Int
-    suspend fun updateReminder(reminder: ReminderData): Int
-    suspend fun deleteReminder(reminder: ReminderData): Int
-    suspend fun deleteAllReminders() : Int
+    suspend fun updateGeofenceStatus(reminderId: Long, isGeofenceEnable: Boolean): ResultData<Int>
+    suspend fun updateReminder(reminder: ReminderData): ResultData<Int>
+    suspend fun deleteReminder(reminder: ReminderData): ResultData<Int>
+    suspend fun deleteAllReminders() : ResultData<Int>
 }
