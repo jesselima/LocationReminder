@@ -3,6 +3,7 @@ package com.udacity.project4.features.addreminder.presentation
 
 import android.Manifest.permission
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -128,10 +129,11 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    @TargetApi(29)
     private fun requestLocationPermissions() {
-        locationPermissionRequest.launch(arrayOf(
-            permission.ACCESS_FINE_LOCATION,
-            permission.ACCESS_COARSE_LOCATION))
+        locationPermissionRequest.launch(
+            arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
+        )
     }
 
     /**
