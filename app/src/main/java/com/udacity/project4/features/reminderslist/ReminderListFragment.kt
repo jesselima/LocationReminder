@@ -56,11 +56,26 @@ class ReminderListFragment : Fragment() {
             }
             !shouldShowRequestPermissionRationale(ACCESS_BACKGROUND_LOCATION) -> {
                 // access to the location was denied, the user has checked the Don't ask again.
-                openAppSettings()
+                // openAppSettings()
+                activity?.showCustomDialog(
+                    context = requireContext(),
+                    title = getString(R.string.message_location_permission),
+                    message = getString(R.string.message_geofence_requires_location_permission),
+                    positiveButtonText = getString(R.string.enable_now),
+                    positiveButtonAction = { openAppSettings() },
+                    negativeButtonText = resources.getString(R.string.label_do_it_later)
+                )
             }
             else -> {
                 // No location access granted.
-                openAppSettings()
+                activity?.showCustomDialog(
+                    context = requireContext(),
+                    title = getString(R.string.message_location_permission),
+                    message = getString(R.string.message_geofence_requires_location_permission),
+                    positiveButtonText = getString(R.string.enable_now),
+                    positiveButtonAction = { requestPerMissions() },
+                    negativeButtonText = resources.getString(R.string.label_do_it_later)
+                )
             }
         }
     }
@@ -76,11 +91,25 @@ class ReminderListFragment : Fragment() {
             }
             !shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION) -> {
                 // access to the location was denied, the user has checked the Don't ask again.
-                openAppSettings()
+                activity?.showCustomDialog(
+                    context = requireContext(),
+                    title = getString(R.string.message_location_permission),
+                    message = getString(R.string.message_geofence_requires_location_permission),
+                    positiveButtonText = getString(R.string.enable_now),
+                    positiveButtonAction = { openAppSettings() },
+                    negativeButtonText = resources.getString(R.string.label_do_it_later)
+                )
             }
             else -> {
                 // No location access granted.
-                openAppSettings()
+                activity?.showCustomDialog(
+                    context = requireContext(),
+                    title = getString(R.string.message_location_permission),
+                    message = getString(R.string.message_geofence_requires_location_permission),
+                    positiveButtonText = getString(R.string.enable_now),
+                    positiveButtonAction = { requestPerMissions() },
+                    negativeButtonText = resources.getString(R.string.label_do_it_later)
+                )
             }
         }
     }
