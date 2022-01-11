@@ -85,17 +85,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showLocationPermissionDialog() {
-        activity?.showCustomDialog(
-            context = requireContext(),
-            title = getString(R.string.message_location_permission),
-            message = getString(R.string.message_show_map_location),
-            positiveButtonText = getString(R.string.label_allow_now),
-            positiveButtonAction = { openAppSettings() },
-            negativeButtonText = resources.getString(R.string.label_select_manually)
-        )
-    }
-
     override fun onResume() {
         super.onResume()
         if (hasRequiredLocationPermissions()) onPermissionAccepted()
@@ -125,13 +114,23 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 .getInstance().getErrorDialog(this, googlePlayServicesStatus, 10)
             dialog?.show()
         }
-        requestLocationPermissions()
     }
 
     @TargetApi(29)
     private fun requestLocationPermissions() {
         locationPermissionRequest.launch(
             arrayOf(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)
+        )
+    }
+
+    private fun showLocationPermissionDialog() {
+        activity?.showCustomDialog(
+            context = requireContext(),
+            title = getString(R.string.message_location_permission),
+            message = getString(R.string.message_show_map_location),
+            positiveButtonText = getString(R.string.label_allow_now),
+            positiveButtonAction = { openAppSettings() },
+            negativeButtonText = resources.getString(R.string.label_select_manually)
         )
     }
 

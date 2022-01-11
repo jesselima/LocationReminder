@@ -20,11 +20,13 @@ fun Activity.showCustomDialog(
     negativeButtonAction: (() -> Unit?)? = null,
     neutralButtonText: String? = null,
     neutralButtonAction: (() -> Unit?)? = null,
+    isCancelable: Boolean = true
 ) {
     context?.let {
         with(MaterialAlertDialogBuilder(it)) {
             setTitle(title)
             setMessage(message)
+            setCancelable(isCancelable)
             negativeButtonText?.let { negativeText ->
                 setNegativeButton(negativeText) { _, _ ->
                     negativeButtonAction?.invoke()

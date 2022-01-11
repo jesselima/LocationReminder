@@ -111,7 +111,8 @@
     <string name="notification_default_button">See reminder</string>
     <string name="message_request_background_location_title">Background location permission needed</string>
     <string name="message_location_permission">Location permission</string>
-    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS button below, then go to:\n\nPERMISSIONS > LOCATION > ALLOW ALL THE TIME.</string>
+    <string name="message_request_background_location_description_q_or_later">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS > Permissions > Location > Allow All the time.</string>
+    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS > Permissions > Location.</string>
     <string name="message_show_map_location">To show your location on the map you need to allow location permission. You can select your position on the map manually if you wish.</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
     <string name="geofence_error_geofence_not_available">Geofence not available</string>

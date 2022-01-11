@@ -31,8 +31,7 @@ fun Fragment.hasRequiredLocationPermissions(): Boolean {
 fun Fragment.checkDeviceLocationSettings(
     resolve: Boolean = true,
     requestCode: Int,
-    onLocationSettingsSuccess: (() -> Unit)? = null,
-    onLocationSettingsFailure: (() -> Unit)? = null
+    onLocationSettingsResult: ((Boolean) -> Unit)? = null,
 ) {
     val locationRequest = LocationRequest.create().apply {
         priority = LocationRequest.PRIORITY_LOW_POWER
@@ -43,7 +42,7 @@ fun Fragment.checkDeviceLocationSettings(
     val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
 
     locationSettingsResponseTask.addOnCompleteListener {
-        if (it.isSuccessful) onLocationSettingsSuccess?.invoke()
+        if (it.isSuccessful) onLocationSettingsResult?.invoke(true)
     }
 
     locationSettingsResponseTask.addOnFailureListener { exception ->
@@ -56,7 +55,7 @@ fun Fragment.checkDeviceLocationSettings(
                     "Error getting location settings resolution: " + sendEx.message)
             }
         } else {
-            onLocationSettingsFailure?.invoke()
+            onLocationSettingsResult?.invoke(false)
         }
     }
 }
