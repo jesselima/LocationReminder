@@ -66,12 +66,10 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         when {
             permissions.getOrDefault(permission.ACCESS_FINE_LOCATION, false) -> {
                 // Precise location access granted.
-                locationPermissionGranted = true
                 onPermissionAccepted()
             }
             permissions.getOrDefault(permission.ACCESS_COARSE_LOCATION, false) -> {
                 // Precise location access granted.
-                locationPermissionGranted = true
                 onPermissionAccepted()
             }
             !shouldShowRequestPermissionRationale(permission.ACCESS_COARSE_LOCATION) ||
@@ -127,6 +125,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
                 .getInstance().getErrorDialog(this, googlePlayServicesStatus, 10)
             dialog?.show()
         }
+        requestLocationPermissions()
     }
 
     @TargetApi(29)
