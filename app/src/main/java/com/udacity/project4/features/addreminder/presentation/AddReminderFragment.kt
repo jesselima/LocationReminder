@@ -155,7 +155,10 @@ class AddReminderFragment : Fragment() {
             positiveButtonAction = { openAppSettings() },
             negativeButtonText = resources.getString(R.string.save_without_geofence),
             negativeButtonAction = {
-                viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
+                viewModel.validateFieldsAndSaveOrUpdateReminder(
+                    isEditing = args.isEditing,
+                    shouldSaveWithoutGeofence = true,
+                )
             }
         )
     }
@@ -243,7 +246,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 extractInputValues()
-                viewModel.validateFieldsAndSaveOrUpdateReminder()
+                viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = args.isEditing)
             }
         }
     }
@@ -442,11 +445,7 @@ class AddReminderFragment : Fragment() {
                         navigateToReminderList()
                     }
                     is AddReminderAction.FormIsValid -> {
-                        if (_currentReminderData.isGeofenceEnable.not()) {
-                            viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
-                        } else {
-                            checkGeofenceRequirementsBeforeAddGeofence()
-                        }
+                        checkGeofenceRequirementsBeforeAddGeofence()
                     }
                 }
             }
@@ -476,11 +475,7 @@ class AddReminderFragment : Fragment() {
 
         reminder.id?.let { id ->
             if (args.isEditing) {
-                updateGeofenceStatus(
-                    reminderId = id,
-                    setGeofenceStatusOnDatabase = canAddGeofence && reminder.isGeofenceEnable
-                )
-
+                viewModel.proceedToSaveReminder(args.isEditing)
                 if(canAddGeofence && reminder.isGeofenceEnable) {
                     addGeofence(reminder)
                 } else {
@@ -538,7 +533,9 @@ class AddReminderFragment : Fragment() {
                 positiveButtonAction = { checkRequiredPermissions() },
                 negativeButtonText = resources.getString(R.string.save_without_geofence),
                 negativeButtonAction = {
-                    viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
+                    viewModel.validateFieldsAndSaveOrUpdateReminder(
+                        isEditing = args.isEditing,
+                        shouldSaveWithoutGeofence = true)
                 }
             )
         }

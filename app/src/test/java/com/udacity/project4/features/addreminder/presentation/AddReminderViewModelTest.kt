@@ -24,6 +24,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -218,9 +219,11 @@ class AddReminderViewModelTest {
     }
 
     @Test
-    fun saveReminder_should_set_AddReminderSuccess_when_form_is_valid_and_save_is_success() = mainCoroutineRule.runBlockingTest {
+    fun saveReminder_should_set_FormIsValid_when_form_is_valid_and_save_is_success()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
+
         whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel()))
             .thenReturn(ResultData.Success(1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
@@ -230,13 +233,34 @@ class AddReminderViewModelTest {
         // When
         viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
-        verify(observerAction).onChanged(AddReminderAction.AddReminderSuccess(1))
+        verify(observerAction).onChanged(AddReminderAction.FormIsValid)
     }
 
     @Test
-    fun saveReminder_should_set_AddReminderError_when_form_is_valid_and_save_is_error() = mainCoroutineRule.runBlockingTest {
+    fun saveReminder_should_set_ClearErrors_and_AddReminderSuccess_actions_when_form_is_valid_isGeofenceEnable_is_false_and_save_is_success()
+            = mainCoroutineRule.runBlockingTest {
+        // Given
+        viewModel.setSelectedReminder(ReminderStub().reminderItemView.copy(isGeofenceEnable = false))
+
+        whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel().copy(isGeofenceEnable = false)))
+            .thenReturn(ResultData.Success(1))
+        whenever(useCase.isTitleValid(any())).thenReturn(true)
+        whenever(useCase.isLocationNameValid(any())).thenReturn(true)
+        whenever(useCase.isDescriptionValid(any())).thenReturn(true)
+
+        // When
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
+
+        verify(observerAction).onChanged(AddReminderAction.AddReminderSuccess(id = 1))
+        verify(observerAction, times(3)).onChanged(AddReminderAction.ClearErrors)
+    }
+
+    @Test
+    fun saveReminder_should_set_FormIsValid_action_when_form_is_valid_and_save_is_error()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
+
         whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel()))
             .thenReturn(ResultData.Error(message = "Error saving reminder", statusCode = -1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
@@ -246,13 +270,33 @@ class AddReminderViewModelTest {
         // When
         viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
+        verify(observerAction).onChanged(AddReminderAction.FormIsValid)
+    }
+
+    @Test
+    fun saveReminder_should_set_AddReminderError_action_when_shouldSaveWithoutGeofence_is_true_and_form_is_valid_and_save_is_error()
+    = mainCoroutineRule.runBlockingTest {
+        // Given
+        viewModel.setSelectedReminder(ReminderStub().reminderItemView)
+
+        whenever(repository.saveReminder(ReminderStub().reminderItemView.mapToDataModel()))
+            .thenReturn(ResultData.Error(message = "Error saving reminder", statusCode = -1))
+        whenever(useCase.isTitleValid(any())).thenReturn(true)
+        whenever(useCase.isLocationNameValid(any())).thenReturn(true)
+        whenever(useCase.isDescriptionValid(any())).thenReturn(true)
+
+        // When
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false, shouldSaveWithoutGeofence = true)
+
         verify(observerAction).onChanged(AddReminderAction.AddReminderError)
     }
 
     @Test
-    fun updateReminder_should_set_UpdateReminderSuccess_when_form_is_valid_and_updated_is_success() = mainCoroutineRule.runBlockingTest {
+    fun updateReminder_should_set_FormIsValid_when_form_is_valid_and_updated_is_success()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
+
         whenever(repository.updateReminder(ReminderStub().reminderItemView.mapToDataModel()))
             .thenReturn(ResultData.Success(1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
@@ -260,15 +304,17 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = true)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
-        verify(observerAction).onChanged(AddReminderAction.UpdateReminderSuccess)
+        verify(observerAction).onChanged(AddReminderAction.FormIsValid)
     }
 
     @Test
-    fun updateReminder_should_set_UpdateReminderError_when_form_is_valid_and_update_is_error() = mainCoroutineRule.runBlockingTest {
+    fun updateReminder_should_set_FormIsValid_when_form_is_valid_and_update_is_error()
+    = mainCoroutineRule.runBlockingTest {
         // Given
         viewModel.setSelectedReminder(ReminderStub().reminderItemView)
+
         whenever(repository.updateReminder(ReminderStub().reminderItemView.mapToDataModel()))
             .thenReturn(ResultData.Error("UpdateReminder Error!", -1))
         whenever(useCase.isTitleValid(any())).thenReturn(true)
@@ -276,8 +322,8 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = true)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
-        verify(observerAction).onChanged(AddReminderAction.UpdateReminderError)
+        verify(observerAction).onChanged(AddReminderAction.FormIsValid)
     }
 }
