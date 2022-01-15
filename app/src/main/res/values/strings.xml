@@ -7,6 +7,10 @@
     <string name="logout">Logout</string>
     <string name="logout_confirmation_message">Do you really want to logout?</string>
     <string name="delete_account_title">Delete your account?</string>
+    <string name="delete_account_all_reminders_title">Do you really want to delete all reminders?</string>
+    <string name="delete_account_all_reminders_description">All reminders will be deleted and Geofences removed.\n\nTHIS ACTION CAN NOT BE UNDONE.</string>
+    <string name="delete_all_reminders_deleted_format">%s reminders have been deleted.</string>
+    <string name="delete_no_reminders_deleted_format">No reminders have been deleted.</string>
     <string name="delete_reminder_title">Delete reminder?</string>
     <string name="delete_account_confirmation_message">Do you really want to delete your account?</string>
     <string name="delete_reminder_confirmation_message">Do you really want to delete this reminder?</string>
@@ -58,6 +62,8 @@
     <string name="content_description_save_reminder">Save reminder</string>
     <string name="label_copyright">Copyrights</string>
     <string name="label_delete_account">Delete account</string>
+    <string name="label_delete_all_reminders">Delete all reminders</string>
+    <string name="label_delete_all_reminders_confirmation">Yes, Delete all.</string>
     <string name="label_source">Source</string>
     <string name="label_author">Author</string>
 

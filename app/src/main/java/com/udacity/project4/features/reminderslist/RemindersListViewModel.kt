@@ -13,6 +13,7 @@ import com.udacity.project4.sharedpresentation.mapToDataModel
 import kotlinx.coroutines.launch
 
 private const val RESULT_NO_DATA_DELETED = 0
+private const val RESULT_DELETED_DATA_ERROR = -1
 private const val NO_REMINDERS_DATA_FOUND = 0
 private const val RESULT_DATA_AFFECTED = 1
 private const val UPDATE_SUCCESS = 1
@@ -89,16 +90,22 @@ class RemindersListViewModel(
         }
     }
 
-    fun deleteAllReminders() {
+    fun deleteAllReminders(isAccountRemoval: Boolean = false) {
         viewModelScope.launch {
             when (val result = remindersLocalRepository.deleteAllReminders()) {
                 is ResultData.Success<*> -> {
                     if (result.data as Int >= RESULT_NO_DATA_DELETED) {
-                        _action.value = RemindersAction.DeleteAllRemindersSuccess
+                        _action.value = RemindersAction.DeleteAllRemindersProcess(
+                            isAccountRemoval, result.data
+                        )
+                        _state.value = state.value?.copy(isLoading = false, reminders = emptyList())
                     }
                 }
                 is ResultData.Error -> {
-                    _action.value = RemindersAction.DeleteAllRemindersError
+                    _action.value = RemindersAction.DeleteAllRemindersProcess(
+                        isAccountRemoval, RESULT_DELETED_DATA_ERROR
+                    )
+                    _state.value = state.value?.copy(isLoading = false)
                 }
             }
         }

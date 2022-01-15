@@ -228,7 +228,7 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsSaveOrUpdateReminder(isEditing = false)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
         verify(observerAction).onChanged(AddReminderAction.AddReminderSuccess(1))
     }
@@ -244,7 +244,7 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsSaveOrUpdateReminder(isEditing = false)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = false)
 
         verify(observerAction).onChanged(AddReminderAction.AddReminderError)
     }
@@ -260,7 +260,7 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsSaveOrUpdateReminder(isEditing = true)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = true)
 
         verify(observerAction).onChanged(AddReminderAction.UpdateReminderSuccess)
     }
@@ -276,7 +276,7 @@ class AddReminderViewModelTest {
         whenever(useCase.isDescriptionValid(any())).thenReturn(true)
 
         // When
-        viewModel.validateFieldsSaveOrUpdateReminder(isEditing = true)
+        viewModel.validateFieldsAndSaveOrUpdateReminder(isEditing = true)
 
         verify(observerAction).onChanged(AddReminderAction.UpdateReminderError)
     }

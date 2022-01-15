@@ -154,7 +154,9 @@ class AddReminderFragment : Fragment() {
             positiveButtonText = getString(R.string.settings),
             positiveButtonAction = { openAppSettings() },
             negativeButtonText = resources.getString(R.string.save_without_geofence),
-            negativeButtonAction = { viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing) }
+            negativeButtonAction = {
+                viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
+            }
         )
     }
 
@@ -241,7 +243,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 extractInputValues()
-                checkGeofenceRequirementsBeforeAddGeofence()
+                viewModel.validateFieldsAndSaveOrUpdateReminder()
             }
         }
     }
@@ -329,7 +331,7 @@ class AddReminderFragment : Fragment() {
                 }
 
                 progressBar.isVisible = state.isLoading
-                actionButtonSaveReminder.isVisible = state.isLoading.not()
+                actionButtonSaveReminder.isEnabled = state.isLoading.not()
             }
         }
     }
@@ -365,9 +367,7 @@ class AddReminderFragment : Fragment() {
                             hasRequiredLocationPermissions().not() -> {
                                 updateGeofenceStatus(reminderId = action.id)
                             }
-                            _currentReminderData.isGeofenceEnable -> {
-                                navigateToReminderList()
-                            }
+                            else -> navigateToReminderList()
                         }
                     }
                     is AddReminderAction.UpdateReminderSuccess -> {
@@ -425,7 +425,7 @@ class AddReminderFragment : Fragment() {
                         inputLayoutLocationName.error = null
                         inputLayoutDescription.error = null
                     }
-                    AddReminderAction.StatusUpdatedSuccess -> {
+                    is AddReminderAction.StatusUpdatedSuccess -> {
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_success,
                             toastType = ToastType.INFO,
@@ -433,13 +433,20 @@ class AddReminderFragment : Fragment() {
                         )
                         navigateToReminderList()
                     }
-                    AddReminderAction.StatusUpdateError -> {
+                    is AddReminderAction.StatusUpdateError -> {
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_status_error,
                             toastType = ToastType.INFO,
                             durationToast = Toast.LENGTH_LONG
                         )
                         navigateToReminderList()
+                    }
+                    is AddReminderAction.FormIsValid -> {
+                        if (_currentReminderData.isGeofenceEnable.not()) {
+                            viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
+                        } else {
+                            checkGeofenceRequirementsBeforeAddGeofence()
+                        }
                     }
                 }
             }
@@ -477,19 +484,26 @@ class AddReminderFragment : Fragment() {
                 if(canAddGeofence && reminder.isGeofenceEnable) {
                     addGeofence(reminder)
                 } else {
+                    removeGeofence(reminder)
+                }
+            }
+        } ?: run {
+
+            viewModel.setSelectedReminder(reminder.copy(
+                isGeofenceEnable = canAddGeofence && reminder.isGeofenceEnable)
+            )
+
+            viewModel.proceedToSaveReminder(args.isEditing)
+
+            if (canAddGeofence) {
+                addGeofence(reminder)
+            } else {
+                if (reminder.isGeofenceEnable) {
                     context?.showCustomToast(
                         titleResId = R.string.message_geofence_not_added_check_device_location_permission,
                         toastType = ToastType.WARNING
                     )
                 }
-            }
-        } ?: run {
-            viewModel.setSelectedReminder(reminder.copy(
-                isGeofenceEnable = canAddGeofence && reminder.isGeofenceEnable)
-            )
-            viewModel.validateFieldsSaveOrUpdateReminder()
-            if (canAddGeofence) {
-                addGeofence(reminder)
             }
         }
     }
@@ -524,7 +538,7 @@ class AddReminderFragment : Fragment() {
                 positiveButtonAction = { checkRequiredPermissions() },
                 negativeButtonText = resources.getString(R.string.save_without_geofence),
                 negativeButtonAction = {
-                    viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
+                    viewModel.validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence = true)
                 }
             )
         }

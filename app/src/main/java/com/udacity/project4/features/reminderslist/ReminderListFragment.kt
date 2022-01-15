@@ -36,6 +36,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PENDING_INTENT_REQUEST_CODE = 0
+const val NO_RESULT = 0
 
 class ReminderListFragment : Fragment() {
 
@@ -202,13 +203,34 @@ class ReminderListFragment : Fragment() {
                         toastType = ToastType.ERROR
                     )
                 }
-                is RemindersAction.DeleteAllRemindersSuccess,
-                is RemindersAction.DeleteAllRemindersError -> {
-                    deleteAccount()
+                is RemindersAction.DeleteAllRemindersProcess -> {
+                    if (action.isAccountRemoval) {
+                        deleteAccount()
+                    } else {
+                        showDeletedAllRemindersSnackbar(action.remindersDeleted)
+                    }
                 }
                 else -> binding.noDataTextView.isVisible = false
             }
         }
+    }
+
+    private fun showDeletedAllRemindersSnackbar(remindersDeleted: Int) {
+        Snackbar.make(
+            binding.root,
+            if (remindersDeleted > NO_RESULT) {
+                String.format(
+                    getString(R.string.delete_all_reminders_deleted_format),
+                    remindersDeleted
+                )
+            } else {
+                getString(R.string.delete_no_reminders_deleted_format)
+            },
+            Snackbar.LENGTH_LONG
+        )
+        .setAction(getString(R.string.dismiss)) { }
+        .setAnchorView(R.id.actionButtonAddReminder)
+        .show()
     }
 
     private fun setupListeners() {
@@ -246,6 +268,19 @@ class ReminderListFragment : Fragment() {
                         message = getString(R.string.delete_account_confirmation_message),
                         negativeButtonText = getString(R.string.label_cancel),
                         positiveButtonText = getString(R.string.label_delete_account),
+                        positiveButtonAction = {
+                            viewModel.deleteAllReminders(isAccountRemoval = true)
+                        }
+                    )
+                    true
+                }
+                R.id.delete_all_reminders -> {
+                    activity?.showCustomDialog(
+                        context = context,
+                        title = getString(R.string.delete_account_all_reminders_title),
+                        message = getString(R.string.delete_account_all_reminders_description),
+                        negativeButtonText = getString(R.string.label_cancel),
+                        positiveButtonText = getString(R.string.label_delete_all_reminders),
                         positiveButtonAction = {
                             viewModel.deleteAllReminders()
                         }

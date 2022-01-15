@@ -166,10 +166,10 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun deleteAllReminders_should_set_UpdateRemindersSuccess_action_when_delete_is_success()
+    fun deleteAllReminders_should_set_DeleteAllRemindersProcess_action_when_isAccountRemoval_is_FALSE_delete_is_success()
     = mainCoroutineRule.runBlockingTest {
         // Given
-        /** The return value is stands for the number of row deleted from the database */
+        /** The return value stands for the number of row deleted from the database */
         whenever(repository.deleteAllReminders())
             .thenReturn(ResultData.Success(3))
 
@@ -177,23 +177,31 @@ class RemindersListViewModelTest {
         viewModel.deleteAllReminders()
 
         // Then
-        verify(observerAction).onChanged(RemindersAction.DeleteAllRemindersSuccess)
+        verify(observerAction).onChanged(
+            RemindersAction.DeleteAllRemindersProcess(
+                isAccountRemoval = false,
+                remindersDeleted = 3
+            )
+        )
     }
 
     @Test
-    fun deleteAllReminders_should_set_UpdateRemindersError_action_when_delete_is_error()
-    = mainCoroutineRule.runBlockingTest {
+    fun deleteAllReminders_should_set_DeleteAllRemindersProcess_action_when_isAccountRemoval_is_TRUE_delete_is_success()
+            = mainCoroutineRule.runBlockingTest {
         // Given
-        /** The return value is stands for the number of row deleted from the database */
+        /** The return value stands for the number of row deleted from the database */
         whenever(repository.deleteAllReminders())
-            .thenReturn(ResultData.Error(
-                message = "No Reminders have been deleted. Database is empty!", statusCode = 0)
-            )
+            .thenReturn(ResultData.Success(3))
 
         // When
-        viewModel.deleteAllReminders()
+        viewModel.deleteAllReminders(isAccountRemoval = true)
 
         // Then
-        verify(observerAction).onChanged(RemindersAction.DeleteAllRemindersError)
+        verify(observerAction).onChanged(
+            RemindersAction.DeleteAllRemindersProcess(
+                isAccountRemoval = true,
+                remindersDeleted = 3
+            )
+        )
     }
 }

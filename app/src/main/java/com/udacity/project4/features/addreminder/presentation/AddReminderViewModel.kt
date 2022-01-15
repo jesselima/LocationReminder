@@ -36,17 +36,29 @@ class AddReminderViewModel(
         reminder?.let { _state.value = state.value?.copy(selectedReminder = it) }
     }
 
-    fun validateFieldsSaveOrUpdateReminder(isEditing: Boolean = false) {
+    fun validateFieldsAndSaveOrUpdateReminder(shouldSaveWithoutGeofence: Boolean = false) {
         if (isLocationNameValid(state.value?.selectedReminder?.locationName) &&
             isTitleValid(state.value?.selectedReminder?.title) &&
             isDescriptionValid(state.value?.selectedReminder?.description) &&
             isLatLngValid()
         ) {
-            state.value?.selectedReminder?.let {
-                if (isEditing) {
-                    updateReminder(it)
+            if (shouldSaveWithoutGeofence) {
+                proceedToSaveReminder(isEditing = false, shouldSaveWithoutGeofence)
+            } else {
+                _action.value = AddReminderAction.FormIsValid
+            }
+        }
+    }
+
+    fun proceedToSaveReminder(isEditing: Boolean, shouldSaveWithoutGeofence: Boolean = false) {
+        state.value?.selectedReminder?.let {
+            if (isEditing) {
+                updateReminder(it)
+            } else {
+                if (shouldSaveWithoutGeofence) {
+                    saveReminder(it.copy(isGeofenceEnable = false))
                 } else {
-                    saveReminder(it)
+                    saveReminder(reminder = it)
                 }
             }
         }

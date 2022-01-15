@@ -13,4 +13,8 @@
         android:id="@+id/delete_account"
         android:title="@string/label_delete_account"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_all_reminders"
+        android:title="@string/label_delete_all_reminders"
+        app:showAsAction="never" />
 </menu>

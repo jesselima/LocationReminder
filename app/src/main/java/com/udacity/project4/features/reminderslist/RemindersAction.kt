@@ -8,6 +8,8 @@ sealed class RemindersAction {
     object UpdateRemindersError: RemindersAction()
     object DeleteRemindersSuccess: RemindersAction()
     object DeleteRemindersError: RemindersAction()
-    object DeleteAllRemindersSuccess: RemindersAction()
-    object DeleteAllRemindersError: RemindersAction()
+    data class DeleteAllRemindersProcess(
+        val isAccountRemoval: Boolean,
+        val remindersDeleted: Int
+    ): RemindersAction()
 }
