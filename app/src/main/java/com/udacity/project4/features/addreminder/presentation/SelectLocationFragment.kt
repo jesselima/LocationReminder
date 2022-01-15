@@ -32,7 +32,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.common.extensions.hasRequiredLocationPermissions
 import com.udacity.project4.common.extensions.isPermissionGranted
 import com.udacity.project4.common.extensions.openAppSettings
 import com.udacity.project4.common.extensions.showCustomDialog
@@ -85,11 +84,6 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (hasRequiredLocationPermissions()) onPermissionAccepted()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -126,7 +120,7 @@ class SelectLocationFragment : Fragment(), OnMapReadyCallback {
     private fun showLocationPermissionDialog() {
         activity?.showCustomDialog(
             context = requireContext(),
-            title = getString(R.string.message_location_permission),
+            title = getString(R.string.message_permission_location_title),
             message = getString(R.string.message_show_map_location),
             positiveButtonText = getString(R.string.label_allow_now),
             positiveButtonAction = { openAppSettings() },

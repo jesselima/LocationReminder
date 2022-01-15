@@ -25,6 +25,8 @@
     <dimen name="spacing_very_large_05">150dp</dimen>
     <dimen name="spacing_very_large_06">200dp</dimen>
 
+    <dimen name="toast_default_width">300dp</dimen>
+
     <dimen name="slider_width">200dp</dimen>
 
     <dimen name="icon_size_small">40dp</dimen>

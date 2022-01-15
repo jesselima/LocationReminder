@@ -19,6 +19,7 @@
     <string name="lat_long_snippet">Lat: %1$.5f - Long: %2$.5f</string>
     <string name="dropped_pin">Set a reminder for this place</string>
     <string name="settings">Settings</string>
+    <string name="check_permission">Check permissions</string>
     <string name="geofence_added">Geofence added</string>
     <string name="geofence_removed">Geofence removed</string>
     <string name="text_button_select_location">Select location</string>
@@ -95,9 +96,10 @@
     <string name="message_update_reminder_error">Ooops! Error updating reminder!</string>
     <string name="message_update_reminder_status_error">Ooops! Error updating reminder status.</string>
     <string name="message_update_reminder_success">Reminder updated!</string>
+    <string name="message_update_reminder_success_format">Reminder updated! %s</string>
     <string name="message_update_reminder_error_review">Geofence status not changed. Please, Check device location and location permission.</string>
     <string name="message_geofence_not_added_check_device_location_permission">Geofence not added. Please, Check device location or permission.</string>
-    <string name="message_geofence_not_added_it_need_enable_manually">Geofence not added. You need to manually enable it.</string>
+    <string name="message_geofence_not_added_it_need_enable_manually">Geofence disabled for this reminder. You need to manually enable it later.</string>
     <string name="message_delete_reminder_success">Reminder deleted!</string>
     <string name="message_delete_reminder_error">Error deleting reminder!</string>
     <string name="message_get_reminder_error">Error getting reminder info!</string>
@@ -109,10 +111,14 @@
     <string name="geofence_error_generic_info">Geofence error: %s</string>
 
     <string name="notification_default_button">See reminder</string>
-    <string name="message_request_background_location_title">Background location permission needed</string>
-    <string name="message_location_permission">Location permission</string>
+    <string name="message_permission_background_location_title">Background location permission needed</string>
+    <string name="message_permission_background_location_description">Please, set Background Location Permission to \'Allow all the time\' to get geofence alerts.\n\nYou can save the reminder without geofence and setup it later from the reminder list.</string>
+    <string name="message_permission_location_description">Please, set Location Permission to \'Allow all the time\' to get geofence alerts.</string>
+    <string name="message_permission_location_title">Location permission needed</string>
     <string name="message_request_background_location_description_q_or_later">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS > Permissions > Location > Allow All the time.</string>
-    <string name="message_request_background_location_description">The App needs to access the background location to properly show location based alerts.\n\nPlease, click on SETTINGS > Permissions > Location.</string>
+    <string name="message_request_background_location_description_q_or_later_short">The App needs to access the background location to properly show location based alerts.</string>
+    <string name="message_request_background_location_description">The App needs to access the location to properly show location based alerts.\n\nPlease, click on SETTINGS > Permissions > Location.</string>
+    <string name="message_request_background_location_description_short">The App needs to access the location to properly show location based alerts.</string>
     <string name="message_show_map_location">To show your location on the map you need to allow location permission. You can select your position on the map manually if you wish.</string>
     <string name="geofence_error_background_permission_required">Background permission required.</string>
     <string name="geofence_error_geofence_not_available">Geofence not available</string>
@@ -163,6 +169,7 @@
     <string name="message_geofence_requires_location_permission">Geofences alerts requires Background Location permission.</string>
     <string name="location_required_error">Geofences alerts requires Background Location permission.</string>
     <string name="label_do_it_later">Do it later</string>
+    <string name="save_without_geofence">Save without Geofence</string>
     <string name="label_select_manually">Select manually</string>
     <string name="label_allow_now">Allow now</string>
     <string name="agreed_button_label">I agreed</string>

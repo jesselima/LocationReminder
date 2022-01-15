@@ -60,6 +60,7 @@ class AddReminderFragment : Fragment() {
     private val args: AddReminderFragmentArgs by navArgs()
 
     private val isRunningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    private var isDeviceLocationEnabled = false
 
     private val backgroundLocationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -75,7 +76,8 @@ class AddReminderFragment : Fragment() {
             }
             else -> {
                 // No location access granted.
-                _currentReminderData.id?.let {id -> updateGeofenceStatus(reminderId = id) }
+                showLocationPermissionDialog()
+                // _currentReminderData.id?.let {id -> updateGeofenceStatus(reminderId = id) }
             }
         }
     }
@@ -125,27 +127,34 @@ class AddReminderFragment : Fragment() {
         geofenceClient = LocationServices.getGeofencingClient(requireActivity())
     }
 
+    @TargetApi(29)
+    private fun checkRequiredPermissions() {
+        if (isRunningQOrLater) {
+            backgroundLocationPermissionRequest.launch(arrayOf(ACCESS_BACKGROUND_LOCATION))
+        } else {
+            locationPermissionRequest.launch(
+                arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+            )
+        }
+    }
+
     private fun showLocationPermissionDialog() {
         activity?.showCustomDialog(
             context = requireContext(),
             title = if (isRunningQOrLater) {
-                getString(R.string.message_request_background_location_title)
+                getString(R.string.message_permission_background_location_title)
             } else {
-                getString(R.string.message_location_permission)
+                getString(R.string.message_permission_location_title)
             },
             message = if (isRunningQOrLater) {
-                getString(R.string.message_request_background_location_description_q_or_later)
+                getString(R.string.message_permission_background_location_description)
             } else {
-                getString(R.string.message_request_background_location_description)
+                getString(R.string.message_permission_location_description)
             },
             positiveButtonText = getString(R.string.settings),
             positiveButtonAction = { openAppSettings() },
-            negativeButtonText = resources.getString(R.string.label_do_it_later),
-            negativeButtonAction = {
-                _currentReminderData.id?.let { id ->
-                    updateGeofenceStatus(reminderId = id)
-                }
-            }
+            negativeButtonText = resources.getString(R.string.save_without_geofence),
+            negativeButtonAction = { viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing) }
         )
     }
 
@@ -232,7 +241,7 @@ class AddReminderFragment : Fragment() {
 
             actionButtonSaveReminder.setOnClickListener {
                 extractInputValues()
-                viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
+                checkGeofenceRequirementsBeforeAddGeofence()
             }
         }
     }
@@ -352,26 +361,26 @@ class AddReminderFragment : Fragment() {
                             offSetY = TOAST_POSITION_ELEVATED
                         )
 
-                        if (_currentReminderData.isGeofenceEnable) {
-                            _currentReminderData.id = action.id
-                            //checkRequiredPermissions()
-                            checkGeofenceRequirementsBeforeAddGeofence()
-                        } else {
-                            navigateToReminderList()
+                        when {
+                            hasRequiredLocationPermissions().not() -> {
+                                updateGeofenceStatus(reminderId = action.id)
+                            }
+                            _currentReminderData.isGeofenceEnable -> {
+                                navigateToReminderList()
+                            }
                         }
                     }
                     is AddReminderAction.UpdateReminderSuccess -> {
-                        if (_currentReminderData.isGeofenceEnable) {
-                            //checkRequiredPermissions()
-                            checkGeofenceRequirementsBeforeAddGeofence()
-                        } else {
-                            removeGeofence(_currentReminderData)
-                        }
                         context?.showCustomToast(
                             titleResId = R.string.message_update_reminder_success,
                             toastType = ToastType.SUCCESS,
                             offSetY = TOAST_POSITION_ELEVATED
                         )
+                        if (_currentReminderData.isGeofenceEnable.not()) {
+                            removeGeofence(_currentReminderData)
+                        } else {
+                            navigateToReminderList()
+                        }
                     }
                     is AddReminderAction.InputErrorFieldTitle -> {
                         inputLayoutTitle.isErrorEnabled = true
@@ -418,7 +427,7 @@ class AddReminderFragment : Fragment() {
                     }
                     AddReminderAction.StatusUpdatedSuccess -> {
                         context?.showCustomToast(
-                            titleResId = R.string.message_geofence_not_added_it_need_enable_manually,
+                            titleResId = R.string.message_update_reminder_success,
                             toastType = ToastType.INFO,
                             durationToast = Toast.LENGTH_LONG
                         )
@@ -437,41 +446,95 @@ class AddReminderFragment : Fragment() {
         }
     }
 
+    private fun resolveLocationSettings(resolve: Boolean) {
+        checkDeviceLocationSettings(
+            resolve = resolve,
+            requestCode = REQUEST_TURN_DEVICE_LOCATION_ON,
+            onLocationSettingsResult = { isDeviceLocationStatus ->
+                isDeviceLocationEnabled = isDeviceLocationStatus
+                checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
+                    reminder = _currentReminderData,
+                    isDeviceLocationEnabled = isDeviceLocationStatus
+                )
+            }
+        )
+    }
+
     private fun checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
         reminder: ReminderItemView,
         isDeviceLocationEnabled: Boolean
     ) {
+
+        val canAddGeofence = hasRequiredLocationPermissions() && isDeviceLocationEnabled
+
         reminder.id?.let { id ->
-            /**
-             * If the user did not select the switch button to enable Reminder Geofence, then
-             * The Reminder is only saved on data database. And the user will need to add gGeofence
-             * manually from the Reminders List or editing the reminder individually.
-             * */
-            if (reminder.isGeofenceEnable.not()) {
-                updateGeofenceStatus(reminderId = id)
-            } else {
-                /**
-                 *  When the user has selected GeofenceEnable switch button, the Geofence
-                 *  requirements (permissions and Device Location) are satisfied the Geofence is
-                 *  added, otherwise the Geofence is not added and the property isGeofenceEnable is
-                 *  updated on the database false to reflect the current Geofence status for the
-                 *  current reminder.
-                 *  */
-                if(hasRequiredLocationPermissions() && isDeviceLocationEnabled) {
+            if (args.isEditing) {
+                updateGeofenceStatus(
+                    reminderId = id,
+                    setGeofenceStatusOnDatabase = canAddGeofence && reminder.isGeofenceEnable
+                )
+
+                if(canAddGeofence && reminder.isGeofenceEnable) {
                     addGeofence(reminder)
                 } else {
                     context?.showCustomToast(
                         titleResId = R.string.message_geofence_not_added_check_device_location_permission,
                         toastType = ToastType.WARNING
                     )
-                    /**
-                     * At this point the user has not enabled Device location. For this reason
-                     * The geofence flag must be set to false on the data base to represent the
-                     * real geofence status
-                     * */
-                    updateGeofenceStatus(reminderId = id)
                 }
             }
+        } ?: run {
+            viewModel.setSelectedReminder(reminder.copy(
+                isGeofenceEnable = canAddGeofence && reminder.isGeofenceEnable)
+            )
+            viewModel.validateFieldsSaveOrUpdateReminder()
+            if (canAddGeofence) {
+                addGeofence(reminder)
+            }
+        }
+    }
+
+    /**
+     * Starts the permission check and Geofence process only if the Geofence associated with the
+     * current hint isn't yet active.
+     */
+    @TargetApi(29)
+    private fun checkGeofenceRequirementsBeforeAddGeofence() {
+        /**
+         * If The required permissions are allowed, then resolveLocationSettings() can be called
+         * to check if the device location settings is ON.
+         * */
+        if (hasRequiredLocationPermissions()) {
+            resolveLocationSettings(true)
+        } else {
+            activity?.showCustomDialog(
+                isCancelable = false,
+                context = requireContext(),
+                title = if (isRunningQOrLater) {
+                    getString(R.string.message_permission_background_location_title)
+                } else {
+                    getString(R.string.message_permission_location_title)
+                },
+                message = if (isRunningQOrLater) {
+                    getString(R.string.message_request_background_location_description_q_or_later_short)
+                } else {
+                    getString(R.string.message_request_background_location_description_short)
+                },
+                positiveButtonText = getString(R.string.check_permission),
+                positiveButtonAction = { checkRequiredPermissions() },
+                negativeButtonText = resources.getString(R.string.save_without_geofence),
+                negativeButtonAction = {
+                    viewModel.validateFieldsSaveOrUpdateReminder(args.isEditing)
+                }
+            )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
+            // We don't rely on the result code, but just check the location setting again
+            resolveLocationSettings(false)
         }
     }
 
@@ -527,8 +590,7 @@ class AddReminderFragment : Fragment() {
     private fun onAddGeofenceSuccess() {
         context?.showCustomToast(
             titleResId = R.string.geofence_added,
-            offSetY = TOAST_POSITION_ELEVATED,
-            toastType = ToastType.INFO
+            toastType = ToastType.SUCCESS
         )
         navigateToReminderList()
     }
@@ -547,80 +609,6 @@ class AddReminderFragment : Fragment() {
     private fun navigateToReminderList() {
         startActivity(Intent(activity?.applicationContext, RemindersActivity::class.java))
         activity?.finish()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
-            // We don't rely on the result code, but just check the location setting again
-            resolveLocationSettings(false)
-        }
-    }
-
-    private fun resolveLocationSettings(resolve: Boolean) {
-        checkDeviceLocationSettings(
-            resolve = resolve,
-            requestCode = REQUEST_TURN_DEVICE_LOCATION_ON,
-            onLocationSettingsResult = { isDeviceLocationActive ->
-                checkGeofenceRequirementsAndAddGeofenceOrUpdateDatabase(
-                    _currentReminderData, isDeviceLocationActive
-                )
-            }
-        )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (hasRequiredLocationPermissions()) checkGeofenceRequirementsBeforeAddGeofence()
-    }
-
-    /**
-     * Starts the permission check and Geofence process only if the Geofence associated with the
-     * current hint isn't yet active.
-     */
-    @TargetApi(29)
-    private fun checkGeofenceRequirementsBeforeAddGeofence() {
-        /**
-         * If The required permissions are allowed, then resolveLocationSettings() can be called
-         * to check if the device location settings is ON.
-         * */
-        if (hasRequiredLocationPermissions()) {
-            resolveLocationSettings(true)
-        } else {
-            activity?.showCustomDialog(
-                isCancelable = false,
-                context = requireContext(),
-                title = if (isRunningQOrLater) {
-                    getString(R.string.message_request_background_location_title)
-                } else {
-                    getString(R.string.message_location_permission)
-                },
-                message = if (isRunningQOrLater) {
-                    getString(R.string.message_request_background_location_description_q_or_later)
-                } else {
-                    getString(R.string.message_request_background_location_description)
-                },
-                positiveButtonText = getString(R.string.settings),
-                positiveButtonAction = { checkRequiredPermissions() },
-                negativeButtonText = resources.getString(R.string.label_do_it_later),
-                negativeButtonAction = {
-                    _currentReminderData.id?.let { id ->
-                        updateGeofenceStatus(reminderId = id)
-                    }
-                }
-            )
-        }
-    }
-
-    @TargetApi(29)
-    private fun checkRequiredPermissions() {
-        if (isRunningQOrLater) {
-            backgroundLocationPermissionRequest.launch(arrayOf(ACCESS_BACKGROUND_LOCATION))
-        } else {
-            locationPermissionRequest.launch(
-                arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
-            )
-        }
     }
 
     companion object {
