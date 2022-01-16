@@ -144,6 +144,7 @@
     <string name="content_description_alert_exit">Alert will be triggered when you exit in the area</string>
     <string name="circular_radius">Circular radius</string>
     <string name="circular_radius_unit">%s meters</string>
+    <string name="circular_radius_unit_format">%s meters\nAlert when %s</string>
     <string name="circular_radius_unit_initial_value">50 meters</string>
     <string name="expiration_duration">Expiration duration</string>
     <string name="expiration_duration_input_helper_text">Reminder life span type</string>

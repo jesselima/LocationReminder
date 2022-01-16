@@ -161,9 +161,18 @@ class ReminderDetailsFragment : Fragment() {
                 }
 
                 textCurrentCircularRadius.text = String.format(
-                    getString(R.string.circular_radius_unit),
-                    reminder.circularRadius.toInt().toString()
+                    getString(R.string.circular_radius_unit_format),
+                    reminder.circularRadius.toInt().toString(),
+                    when (reminder.transitionType) {
+                        Geofence.GEOFENCE_TRANSITION_ENTER -> {
+                            getString(R.string.label_enter_lowercase).uppercase()
+                        }
+                        else -> {
+                            getString(R.string.label_exit_lowercase).uppercase()
+                        }
+                    }
                 )
+
                 reminderLocationCoordinatesLat.text =
                     String.format(FORMAT_LAT_LNG_DECIMALS, reminder.latitude)
                 reminderLocationCoordinatesLong.text =

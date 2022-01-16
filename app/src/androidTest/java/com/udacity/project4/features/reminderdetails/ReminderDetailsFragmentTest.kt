@@ -91,7 +91,7 @@ class ReminderDetailsFragmentTest {
         isTextDisplayed("Meat, drinks, tomato")
         isTextDisplayed("-23.6963")
         isTextDisplayed("-46.6691")
-        isTextDisplayed("450 meters")
+        isTextDisplayed("450 meters\nAlert when EXIT")
         isTextDisplayed("Circular radius (meters) and\nalert type (enter or exit)")
         isTextDisplayed("Geofence is disabled")
         isViewDisplayed(R.id.imageReminderGeofenceStatusDisabled)
