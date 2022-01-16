@@ -200,9 +200,9 @@ class ReminderDetailsFragment : Fragment() {
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {
-        geofenceManager.removeGeofence(
+        geofenceManager.removeGeofences(
             geofenceClient,
-            reminder.id.toString(),
+            listOf(reminder.id.toString()),
             onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
             onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
         )

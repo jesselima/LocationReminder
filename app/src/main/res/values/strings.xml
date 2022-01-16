@@ -26,6 +26,7 @@
     <string name="check_permission">Check permissions</string>
     <string name="geofence_added">Geofence added</string>
     <string name="geofence_removed">Geofence removed</string>
+    <string name="geofence_batch_removal">All Geofences removed</string>
     <string name="text_button_select_location">Select location</string>
     <string name="action_click_on_the_map">Click on the map</string>
     <string name="text_button_change_location">Change location</string>

@@ -12,4 +12,7 @@ sealed class RemindersAction {
         val isAccountRemoval: Boolean,
         val remindersDeleted: Int
     ): RemindersAction()
+    data class RemoveGeofencesProcess(
+        val remindersIds: List<String>
+    ): RemindersAction()
 }

@@ -91,7 +91,23 @@ class RemindersListViewModel(
     }
 
     fun deleteAllReminders(isAccountRemoval: Boolean = false) {
+        _state.value = state.value?.copy(isLoading = true)
+
         viewModelScope.launch {
+
+            val remindersIdsFromDatabase = ArrayList<String>()
+
+            when (val result = remindersLocalRepository.getReminders()) {
+                is ResultData.Success<*> -> {
+                    remindersIdsFromDatabase.addAll((result.data as List<ReminderData>).map { reminder ->
+                        reminder.id.toString()
+                    })
+                }
+                is ResultData.Error ->  {
+                    // Do nothing
+                }
+            }
+
             when (val result = remindersLocalRepository.deleteAllReminders()) {
                 is ResultData.Success<*> -> {
                     if (result.data as Int >= RESULT_NO_DATA_DELETED) {
@@ -100,6 +116,7 @@ class RemindersListViewModel(
                         )
                         _state.value = state.value?.copy(isLoading = false, reminders = emptyList())
                     }
+                    _action.value = RemindersAction.RemoveGeofencesProcess(remindersIdsFromDatabase)
                 }
                 is ResultData.Error -> {
                     _action.value = RemindersAction.DeleteAllRemindersProcess(

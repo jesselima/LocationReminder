@@ -473,33 +473,25 @@ class AddReminderFragment : Fragment() {
 
         val canAddGeofence = hasRequiredLocationPermissions() && isDeviceLocationEnabled
 
-        reminder.id?.let { id ->
-            if (args.isEditing) {
-                viewModel.proceedToSaveReminder(args.isEditing)
-                if(canAddGeofence && reminder.isGeofenceEnable) {
-                    addGeofence(reminder)
-                } else {
-                    removeGeofence(reminder)
-                }
-            }
-        } ?: run {
-
-            viewModel.setSelectedReminder(reminder.copy(
-                isGeofenceEnable = canAddGeofence && reminder.isGeofenceEnable)
+        viewModel.setSelectedReminder(
+            reminder.copy(
+                isGeofenceEnable = canAddGeofence && reminder.isGeofenceEnable
             )
+        )
 
-            viewModel.proceedToSaveReminder(args.isEditing)
+        viewModel.proceedToSaveReminder(args.isEditing)
 
-            if (canAddGeofence) {
-                addGeofence(reminder)
-            } else {
-                if (reminder.isGeofenceEnable) {
-                    context?.showCustomToast(
-                        titleResId = R.string.message_geofence_not_added_check_device_location_permission,
-                        toastType = ToastType.WARNING
-                    )
-                }
-            }
+        if(canAddGeofence && reminder.isGeofenceEnable) {
+            addGeofence(reminder)
+        } else {
+            removeGeofence(reminder)
+        }
+
+        if (reminder.isGeofenceEnable && canAddGeofence.not()) {
+            context?.showCustomToast(
+                titleResId = R.string.message_geofence_not_added_check_device_location_permission,
+                toastType = ToastType.WARNING
+            )
         }
     }
 
@@ -571,9 +563,9 @@ class AddReminderFragment : Fragment() {
     }
 
     private fun removeGeofence(reminder: ReminderItemView) {
-        geofenceManager.removeGeofence(
-            geofenceClient,
-            reminder.id.toString(),
+        geofenceManager.removeGeofences(
+            geofenceClient = geofenceClient,
+            remindersIds = listOf(reminder.id.toString()),
             onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
             onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
         )

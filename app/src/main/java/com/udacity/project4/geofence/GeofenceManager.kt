@@ -18,10 +18,10 @@ interface GeofenceManager {
         onAddGeofenceFailure: ((Int) -> Unit)? = null
     )
 
-    fun removeGeofence(
+    fun removeGeofences(
         geofenceClient: GeofencingClient,
-        id: String,
-        onRemoveGeofenceSuccess: (() -> Unit)? = null,
+        remindersIds: List<String>,
+        onRemoveGeofenceSuccess: ((Boolean) -> Unit)? = null,
         onRemoveGeofenceFailure: ((Int) -> Unit)? = null
     )
 }

@@ -37,6 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PENDING_INTENT_REQUEST_CODE = 0
 const val NO_RESULT = 0
+private const val TOAST_POSITION_ELEVATED = 350
 
 class ReminderListFragment : Fragment() {
 
@@ -210,6 +211,9 @@ class ReminderListFragment : Fragment() {
                         showDeletedAllRemindersSnackbar(action.remindersDeleted)
                     }
                 }
+                is RemindersAction.RemoveGeofencesProcess -> {
+                    removeGeofences(action.remindersIds)
+                }
                 else -> binding.noDataTextView.isVisible = false
             }
         }
@@ -345,7 +349,7 @@ class ReminderListFragment : Fragment() {
                         isGeofenceEnable = reminder.isGeofenceEnable.not()
                     )
                     if (reminder.isGeofenceEnable) {
-                        removeGeofence(reminder)
+                        removeGeofences(listOf(reminder.id.toString()))
                     } else {
                         addGeofence(reminder)
                     }
@@ -362,7 +366,7 @@ class ReminderListFragment : Fragment() {
             negativeButtonText = getString(R.string.label_cancel),
             positiveButtonText = getString(R.string.label_delete),
             positiveButtonAction = {
-                removeGeofence(reminder)
+                removeGeofences(listOf(reminder.id.toString()))
                 viewModel.deleteReminder(reminder)
             }
         )
@@ -382,19 +386,24 @@ class ReminderListFragment : Fragment() {
         )
     }
 
-    private fun removeGeofence(reminder: ReminderItemView) {
-        geofenceManager.removeGeofence(
-            geofenceClient,
-            reminder.id.toString(),
+    private fun removeGeofences(remindersIds: List<String>) {
+        geofenceManager.removeGeofences(
+            geofenceClient = geofenceClient,
+            remindersIds = remindersIds,
             onRemoveGeofenceFailure = { reasonStringRes -> geofenceFailure(reasonStringRes) },
-            onRemoveGeofenceSuccess = { onRemoveGeofenceSuccess() }
+            onRemoveGeofenceSuccess = { isBatchRemoval -> onRemoveGeofenceSuccess(isBatchRemoval) }
         )
     }
 
-    private fun onRemoveGeofenceSuccess() {
+    private fun onRemoveGeofenceSuccess(isBatchRemoval: Boolean = false) {
         context?.showCustomToast(
-            titleResId = R.string.geofence_removed,
-            toastType = ToastType.INFO
+            titleResId = if (isBatchRemoval) {
+                    R.string.geofence_batch_removal
+                } else {
+                    R.string.geofence_removed
+                },
+            toastType = ToastType.INFO,
+            offSetY = TOAST_POSITION_ELEVATED
         )
     }
 

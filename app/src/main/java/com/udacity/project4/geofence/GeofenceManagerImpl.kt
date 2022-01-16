@@ -14,6 +14,8 @@ import com.google.android.gms.location.GeofencingRequest
 import com.udacity.project4.R
 import com.udacity.project4.features.reminderslist.PENDING_INTENT_REQUEST_CODE
 
+private const val SINGLE_GEOFENCE_REMOVAL = 1
+
 class GeofenceManagerImpl(context: Context): GeofenceManager {
 
     private val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -62,15 +64,15 @@ class GeofenceManagerImpl(context: Context): GeofenceManager {
         }
     }
 
-    override fun removeGeofence(
+    override fun removeGeofences(
         geofenceClient: GeofencingClient,
-        id: String,
-        onRemoveGeofenceSuccess: (() -> Unit)?,
+        remindersIds: List<String>,
+        onRemoveGeofenceSuccess: ((Boolean) -> Unit)?,
         onRemoveGeofenceFailure: ((Int) -> Unit)?
     ) {
-        geofenceClient.removeGeofences(listOf(id)).run {
+        geofenceClient.removeGeofences(remindersIds).run {
             addOnSuccessListener {
-                onRemoveGeofenceSuccess?.invoke()
+                onRemoveGeofenceSuccess?.invoke(remindersIds.size > SINGLE_GEOFENCE_REMOVAL)
             }
             addOnFailureListener {
                 onRemoveGeofenceFailure?.invoke((it as ApiException).mapCodeToMessage())
