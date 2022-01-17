@@ -8,6 +8,7 @@ import androidx.test.filters.MediumTest
 import com.google.android.gms.location.Geofence
 import com.udacity.project4.shareddata.localdatasource.models.ReminderData
 import com.udacity.project4.shareddata.localdatasource.models.ResultData
+import com.udacity.project4.shareddata.localdatasource.repository.RESULT_ERROR
 import com.udacity.project4.shareddata.localdatasource.repository.RemindersLocalRepositoryImpl
 import com.udacity.project4.stubs.reminderData1
 import com.udacity.project4.stubs.reminderData2
@@ -17,7 +18,6 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.After
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -110,6 +110,23 @@ class RemindersLocalRepositoryTest {
         assertThat(result?.expiration, `is`(-1))
         assertThat(result?.transitionType, `is`(Geofence.GEOFENCE_TRANSITION_EXIT))
         assertThat(result?.isGeofenceEnable, `is`(true))
+    }
+
+    @Test
+    fun getReminder_should_return_Error_when_reminder_does_not_exists() = runBlocking {
+        // Given
+        val databaseResult = database.reminderDao().getReminderById(reminderData1.id.toString())
+        val repositoryResult = repository.getReminder(reminderData1.id.toString())
+
+        // Then
+        assertThat(databaseResult, CoreMatchers.nullValue())
+        assertThat(repositoryResult, `is`(
+                ResultData.Error(
+                    message = "Reminder not found!",
+                    statusCode = RESULT_ERROR
+                )
+            )
+        )
     }
 
     @Test
